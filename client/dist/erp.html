@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Threadline — Uniform Manufacturing ERP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#0C8CE9;
+  --sky-dark:#0A6FBD;
+  --sky-tint:#EAF4FE;
+  --navy:#12213B;
+  --ink:#1C2B45;
+  --slate:#5C6B84;
+  --slate-soft:#8794A8;
+  --paper:#FFFFFF;
+  --canvas:#F5F7FA;
+  --line:#E3E8EF;
+  --green:#158A5E;
+  --green-tint:#E7F5EF;
+  --amber:#B4750B;
+  --amber-tint:#FCF1DE;
+  --red:#C23B3B;
+  --red-tint:#FBEAEA;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--canvas);
+  color:var(--ink);
+  font-size:14px;
+  line-height:1.5;
+}
+.mono{font-family:'IBM Plex Mono',monospace;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;font-size:14px;}
+input,select{font-family:inherit;font-size:14px;}
+
+/* ===== SHELL ===== */
+#shell{display:flex;min-height:100vh;}
+#sidebar{
+  width:236px;flex-shrink:0;background:var(--navy);color:#CBD6EA;
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.brand{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08);}
+.brand-mark{display:flex;align-items:center;gap:10px;}
+.brand-swatch{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--sky),#1AA8FF);flex-shrink:0;position:relative;}
+.brand-swatch::before,.brand-swatch::after{content:"";position:absolute;background:rgba(255,255,255,.85);border-radius:1px;}
+.brand-swatch::before{width:14px;height:2.5px;top:9px;left:8px;}
+.brand-swatch::after{width:14px;height:2.5px;bottom:9px;left:8px;}
+.brand-name{font-weight:700;font-size:16.5px;color:#fff;letter-spacing:.2px;}
+.brand-sub{font-size:11px;color:#8FA3C4;margin-top:1px;}
+nav.navlinks{padding:14px 10px;flex:1;}
+.nav-group-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#5E729A;padding:14px 10px 6px;}
+.nav-link{
+  display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;
+  color:#B7C4DC;font-size:13.5px;font-weight:500;cursor:pointer;margin-bottom:1px;
+}
+.nav-link:hover{background:rgba(255,255,255,.06);color:#fff;}
+.nav-link.active{background:var(--sky);color:#fff;}
+.nav-ico{width:16px;text-align:center;font-size:14px;opacity:.9;}
+.sidebar-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:#5E729A;}
+
+#main{flex:1;min-width:0;}
+#topbar{
+  height:60px;background:var(--paper);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;padding:0 26px;
+  position:sticky;top:0;z-index:5;
+}
+.searchbox{
+  display:flex;align-items:center;gap:8px;background:var(--canvas);border:1px solid var(--line);
+  border-radius:8px;padding:7px 12px;width:300px;color:var(--slate-soft);font-size:13px;
+}
+.searchbox input{background:none;border:none;outline:none;flex:1;color:var(--ink);}
+.topbar-right{display:flex;align-items:center;gap:18px;}
+.role-pill{
+  display:flex;align-items:center;gap:8px;background:var(--sky-tint);border:1px solid #CDE6FB;
+  padding:6px 12px 6px 6px;border-radius:20px;
+}
+.role-avatar{width:26px;height:26px;border-radius:50%;background:var(--sky);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.role-pill select{background:none;border:none;outline:none;font-weight:600;font-size:12.5px;color:var(--sky-dark);}
+.bell{position:relative;font-size:16px;color:var(--slate);cursor:pointer;}
+.bell .dot{position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid #fff;}
+
+#content{padding:26px 30px 60px;max-width:1320px;}
+
+/* ===== TYPE ===== */
+h1.page-title{font-size:21px;font-weight:700;color:var(--navy);letter-spacing:-.2px;}
+p.page-sub{color:var(--slate);font-size:13.5px;margin-top:3px;}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+h2.section-title{font-size:14.5px;font-weight:700;color:var(--navy);margin:30px 0 12px;display:flex;align-items:center;gap:8px;}
+
+/* ===== BUTTONS ===== */
+.btn{padding:9px 16px;border-radius:8px;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;}
+.btn-primary{background:var(--sky);color:#fff;}
+.btn-primary:hover{background:var(--sky-dark);}
+.btn-ghost{background:var(--paper);color:var(--navy);border:1px solid var(--line);}
+.btn-ghost:hover{border-color:var(--sky);color:var(--sky-dark);}
+.btn-sm{padding:6px 11px;font-size:12px;border-radius:7px;}
+.btn-danger-ghost{background:var(--paper);color:var(--red);border:1px solid #F1CFCF;}
+
+/* ===== KPI CARDS ===== */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.kpi-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;}
+.kpi-label{font-size:12px;color:var(--slate);font-weight:500;}
+.kpi-value{font-size:24px;font-weight:800;color:var(--navy);margin-top:6px;letter-spacing:-.4px;}
+.kpi-value .unit{font-size:13px;font-weight:600;color:var(--slate-soft);margin-left:3px;}
+.kpi-delta{font-size:11.5px;margin-top:6px;font-weight:600;}
+.kpi-delta.up{color:var(--green);}
+.kpi-delta.warn{color:var(--amber);}
+.kpi-delta.flat{color:var(--slate-soft);}
+
+/* ===== PANELS / CARDS ===== */
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);}
+.panel-pad{padding:18px 20px;}
+.two-col{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:start;}
+
+/* attention list */
+.alert-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+.alert-row:last-child{border-bottom:none;}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.alert-dot.red{background:var(--red);}
+.alert-dot.amber{background:var(--amber);}
+.alert-text{flex:1;font-size:13px;color:var(--ink);}
+.alert-text b{font-weight:700;}
+.alert-tag{font-size:11px;color:var(--slate-soft);}
+
+/* dept cards */
+.dept-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.dept-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:15px;cursor:pointer;transition:.15s;}
+.dept-card:hover{border-color:var(--sky);box-shadow:0 2px 10px rgba(12,140,233,.08);}
+.dept-card .ic{width:32px;height:32px;border-radius:8px;background:var(--sky-tint);display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px;}
+.dept-card h4{font-size:13.5px;font-weight:700;color:var(--navy);}
+.dept-card .sub{font-size:11.5px;color:var(--slate);margin-top:2px;}
+.dept-card .bar-wrap{height:5px;background:var(--line);border-radius:4px;margin-top:12px;overflow:hidden;}
+.dept-card .bar{height:100%;background:var(--sky);}
+.dept-card .stat{display:flex;justify-content:space-between;font-size:11px;color:var(--slate);margin-top:6px;}
+
+/* pipeline */
+.pipeline{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding:4px 0 8px;}
+.pipe-stage{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;min-width:150px;flex:1;position:relative;cursor:pointer;}
+.pipe-stage:hover{border-color:var(--sky);}
+.pipe-stage h5{font-size:12.5px;font-weight:700;color:var(--navy);}
+.pipe-num{font-size:22px;font-weight:800;color:var(--sky-dark);margin-top:8px;}
+.pipe-meta{font-size:11px;color:var(--slate);margin-top:6px;display:flex;flex-direction:column;gap:2px;}
+.pipe-arrow{display:flex;align-items:center;justify-content:center;width:26px;color:var(--slate-soft);font-size:16px;flex-shrink:0;}
+
+/* tables */
+table{width:100%;border-collapse:collapse;}
+th{
+  text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--slate-soft);
+  padding:9px 12px;border-bottom:1px solid var(--line);font-weight:600;background:var(--canvas);
+}
+td{padding:11px 12px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr.row-click{cursor:pointer;}
+tr.row-click:hover{background:var(--sky-tint);}
+.tbl-name{font-weight:600;color:var(--navy);}
+.tbl-sub{font-size:11.5px;color:var(--slate-soft);}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-green{background:var(--green-tint);color:var(--green);}
+.badge-amber{background:var(--amber-tint);color:var(--amber);}
+.badge-red{background:var(--red-tint);color:var(--red);}
+.badge-sky{background:var(--sky-tint);color:var(--sky-dark);}
+.badge-grey{background:var(--canvas);color:var(--slate);border:1px solid var(--line);}
+
+/* cards grid (employee/directory) */
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.emp-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px;cursor:pointer;}
+.emp-card:hover{border-color:var(--sky);}
+.emp-top{display:flex;gap:11px;align-items:center;}
+.emp-avatar{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.emp-name{font-weight:700;font-size:14px;color:var(--navy);}
+.emp-role{font-size:11.5px;color:var(--slate);}
+.emp-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px;}
+.emp-stat{background:var(--canvas);border-radius:7px;padding:8px 10px;}
+.emp-stat .l{font-size:10.5px;color:var(--slate-soft);}
+.emp-stat .v{font-size:14px;font-weight:700;color:var(--navy);margin-top:2px;}
+
+/* passbook */
+.passbook-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;}
+.passbook-id{background:var(--navy);color:#fff;border-radius:var(--radius);padding:20px 22px;flex:1;min-width:260px;position:relative;overflow:hidden;}
+.passbook-id::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.05);}
+.passbook-id .name{font-size:19px;font-weight:700;}
+.passbook-id .code{font-size:12px;color:#93A8CB;margin-top:2px;}
+.passbook-id .tags{display:flex;gap:7px;margin-top:12px;}
+.summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+.strip-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px;}
+.strip-card .l{font-size:11px;color:var(--slate);}
+.strip-card .v{font-size:18px;font-weight:800;color:var(--navy);margin-top:4px;}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:22px 0 16px;}
+.tab{padding:9px 14px;font-size:13px;font-weight:600;color:var(--slate);border-bottom:2px solid transparent;cursor:pointer;}
+.tab.active{color:var(--sky-dark);border-color:var(--sky);}
+
+/* forms / modal */
+.overlay{position:fixed;inset:0;background:rgba(18,33,59,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;}
+.modal{background:var(--paper);border-radius:12px;width:520px;max-width:100%;max-height:88vh;overflow-y:auto;}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+.modal-head h3{font-size:15.5px;font-weight:700;color:var(--navy);}
+.modal-close{font-size:18px;color:var(--slate-soft);cursor:pointer;}
+.modal-body{padding:20px 22px;}
+.modal-foot{padding:16px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px;}
+.field input,.field select{
+  width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:7px;outline:none;background:var(--canvas);
+}
+.field input:focus,.field select:focus{border-color:var(--sky);background:#fff;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.hint{font-size:11px;color:var(--slate-soft);margin-top:4px;}
+
+/* misc */
+.empty{padding:40px 20px;text-align:center;color:var(--slate-soft);font-size:13px;}
+.pill-nav{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.pill{padding:6px 13px;border-radius:20px;font-size:12.5px;font-weight:600;border:1px solid var(--line);color:var(--slate);cursor:pointer;background:var(--paper);}
+.pill.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:9px;font-size:13px;font-weight:500;z-index:80;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transform:translateY(8px);transition:.2s;}
+.toast.show{opacity:1;transform:translateY(0);}
+.progress-mini{height:6px;background:var(--line);border-radius:4px;overflow:hidden;width:80px;display:inline-block;vertical-align:middle;margin-right:8px;}
+.progress-mini > div{height:100%;background:var(--sky);}
+.timeline{border-left:2px solid var(--line);margin-left:6px;}
+.tl-item{position:relative;padding:0 0 18px 20px;}
+.tl-item::before{content:"";position:absolute;left:-6.5px;top:2px;width:11px;height:11px;border-radius:50%;background:var(--sky);border:2px solid #fff;box-shadow:0 0 0 1px var(--sky);}
+.tl-date{font-size:11px;color:var(--slate-soft);}
+.tl-text{font-size:13px;color:var(--ink);margin-top:2px;}
+::-webkit-scrollbar{height:8px;width:8px;}
+::-webkit-scrollbar-thumb{background:#D3DCE8;border-radius:4px;}
+
+@media(max-width:1000px){
+  .kpi-grid,.dept-grid,.card-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+  #sidebar{position:fixed;left:-236px;z-index:40;transition:.2s;}
+  #sidebar.open{left:0;}
+}
+
+/* ===== ADDED: language toggle ===== */
+.lang-toggle{display:flex;background:var(--canvas);border:1px solid var(--line);border-radius:20px;padding:3px;gap:2px;}
+.lang-btn{border:none;background:transparent;padding:5px 11px;border-radius:16px;font-size:12px;font-weight:700;color:var(--slate);}
+.lang-btn.active{background:var(--navy);color:#fff;}
+
+/* ===== ADDED: image upload control ===== */
+.upload-row{display:flex;align-items:center;gap:12px;}
+.upload-btn{
+  display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:8px;
+  border:1px dashed #B9C6DC;background:var(--canvas);color:var(--sky-dark);font-weight:600;font-size:12.5px;cursor:pointer;
+}
+.upload-btn:hover{border-color:var(--sky);background:var(--sky-tint);}
+.upload-preview{width:52px;height:52px;border-radius:8px;object-fit:cover;border:1px solid var(--line);}
+.upload-preview-empty{width:52px;height:52px;border-radius:8px;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;color:var(--slate-soft);font-size:18px;flex-shrink:0;}
+.cloth-thumb{width:34px;height:34px;border-radius:6px;object-fit:cover;border:1px solid var(--line);vertical-align:middle;}
+.cloth-thumb-empty{width:34px;height:34px;border-radius:6px;background:var(--canvas);border:1px dashed var(--line);display:inline-flex;align-items:center;justify-content:center;color:var(--slate-soft);font-size:13px;vertical-align:middle;}
+
+/* ===== ADDED: rate card ===== */
+.rate-table td, .rate-table th{text-align:center;}
+.rate-table td:first-child, .rate-table th:first-child{text-align:left;}
+.rate-input{width:64px;padding:6px 7px;border:1px solid var(--line);border-radius:6px;text-align:center;background:#fff;}
+.rate-input:focus{border-color:var(--sky);outline:none;}
+.rate-note{font-size:11.5px;color:var(--slate-soft);margin-top:10px;}
+
+/* ===== ADDED: submit-cloth control ===== */
+.btn-tiny{padding:5px 10px;font-size:11.5px;border-radius:6px;}
+
+/* ===== ADDED: ERP dark mode ===== */
+html.dark-mode{--paper:#111827;--canvas:#0B1220;--line:#29364A;--ink:#E7EEF8;--navy:#EAF2FF;--slate:#A8B6CC;--slate-soft:#8292AA;--sky-tint:#102B43;--green-tint:#123426;--amber-tint:#3A2B12;--red-tint:#3A1818;}
+html.dark-mode body{background:var(--canvas);color:var(--ink);}
+/* Keep the navigation rail dark. --navy becomes a light text colour in dark mode. */
+html.dark-mode #sidebar{background:#111C2E;color:#CBD6EA;border-right:1px solid var(--line);}
+html.dark-mode #topbar{background:#111827;border-color:var(--line);}
+html.dark-mode .searchbox,.dark-mode .field input,.dark-mode .field select,.dark-mode .rate-input{background:#0B1220;color:var(--ink);border-color:var(--line);}
+html.dark-mode th{background:#0E1728;color:var(--slate-soft);}
+html.dark-mode .overlay{background:rgba(0,0,0,.62);}
+.dark-toggle{background:var(--canvas);border:1px solid var(--line);border-radius:20px;padding:5px 10px;color:var(--ink);font-weight:700;font-size:12px;}
+.search-results{display:grid;gap:10px;}
+.search-result{width:100%;text-align:left;padding:14px 16px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);color:var(--ink);}
+.search-result:hover{border-color:var(--sky);box-shadow:0 4px 14px rgba(12,140,233,.12);}
+.search-result-type{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--sky-dark);}
+.search-result-title{font-weight:700;margin-top:3px;}.search-result-detail{font-size:12px;color:var(--slate);margin-top:2px;}
+
+/* ===== CRB NEXT UI — modern workspace refresh ===== */
+:root{--sky:#6B5CF6;--sky-dark:#5246D8;--sky-tint:#EEECFF;--navy:#18223A;--ink:#1D2942;--slate:#65708A;--slate-soft:#98A2B5;--paper:#FFFFFF;--canvas:#F5F7FC;--line:#E7EAF2;--green:#149B73;--green-tint:#E7F8F1;--amber:#B87513;--amber-tint:#FFF4DE;--red:#D55062;--red-tint:#FFF0F2;--radius:16px;}
+body{background:var(--canvas);letter-spacing:-.01em;}
+#shell{background:radial-gradient(circle at 88% 0%,#E9E7FF 0,transparent 25%),var(--canvas);}
+#sidebar{width:252px;background:linear-gradient(180deg,#11182B 0%,#1A2440 100%);box-shadow:12px 0 36px rgba(23,32,58,.06);}
+.brand{padding:26px 21px 20px;border-bottom-color:rgba(255,255,255,.07)}
+.brand-swatch{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#796AFF,#44D1DA);box-shadow:0 8px 18px rgba(92,78,239,.3)}
+.brand-swatch::before,.brand-swatch::after{left:10px;width:16px}.brand-swatch::before{top:11px}.brand-swatch::after{bottom:11px}
+.brand-name{font-size:19px;letter-spacing:-.45px}.brand-sub{font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:#93A2C5;margin-top:3px}
+nav.navlinks{padding:18px 12px}.nav-group-label{padding:17px 11px 7px;font-size:9.5px;color:#8090B5;letter-spacing:.1em}.nav-link{padding:10px 11px;border-radius:11px;margin:3px 0;color:#B7C4E0;transition:background .18s ease,transform .18s ease,color .18s ease}.nav-link:hover{background:rgba(255,255,255,.08);transform:translateX(3px)}.nav-link.active{background:linear-gradient(100deg,#6C5CF5,#8575FF);box-shadow:0 7px 18px rgba(88,72,235,.27)}.nav-ico{width:20px}
+.sidebar-foot{padding:18px 21px;color:#8291B3;border-top-color:rgba(255,255,255,.07)}
+#main{padding:0 20px 26px;}.erp-wrap iframe{background:#f5f7fc}
+#topbar{height:72px;margin:0 -20px 20px;padding:0 30px;background:rgba(255,255,255,.72);border-bottom:1px solid rgba(224,229,241,.9);backdrop-filter:blur(16px);position:sticky;top:0;z-index:5}.searchbox{width:min(360px,43vw);padding:9px 13px;border-radius:12px;background:#F4F6FB;border-color:transparent;transition:border .18s ease,box-shadow .18s ease}.searchbox:focus-within{background:#fff;border-color:#B7B0FF;box-shadow:0 0 0 4px rgba(107,92,246,.1)}.topbar-right{gap:12px}.role-pill{border:0;background:var(--sky-tint);padding:5px 12px 5px 5px}.role-avatar{background:linear-gradient(135deg,#6B5CF6,#8B7BFA)}.dark-toggle,.lang-toggle{border-color:transparent;background:#F4F6FB}.lang-btn.active{background:var(--navy)}
+#content{max-width:1450px;padding:8px 10px 64px}.page-head{margin-bottom:26px}h1.page-title{font-size:28px;letter-spacing:-.85px}p.page-sub{font-size:14px;margin-top:5px}.btn{padding:10px 16px;border-radius:11px;transition:transform .18s ease,box-shadow .18s ease}.btn-primary{background:linear-gradient(135deg,#6757EE,#806CF7);box-shadow:0 8px 18px rgba(103,87,238,.2)}.btn-primary:hover{background:linear-gradient(135deg,#5B4CE0,#7561EB);transform:translateY(-1px);box-shadow:0 11px 24px rgba(103,87,238,.28)}.btn-ghost{background:#fff;border-color:var(--line)}
+.kpi-grid{gap:16px}.kpi-card,.panel,.dept-card,.emp-card,.strip-card{border-color:rgba(226,230,240,.9);box-shadow:0 5px 18px rgba(29,41,66,.035)}.kpi-card{padding:20px;border-radius:16px;background:rgba(255,255,255,.88)}.kpi-value{font-size:27px;letter-spacing:-1px;margin-top:8px}.kpi-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase}.panel{border-radius:16px;overflow:hidden}.panel-pad{padding:21px 22px}.two-col{gap:18px}
+.dept-grid{gap:14px}.dept-card{padding:17px;border-radius:16px;transition:transform .2s ease,box-shadow .2s ease}.dept-card:hover,.emp-card:hover{transform:translateY(-3px);border-color:#CFCBFF;box-shadow:0 13px 28px rgba(77,65,186,.11)}.dept-card .ic{width:38px;height:38px;border-radius:12px;background:var(--sky-tint)}.dept-card .bar-wrap{height:6px;margin-top:14px;background:#ECEEF5}.dept-card .bar{background:linear-gradient(90deg,#6B5CF6,#43C9D4)}
+th{padding:12px 14px;background:#F8F9FD;font-size:10px}td{padding:13px 14px}tr:not(:last-child) td{border-color:#EEF0F5}.badge{padding:4px 9px;font-size:10.5px}.card-grid{gap:16px}.emp-card{border-radius:16px;padding:18px}.emp-avatar{background:linear-gradient(135deg,#253555,#53698D)}.emp-stat{background:#F7F8FC;border-radius:10px}.pipeline{gap:10px;padding:0;overflow:visible}.pipe-stage{border-radius:15px;box-shadow:0 5px 18px rgba(29,41,66,.035)}.pipe-arrow{width:18px}.pipe-num{color:var(--sky-dark)}
+.modal{border-radius:20px;box-shadow:0 28px 80px rgba(12,21,44,.24)}.overlay{background:rgba(16,24,45,.52);backdrop-filter:blur(5px)}.modal-head{padding:20px 24px}.modal-body{padding:23px 24px}.modal-foot{padding:17px 24px}.field input,.field select{padding:11px 12px;border-radius:10px;background:#F8F9FD}.field input:focus,.field select:focus{background:#fff;box-shadow:0 0 0 4px rgba(107,92,246,.1)}.upload-btn{border-radius:10px;border-color:#CFCBFF;background:#F8F7FF;color:var(--sky-dark)}.search-result{border-radius:14px;transition:transform .18s ease,box-shadow .18s ease}.search-result:hover{transform:translateY(-2px);border-color:#CFCBFF;box-shadow:0 12px 26px rgba(77,65,186,.1)}
+html.dark-mode{--paper:#151D30;--canvas:#0C1220;--line:#26334B;--ink:#EDF2FC;--navy:#EEF3FF;--slate:#A8B5CA;--slate-soft:#8190A8;--sky-tint:#242343;--green-tint:#12392C;--amber-tint:#3B2D13;--red-tint:#3D1D26}html.dark-mode #shell{background:radial-gradient(circle at 85% 0%,#25234E 0,transparent 28%),var(--canvas)}html.dark-mode #sidebar{background:linear-gradient(180deg,#101628,#18213A)}html.dark-mode #topbar{background:rgba(15,22,38,.76);border-color:#26334B}html.dark-mode .searchbox,html.dark-mode .lang-toggle,html.dark-mode .dark-toggle{background:#111A2C}html.dark-mode .kpi-card,html.dark-mode .panel,html.dark-mode .dept-card,html.dark-mode .emp-card,html.dark-mode .strip-card{background:#151D30;border-color:#26334B;box-shadow:none}html.dark-mode th,html.dark-mode .emp-stat,html.dark-mode .field input,html.dark-mode .field select{background:#101829}html.dark-mode .btn-ghost{background:#151D30}html.dark-mode .upload-btn{background:#201F3C;border-color:#423D77}
+@media(max-width:1000px){#main{padding:0 12px 20px}#topbar{margin:0 -12px 16px;padding:0 16px}.searchbox{width:42vw}#content{padding:6px 2px 40px}.pipeline{overflow-x:auto}.pipe-stage{min-width:160px}}@media(max-width:640px){#topbar{height:auto;min-height:68px;gap:10px;align-items:center}.searchbox{width:48vw}.role-pill{padding:4px}.role-pill select{display:none}.kpi-grid,.dept-grid,.card-grid,.summary-strip{grid-template-columns:1fr}.field-row{grid-template-columns:1fr}h1.page-title{font-size:24px}.page-head{align-items:flex-start}.topbar-right{gap:6px}.bell{display:none}}
+.workspace-tabs{display:flex;align-items:center;gap:3px;padding:4px;border:1px solid var(--line);border-radius:12px;background:var(--canvas)}
+.workspace-tab{padding:7px 10px;border-radius:8px;color:var(--slate);font-size:12px;font-weight:700;transition:background .18s ease,color .18s ease,box-shadow .18s ease}
+.workspace-tab:hover{color:var(--sky-dark)}.workspace-tab.active{background:var(--paper);color:var(--sky-dark);box-shadow:0 2px 8px rgba(33,43,75,.11)}
+.client-empty-state{min-height:280px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:10px}.client-empty-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:var(--sky-tint);color:var(--sky-dark);font-weight:800;font-size:20px}
+html.dark-mode .workspace-tabs{background:#111A2C;border-color:#26334B}html.dark-mode .workspace-tab.active{background:#202A40;color:#DCD8FF}
+@media(max-width:760px){.workspace-tabs{order:3;width:100%;justify-content:space-between}.workspace-tab{flex:1}.topbar-right{flex-wrap:wrap;justify-content:flex-end}}
+</style>
+</head>
+<body>
+<div id="shell">
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <div class="brand-swatch"></div>
+        <div>
+          <div class="brand-name">CRB</div>
+          <div class="brand-sub">Manufacturing ERP · Phase 1</div>
+        </div>
+      </div>
+    </div>
+    <nav class="navlinks" id="navlinks"></nav>
+    <div class="sidebar-foot">Prototype demo · in-memory data</div>
+  </aside>
+
+  <div id="main">
+    <div id="topbar">
+      <div class="searchbox">
+        <span>⌕</span>
+        <input id="globalSearch" placeholder="Search employee, batch, order…" oninput="onGlobalSearch(this.value)">
+      </div>
+      <div class="topbar-right">
+        <div class="lang-toggle" title="Change language / भाषा बदला">
+          <button class="lang-btn" id="langBtnEn" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" id="langBtnMr" onclick="setLang('mr')">मराठी</button>
+        </div>
+        <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()">☾ Dark</button>
+        <div class="bell">🔔<span class="dot"></span></div>
+        <div class="workspace-tabs" aria-label="Dashboard workspace">
+          <button class="workspace-tab active" data-workspace="internal" onclick="switchWorkspace('internal')">Internal</button>
+          <button class="workspace-tab" data-workspace="external" onclick="switchWorkspace('external')">External</button>
+          <button class="workspace-tab" data-workspace="client" onclick="switchWorkspace('client')">Client</button>
+        </div>
+      </div>
+    </div>
+    <div id="content"></div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+<div id="modalRoot"></div>
+
+<script>
+/* ============================================================
+   DATA MODEL
+============================================================ */
+const DEPTS = [
+  {id:'cutting', name:'Cutting', icon:'✂️', order:1, next:'stitching'},
+  {id:'stitching', name:'Stitching', icon:'🧵', order:2, next:'kbv'},
+  {id:'kbv', name:'Kaja, Button & Varlak', icon:'🔘', order:3, next:'ironing'},
+  {id:'ironing', name:'Ironing', icon:'🔥', order:4, next:'packing'},
+  {id:'packing', name:'Packing', icon:'📦', order:5, next:null},
+];
+const deptName = id => {
+  if(id==='vendor') return LANG==='mr' ? DEPT_NAME_MR.vendor : 'Vendor';
+  const d = DEPTS.find(d=>d.id===id);
+  if(!d) return id;
+  return LANG==='mr' ? (DEPT_NAME_MR[id]||d.name) : d.name;
+};
+
+const ITEMS = [
+  {id:'shirt', name:'Shirt', clothPerPc:1.2, rates:{cutting:8, stitching:12, kbv:4, ironing:3, packing:2}, vendorRate:26},
+  {id:'pant', name:'Pant', clothPerPc:1.4, rates:{cutting:10, stitching:14, kbv:5, ironing:3, packing:2}, vendorRate:30},
+  {id:'pinaco', name:'Pinaco', clothPerPc:0.9, rates:{cutting:6, stitching:9, kbv:3, ironing:2, packing:2}, vendorRate:19},
+  {id:'grammer', name:'Grammer', clothPerPc:1.0, rates:{cutting:7, stitching:10, kbv:3, ironing:2, packing:2}, vendorRate:21},
+  {id:'halfhastin', name:'Half Hastin', clothPerPc:0.7, rates:{cutting:7, stitching:11, kbv:4, ironing:3, packing:2}, vendorRate:23},
+  {id:'skirt', name:'Skirt', clothPerPc:1.1, rates:{cutting:9, stitching:13, kbv:4, ironing:3, packing:2}, vendorRate:27},
+  {id:'bandi', name:'Bandi', clothPerPc:0.8, rates:{cutting:6, stitching:8, kbv:3, ironing:2, packing:2}, vendorRate:18},
+];
+const itemName = id => {
+  const i = ITEMS.find(i=>i.id===id);
+  if(!i) return id;
+  return LANG==='mr' ? (ITEM_NAME_MR[id]||i.name) : i.name;
+};
+
+const SUPPLIERS = ['Mahaveer Textiles','Surya Suiting & Shirting','Akem Industry','Ambika Suiting & Shirtings'];
+
+/* ============================================================
+   LANGUAGE / TRANSLATION (English <-> Marathi)
+   Chrome, labels, headings, statuses, department & item names
+   are fully bilingual. Free-text alert sentences stay in
+   English in this prototype (they mix names + live numbers).
+============================================================ */
+let LANG = 'en';
+function setLang(l){ LANG = l; render(); }
+const DEPT_NAME_MR = {cutting:'कटिंग', stitching:'शिलाई', kbv:'काजा, बटण व वारलक', ironing:'इस्त्री', packing:'पॅकिंग', vendor:'व्हेंडर'};
+const ITEM_NAME_MR  = {shirt:'शर्ट', pant:'पँट', pinaco:'पिनॅको', grammer:'ग्रामर', halfhastin:'हाफ हस्तीन', skirt:'स्कर्ट', bandi:'बंडी'};
+
+const T = {
+  // nav
+  'Overview':'सारांश','Materials':'कच्चा माल','Raw Material':'कच्चा माल','Workforce':'कामगार',
+  'Employees':'कर्मचारी','Assign Work':'काम नेमून द्या','Production':'उत्पादन',
+  'Production Pipeline':'उत्पादन प्रवाह','Finance':'हिशोब','Salary & Payments':'पगार व देयके',
+  'Rate Card & Pricing':'दर सूची','My Account':'माझे खाते','My Passbook':'माझी पासबुक','Dashboard':'डॅशबोर्ड',
+  // topbar
+  'Search employee, batch, order…':'कर्मचारी, बॅच, ऑर्डर शोधा…','Owner / Admin':'मालक / अ‍ॅडमिन',
+  'Operations / Front Desk':'ऑपरेशन्स / फ्रंट डेस्क','Department Employee':'विभाग कर्मचारी',
+  // dashboard
+  'Owner Dashboard':'मालक डॅशबोर्ड','Complete production, material & workforce control':'उत्पादन, माल व कामगार यांचे संपूर्ण नियंत्रण',
+  '＋ Raw Material':'＋ कच्चा माल','＋ Assign Work':'＋ काम नेमून द्या','✎ Manage Prices':'✎ दर बदला',
+  'Total Raw Material Purchased':'एकूण खरेदी केलेला माल','batches':'बॅचेस','Current Inventory':'सध्याचा साठा',
+  'Ready to distribute':'वाटपासाठी तयार','Material With Employees':'कर्मचाऱ्यांकडील माल','In active production':'उत्पादन सुरू आहे',
+  'Material Return Pending':'माल परत करणे बाकी','Needs follow-up':'पाठपुरावा आवश्यक','Active Production Jobs':'सुरू असलेली कामे',
+  'Across 5 departments':'५ विभागांमध्ये','Ready for Delivery':'डिलिव्हरीसाठी तयार','Packed & finished':'पॅक व पूर्ण',
+  'Payments Pending':'देणे बाकी असलेली रक्कम','Owed to workforce':'कामगारांना देय','Active Employees':'सक्रिय कर्मचारी',
+  'Internal + vendor':'अंतर्गत + व्हेंडर','⚠ What needs my attention':'⚠ लक्ष देण्याची गरज असलेल्या गोष्टी',
+  'All clear — nothing needs attention right now.':'सर्व ठीक आहे — सध्या लक्ष देण्याची गरज नाही.',
+  'Suppliers':'पुरवठादार','sourced':'M पुरवठा','Department overview':'विभागांचा आढावा',
+  'employees':'कर्मचारी','active job(s)':'सुरू कामे','done':'पूर्ण','Employee productivity':'कर्मचारी कामगिरी',
+  'live':'लाइव्ह','Employee':'कर्मचारी','Department':'विभाग','Current work':'सध्याचे काम',
+  'Units completed':'पूर्ण झालेले नग','Earned':'कमाई','Payment':'देयक','Settled':'पूर्ण भरलेले','due':'बाकी',
+  // raw material
+  'Purchases, batch ledgers and current cloth stock':'खरेदी, बॅच हिशोब व सध्याचा कापड साठा',
+  '＋ New Raw Material Entry':'＋ नवीन कच्चा माल नोंद','Total Purchased':'एकूण खरेदी','Distributed':'वाटप केलेले','Current Stock':'सध्याचा साठा',
+  'Batch':'बॅच','Purchase Date':'खरेदी तारीख','Bill No':'बिल क्र.','Supplier':'पुरवठादार','Cloth':'कापड',
+  'Meters':'मीटर','Rate':'दर','Amount':'रक्कम','Payment ':'देयक','Stock':'साठा','Photo':'फोटो',
+  'No purchases yet.':'अजून खरेदी नाही.','pending':'बाकी','Paid':'भरले','left':'शिल्लक',
+  'New Raw Material Entry':'नवीन कच्चा माल नोंद','Bill Number':'बिल क्रमांक','Purchased From':'कोणाकडून खरेदी',
+  'Cloth Name / Description':'कापडाचे नाव / वर्णन','Pieces (rolls)':'नग (रोल)','Total Meters':'एकूण मीटर',
+  'Rate per Meter (₹)':'प्रति मीटर दर (₹)','Amount Paid Now (₹)':'आत्ता भरलेली रक्कम (₹)',
+  'A unique batch number will be generated automatically and this stock becomes available for distribution immediately.':'एक स्वतंत्र बॅच क्रमांक आपोआप तयार होईल आणि हा साठा लगेच वाटपासाठी उपलब्ध होईल.',
+  'Cloth Photo (optional)':'कापडाचा फोटो (ऐच्छिक)','Add Photo':'फोटो जोडा','Change Photo':'फोटो बदला',
+  'Upload a photo of this cloth roll or bill for easy identification later.':'ओळखणे सोपे जावे म्हणून या कापडाचा किंवा बिलाचा फोटो अपलोड करा.',
+  'Save Purchase':'खरेदी जतन करा','Cancel':'रद्द करा',
+  // batch detail
+  'Cloth Ledger':'कापड हिशोब','from':'कडून','Purchased':'खरेदी केले','Used':'वापरले','Remaining Stock':'शिल्लक साठा',
+  'Purchase details':'खरेदी तपशील','Purchase Date ':'खरेदी तारीख','Rate / Meter':'दर / मीटर','Total Amount':'एकूण रक्कम',
+  'Pending':'बाकी','Distributed to':'यांना वाटप केले','Item':'वस्तू','Assigned':'दिलेले','Status':'स्थिती','Remaining':'शिल्लक',
+  'Not yet distributed to anyone.':'अजून कोणालाही वाटप केलेले नाही.','← Back to Raw Material':'← कच्चा माल कडे परत',
+  // employees
+  'Employees & Vendors':'कर्मचारी व व्हेंडर',
+  'accounts · internal workforce and outsourced vendors':'खाती · अंतर्गत कर्मचारी व बाह्य व्हेंडर',
+  '＋ Add Employee':'＋ कर्मचारी जोडा','All':'सर्व','Internal':'अंतर्गत','Vendors':'व्हेंडर',
+  'Active jobs':'सुरू कामे','Total earned':'एकूण कमाई',
+  'Add Employee / Vendor':'कर्मचारी / व्हेंडर जोडा','Full Name':'पूर्ण नाव','Type':'प्रकार',
+  'Internal Employee':'अंतर्गत कर्मचारी','Vendor':'व्हेंडर','Create Account':'खाते तयार करा',
+  // department
+  'employees ':'कर्मचारी','forwards to':'पुढे पाठवते','final stage — ready for delivery':'शेवटचा टप्पा — डिलिव्हरीसाठी तयार',
+  'Received':'मिळाले','Completed':'पूर्ण झाले','Active jobs ':'सुरू कामे','Team':'टीम','Job log':'कामाची नोंद',
+  'No jobs yet in this department.':'या विभागात अजून काम नाही.','Produced':'तयार झाले','Date':'तारीख',
+  'Cloth Given':'दिलेले कापड','Cloth Used':'वापरलेले कापड','Avg / Piece':'सरासरी / नग','Cloth Remaining':'शिल्लक कापड',
+  'Cloth Submitted?':'कापड जमा केले?','Submit Cloth':'कापड जमा करा','Submitted':'जमा केले',
+  'In progress':'सुरू आहे','Forwarded':'पुढे पाठवले','Ready':'तयार','Completed — not forwarded':'पूर्ण — पुढे पाठवलेले नाही',
+  'Submit':'सादर करा','Forward':'पुढे पाठवा','Mark Ready':'तयार म्हणून चिन्हांकित करा','＋ Assign Job':'＋ काम नेमून द्या',
+  // pipeline
+  'Where is the material and product right now, across every stage':'माल व उत्पादन सध्या कोणत्या टप्प्यावर आहे',
+  'completed':'पूर्ण','pending job(s)':'बाकी काम','Vendor route':'व्हेंडर मार्ग','bypasses internal chain':'अंतर्गत साखळी वगळून',
+  'Vendors receive cloth directly and deliver finished product without passing through internal departments.':'व्हेंडर थेट कापड घेतात आणि अंतर्गत विभागांमधून न जाता तयार माल देतात.',
+  'Cloth given':'दिलेले कापड','Pieces delivered':'दिलेले नग','Active vendor jobs':'सुरू व्हेंडर कामे',
+  // payments
+  'Weekly payout based on piece-rate work, calculated automatically — no manual counting':'नग-दरानुसार साप्ताहिक पगार आपोआप मोजला जातो — हाताने मोजण्याची गरज नाही',
+  'Total Payroll (Earned)':'एकूण कमाई','Paid Out':'भरलेली रक्कम',
+  'Dept / Type':'विभाग / प्रकार','Pay Type':'पगार प्रकार','Piece Rate':'नग-दर','Contract':'कंत्राट',
+  'Partially Paid':'अंशतः भरले','Pay Now':'आत्ता भरा','Settle Payment':'देयक निकाल करा',
+  'Amount to Pay Now (₹)':'आत्ता भरायची रक्कम (₹)','Confirm Payment':'देयक निश्चित करा',
+  "This week's ledger":'या आठवड्याचा हिशोब','Already paid':'आधीच भरलेले',
+  // assign work
+  'Distribute raw material and hand off jobs to employees or vendors':'कच्चा माल वाटप करा व कर्मचारी/व्हेंडरना काम द्या',
+  '＋ New Assignment':'＋ नवीन काम','Currently in progress':'सध्या सुरू असलेले','Quantity':'प्रमाण',
+  'Nothing in progress.':'सध्या काहीही सुरू नाही.','Assign Work ':'काम नेमून द्या','Assign to':'यांना नेमून द्या',
+  'New work always starts at Cutting (internal chain) or goes straight to a Vendor.':'नवीन काम नेहमी कटिंगपासून सुरू होते (अंतर्गत साखळी) किंवा थेट व्हेंडरकडे जाते.',
+  'Cloth Batch':'कापड बॅच','Meters to Give':'द्यायचे मीटर','Assign':'नेमून द्या',
+  // passbook
+  'Employee Profile':'कर्मचारी प्रोफाइल','Bank-style account of work, material and earnings':'काम, माल व कमाईचे बँकेसारखे खाते',
+  '← Back to Employees':'← कर्मचाऱ्यांकडे परत','Total Earned':'एकूण कमाई','Total Jobs':'एकूण कामे',
+  'Log today\'s production':"आजचे उत्पादन नोंदवा",'Submit Completed Work':'पूर्ण झालेले काम सादर करा',
+  'No active assignment right now. Use “Assign Work” to give this employee a new job.':'सध्या कोणतेही काम सुरू नाही. नवीन काम देण्यासाठी "काम नेमून द्या" वापरा.',
+  'My current work':'माझे सध्याचे काम','Submit My Completed Work':'माझे पूर्ण झालेले काम सादर करा',
+  'Ready to forward':'पुढे पाठवण्यासाठी तयार','Packed & ready for delivery':'पॅक व डिलिव्हरीसाठी तयार',
+  'Work & material ledger':'काम व माल हिशोब','Timeline':'कालरेषा','Nothing yet.':'अजून काही नाही.',
+  'Active':'सक्रिय','Inactive':'निष्क्रिय','Current assignment:':'सध्याचे काम:','of':'चे','for':'साठी',
+  'assigned':'नेमून दिले','You have':'तुमच्याकडे','assigned for':'साठी नेमून दिले','completed in':'मध्ये पूर्ण झाले',
+  'forward to':'कडे पुढे पाठवा','ready for dispatch':'पाठवण्यासाठी तयार','Dept':'विभाग','Total Jobs':'एकूण कामे',
+  'No work recorded yet.':'अजून काम नोंदवलेले नाही.',
+  'Assignment:':'काम:','Material Used (Meters)':'वापरलेले कापड (मीटर)','Suggested from':'सुचवलेले —',
+  'Pieces Completed':'पूर्ण झालेले नग','Earnings = pieces × rate. Current rate for':'कमाई = नग × दर. सध्याचा दर',
+  'in':'साठी','Save & Calculate Earnings':'जतन करा व कमाई मोजा',
+  'Forward to':'पुढे पाठवा','Send to employee':'कर्मचाऱ्याला पाठवा','Quantity (pieces)':'प्रमाण (नग)',
+  // rate card (new page)
+  'Rate Card':'दर सूची','Set what each employee earns per piece, by item and by department. Changes apply to work logged from now on.':'प्रत्येक कर्मचाऱ्याला वस्तू व विभागानुसार प्रति नग किती मिळेल ते ठरवा. बदल आतापासून नोंदवलेल्या कामाला लागू होतील.',
+  'Save Changes':'बदल जतन करा','Vendor Rate (full making)':'व्हेंडर दर (संपूर्ण बनवणी)',
+  'Rates saved. New work will be calculated using the updated price list; already-completed jobs keep their original earnings.':'दर जतन केले. नवीन कामाला अद्ययावत दर लागू होईल; आधीच पूर्ण झालेल्या कामाची कमाई तशीच राहील.',
+};
+function tr(s){ return LANG==='mr' ? (T[s] || s) : s; }
+
+let state = {
+  employees: [
+    {id:'EMP-CUT-001', name:'Ganesh', dept:'cutting', type:'internal', active:true},
+    {id:'EMP-CUT-002', name:'Suresh', dept:'cutting', type:'internal', active:true},
+    {id:'EMP-STI-001', name:'Ramesh', dept:'stitching', type:'internal', active:true},
+    {id:'EMP-STI-002', name:'Nagesh', dept:'stitching', type:'internal', active:true},
+    {id:'EMP-KBV-001', name:'Aditya', dept:'kbv', type:'internal', active:true},
+    {id:'EMP-KBV-002', name:'Sandeep', dept:'kbv', type:'internal', active:true},
+    {id:'EMP-IRN-001', name:'Sumit', dept:'ironing', type:'internal', active:true},
+    {id:'EMP-IRN-002', name:'Saching', dept:'ironing', type:'internal', active:true},
+    {id:'EMP-PCK-001', name:'Karan', dept:'packing', type:'internal', active:true},
+    {id:'EMP-PCK-002', name:'Pavan', dept:'packing', type:'internal', active:true},
+    {id:'VEN-001', name:'Om Garments Vendor', dept:'vendor', type:'vendor', active:true},
+    {id:'VEN-002', name:'Shree Uniform Works', dept:'vendor', type:'vendor', active:true},
+  ],
+  batches: [],
+  assignments: [],
+  payments: {}, // employeeId -> {paid: number}
+  seq: {batch:0, assign:0},
+};
+
+function nextBatchId(){ state.seq.batch++; return 'B' + String(state.seq.batch).padStart(3,'0'); }
+function nextAssignId(){ state.seq.assign++; return 'WA-' + String(state.seq.assign).padStart(4,'0'); }
+function todayStr(offsetDays){
+  const d = new Date(); d.setDate(d.getDate() + (offsetDays||0));
+  return d.toISOString().slice(0,10);
+}
+function fmtDate(s){ const d=new Date(s+'T00:00:00'); return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
+function inr(n){ return '₹' + Math.round(n).toLocaleString('en-IN'); }
+function initials(name){ return name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+
+/* ---- seed a batch ---- */
+function addBatch(o){
+  const b = {
+    id: nextBatchId(), clothName:o.clothName, supplier:o.supplier, purchaseDate:o.purchaseDate,
+    billNo:o.billNo, pcs:o.pcs, meters:o.meters, ratePerMeter:o.ratePerMeter,
+    amount: Math.round(o.meters*o.ratePerMeter), paidAmount:o.paidAmount||0,
+    distributedM:0, imageUrl:o.imageUrl||null,
+  };
+  b.pendingAmount = b.amount - b.paidAmount;
+  state.batches.push(b);
+  return b;
+}
+function batchRemaining(b){ return +(b.meters - b.distributedM).toFixed(1); }
+
+/* ---- assignment lifecycle ----
+  status: 'in-progress' | 'completed' | 'ready'
+  dept 'vendor' bypasses chain
+*/
+function createAssignment(o){
+  const a = {
+    id: nextAssignId(), batchId:o.batchId, item:o.item, dept:o.dept, employeeId:o.employeeId,
+    qtyIn: o.qtyIn, unitIn: o.unitIn, // meters for cutting/vendor, pieces otherwise
+    dateAssigned: o.dateAssigned || todayStr(),
+    status:'in-progress',
+    materialUsed:null, piecesProduced:null, dateCompleted:null,
+    sourceAssignmentId:o.sourceAssignmentId || null,
+    earnings:0,
+    materialReturned:false, materialReturnDate:null,
+  };
+  state.assignments.push(a);
+  if(o.dept==='cutting' || o.dept==='vendor'){
+    const b = state.batches.find(x=>x.id===o.batchId);
+    if(b){ b.distributedM = +(b.distributedM + o.qtyIn).toFixed(1); }
+  }
+  return a;
+}
+function empEarn(a){
+  const item = ITEMS.find(i=>i.id===a.item);
+  if(!item || a.piecesProduced==null) return 0;
+  if(a.dept==='vendor') return a.piecesProduced * item.vendorRate;
+  return a.piecesProduced * (item.rates[a.dept]||0);
+}
+function submitProduction(assignId, materialUsed, piecesProduced){
+  const a = state.assignments.find(x=>x.id===assignId);
+  if(!a) return;
+  a.materialUsed = materialUsed;
+  a.piecesProduced = piecesProduced;
+  a.status='completed';
+  a.dateCompleted = todayStr();
+  a.earnings = empEarn(a);
+}
+function forwardAssignment(assignId, toEmployeeId, qty){
+  const a = state.assignments.find(x=>x.id===assignId);
+  if(!a) return;
+  const emp = state.employees.find(e=>e.id===toEmployeeId);
+  const dept = DEPTS.find(d=>d.id===a.dept);
+  a.status='forwarded';
+  const next = createAssignment({
+    batchId:a.batchId, item:a.item, dept:dept.next, employeeId:toEmployeeId,
+    qtyIn: qty, unitIn:'pieces', sourceAssignmentId:a.id
+  });
+  return next;
+}
+function markReady(assignId){
+  const a = state.assignments.find(x=>x.id===assignId);
+  a.status='ready';
+}
+function toggleMaterialReturn(assignId){
+  const a = state.assignments.find(x=>x.id===assignId);
+  if(!a) return;
+  a.materialReturned = true;
+  a.materialReturnDate = todayStr();
+  toast(`Leftover cloth submission recorded for ${state.employees.find(e=>e.id===a.employeeId).name}`);
+  render();
+}
+
+/* ============================================================
+   SEED DEMO DATA — Batch #001 full trace + a few live ones
+============================================================ */
+(function seed(){
+  const b1 = addBatch({clothName:'School Time Cloth', supplier:'Mahaveer Textiles', purchaseDate:todayStr(-9), billNo:'MH-2291', pcs:12, meters:248.8, ratePerMeter:65, paidAmount:16172});
+  const b2 = addBatch({clothName:'Oxford Blue Poly-Cotton', supplier:'Surya Suiting & Shirting', purchaseDate:todayStr(-6), billNo:'SS-1187', pcs:9, meters:180, ratePerMeter:72, paidAmount:9000});
+  const b3 = addBatch({clothName:'Navy Terry Wool', supplier:'Akem Industry', purchaseDate:todayStr(-4), billNo:'AK-5560', pcs:14, meters:210, ratePerMeter:110, paidAmount:0});
+  const b4 = addBatch({clothName:'Grey Check Uniform Fabric', supplier:'Ambika Suiting & Shirtings', purchaseDate:todayStr(-2), billNo:'AM-3342', pcs:10, meters:160, ratePerMeter:58, paidAmount:9280});
+
+  // --- full trace-through: Batch #001, Ganesh -> Ramesh -> Aditya -> Sumit -> Karan ---
+  const a1 = createAssignment({batchId:b1.id, item:'shirt', dept:'cutting', employeeId:'EMP-CUT-001', qtyIn:100, unitIn:'meters', dateAssigned:todayStr(-8)});
+  submitProduction(a1.id, 80, 8);
+  const a2 = forwardAssignment(a1.id, 'EMP-STI-001', 8);
+  submitProduction(a2.id, null, 6);
+  const a3 = forwardAssignment(a2.id, 'EMP-KBV-001', 6);
+  submitProduction(a3.id, null, 6);
+  const a4 = forwardAssignment(a3.id, 'EMP-IRN-001', 6);
+  submitProduction(a4.id, null, 6);
+  const a5 = forwardAssignment(a4.id, 'EMP-PCK-001', 6);
+  submitProduction(a5.id, null, 6);
+  markReady(a5.id);
+
+  // Suresh — cutting, in progress (returned pending)
+  const s1 = createAssignment({batchId:b1.id, item:'pant', dept:'cutting', employeeId:'EMP-CUT-002', qtyIn:50, unitIn:'meters', dateAssigned:todayStr(-3)});
+  submitProduction(s1.id, 45, 30);
+
+  // Nagesh — stitching in progress, not yet submitted
+  createAssignment({batchId:b2.id, item:'shirt', dept:'stitching', employeeId:'EMP-STI-002', qtyIn:14, unitIn:'pieces', dateAssigned:todayStr(-1)});
+
+  // Sandeep — kbv, completed, not yet forwarded
+  const k1 = createAssignment({batchId:b2.id, item:'shirt', dept:'kbv', employeeId:'EMP-KBV-002', qtyIn:10, unitIn:'pieces', dateAssigned:todayStr(-2)});
+  submitProduction(k1.id, null, 10);
+
+  // Saching — ironing, overdue-looking (assigned 4 days ago, still in progress)
+  createAssignment({batchId:b2.id, item:'pant', dept:'ironing', employeeId:'EMP-IRN-002', qtyIn:12, unitIn:'pieces', dateAssigned:todayStr(-4)});
+
+  // Pavan — packing, completed & ready
+  const p1 = createAssignment({batchId:b3.id, item:'skirt', dept:'packing', employeeId:'EMP-PCK-002', qtyIn:18, unitIn:'pieces', dateAssigned:todayStr(-2)});
+  submitProduction(p1.id, null, 18);
+  markReady(p1.id);
+
+  // Vendor flow — Om Garments given cloth directly, delivers finished pieces
+  const v1 = createAssignment({batchId:b3.id, item:'bandi', dept:'vendor', employeeId:'VEN-001', qtyIn:60, unitIn:'meters', dateAssigned:todayStr(-5)});
+  submitProduction(v1.id, 54, 62);
+  markReady(v1.id);
+
+  const v2 = createAssignment({batchId:b4.id, item:'grammer', dept:'vendor', employeeId:'VEN-002', qtyIn:40, unitIn:'meters', dateAssigned:todayStr(-1)});
+  // still in progress — nothing submitted
+
+  // A couple more cutting entries for realism
+  const g2 = createAssignment({batchId:b4.id, item:'grammer', dept:'cutting', employeeId:'EMP-CUT-001', qtyIn:38, unitIn:'meters', dateAssigned:todayStr(-1)});
+  submitProduction(g2.id, 34, 34);
+
+  // partial payments so Payments page has variety
+  state.payments['EMP-CUT-001'] = {paid: 300};
+  state.payments['EMP-STI-001'] = {paid: 50};
+  state.payments['VEN-001'] = {paid: 800};
+})();
+
+/* ============================================================
+   DERIVED / AGGREGATE HELPERS
+============================================================ */
+function empAssignments(empId){ return state.assignments.filter(a=>a.employeeId===empId); }
+function empTotals(empId){
+  const list = empAssignments(empId);
+  const earned = list.reduce((s,a)=>s+(a.earnings||0),0);
+  const paid = (state.payments[empId]||{}).paid || 0;
+  return {earned, paid, pending: Math.max(0,earned-paid), jobs:list.length};
+}
+function deptStats(deptId){
+  const list = state.assignments.filter(a=>a.dept===deptId);
+  const received = list.reduce((s,a)=> s + (a.unitIn==='pieces'? a.qtyIn : (a.piecesProduced||0)),0);
+  const completedList = list.filter(a=>a.status!=='in-progress');
+  const completed = completedList.reduce((s,a)=>s+(a.piecesProduced||0),0);
+  const pendingCount = list.filter(a=>a.status==='in-progress').length;
+  const employees = state.employees.filter(e=>e.dept===deptId);
+  return {list, received, completed, pendingCount, employeeCount: employees.length};
+}
+function totalRawMeters(){ return state.batches.reduce((s,b)=>s+b.meters,0); }
+function totalInventoryMeters(){ return +state.batches.reduce((s,b)=>s+batchRemaining(b),0).toFixed(1); }
+function materialWithEmployees(){
+  return +state.assignments.filter(a=>(a.dept==='cutting'||a.dept==='vendor') && a.status==='in-progress')
+    .reduce((s,a)=>s+a.qtyIn,0).toFixed(1);
+}
+function materialReturnPending(){
+  return +state.assignments.filter(a=>(a.dept==='cutting'||a.dept==='vendor') && a.status==='completed' && a.materialUsed!=null && !a.materialReturned)
+    .reduce((s,a)=>s+Math.max(0,a.qtyIn-a.materialUsed),0).toFixed(1);
+}
+function activeProductionCount(){ return state.assignments.filter(a=>a.status==='in-progress').length; }
+function completedTodayCount(){ return state.assignments.filter(a=>a.dateCompleted===todayStr()).length; }
+function totalPaymentsPending(){
+  let sum=0;
+  state.employees.forEach(e=>{ sum += empTotals(e.id).pending; });
+  return sum;
+}
+function activeEmployeeCount(){ return state.employees.filter(e=>e.active).length; }
+function readyForDeliveryCount(){ return state.assignments.filter(a=>a.status==='ready').reduce((s,a)=>s+(a.piecesProduced||0),0); }
+
+function attentionItems(){
+  const items = [];
+  state.assignments.filter(a=>(a.dept==='cutting'||a.dept==='vendor') && a.status==='completed' && !a.materialReturned).forEach(a=>{
+    const rem = a.qtyIn - a.materialUsed;
+    if(rem > 2){
+      const emp = state.employees.find(e=>e.id===a.employeeId);
+      items.push({level:'amber', text:`<b>${emp.name}</b> has ${rem.toFixed(1)} M cloth not yet submitted back`, tag:a.batchId});
+    }
+  });
+  state.assignments.filter(a=>a.status==='completed' && a.dept!=='packing').forEach(a=>{
+    const emp = state.employees.find(e=>e.id===a.employeeId);
+    items.push({level:'amber', text:`<b>${emp.name}</b> completed ${a.piecesProduced} ${itemName(a.item)} in ${deptName(a.dept)} — not yet forwarded`, tag:a.id});
+  });
+  state.assignments.filter(a=>a.status==='in-progress').forEach(a=>{
+    const days = Math.round((new Date(todayStr()) - new Date(a.dateAssigned)) / 86400000);
+    if(days >= 3){
+      const emp = state.employees.find(e=>e.id===a.employeeId);
+      items.push({level:'red', text:`<b>${emp.name}</b> has overdue work in ${deptName(a.dept)} — assigned ${days} days ago`, tag:a.id});
+    }
+  });
+  const pendingPay = totalPaymentsPending();
+  if(pendingPay>0) items.push({level:'amber', text:`${inr(pendingPay)} in employee payments pending across all departments`, tag:'payroll'});
+  state.batches.forEach(b=>{
+    if(batchRemaining(b) < 30) items.push({level:'red', text:`<b>${b.clothName}</b> (${b.id}) stock is running low — ${batchRemaining(b).toFixed(1)} M left`, tag:b.id});
+  });
+  return items;
+}
+
+/* ============================================================
+   ROUTER + NAV
+============================================================ */
+let currentRole = 'owner';
+let currentEmployeeView = null; // when role=employee
+let currentWorkspace = 'internal';
+
+const NAV = [
+  {group:'Overview', items:[
+    {id:'dashboard', label:'Dashboard', icon:'▦'},
+  ]},
+  {group:'Materials', items:[
+    {id:'materials', label:'Raw Material', icon:'▤'},
+  ]},
+  {group:'Workforce', items:[
+    {id:'employees', label:'Employees', icon:'◍'},
+    {id:'assign', label:'Assign Work', icon:'➜'},
+  ]},
+  {group:'Production', items:[
+    {id:'production', label:'Production Pipeline', icon:'⛓'},
+    ...DEPTS.map(d=>({id:'dept-'+d.id, label:d.name, icon:d.icon, dept:d.id})),
+  ]},
+  {group:'Finance', items:[
+    {id:'payments', label:'Salary & Payments', icon:'₹'},
+    {id:'ratecard', label:'Rate Card & Pricing', icon:'✎'},
+  ]},
+];
+const EMP_NAV = [
+  {group:'My Account', items:[
+    {id:'mypassbook', label:'My Passbook', icon:'▦'},
+  ]},
+];
+const EXTERNAL_NAV = [
+  {group:'External operations', items:[{id:'external-dashboard', label:'External Dashboard', icon:'↗'}]},
+];
+const CLIENT_NAV = [
+  {group:'Client workspace', items:[{id:'client-dashboard', label:'Client Dashboard', icon:'◌'}]},
+];
+
+function route(hash){
+  if(!hash) hash = currentRole==='employee' ? 'mypassbook' : 'dashboard';
+  window.location.hash = hash;
+}
+window.addEventListener('hashchange', render);
+
+function renderNav(){
+  const active = (window.location.hash||'#dashboard').slice(1);
+  const nav = currentWorkspace==='external' ? EXTERNAL_NAV : currentWorkspace==='client' ? CLIENT_NAV : (currentRole==='employee' ? EMP_NAV : NAV);
+  let html='';
+  nav.forEach(g=>{
+    html += `<div class="nav-group-label">${tr(g.group)}</div>`;
+    g.items.forEach(it=>{
+      const isActive = active===it.id || (it.id!=='dashboard' && active.startsWith(it.id));
+      html += `<div class="nav-link ${isActive?'active':''}" onclick="route('${it.id}')"><span class="nav-ico">${it.icon}</span>${it.dept ? deptName(it.dept) : tr(it.label)}</div>`;
+    });
+  });
+  document.getElementById('navlinks').innerHTML = html;
+  document.querySelectorAll('.workspace-tab').forEach(tab=>tab.classList.toggle('active', tab.dataset.workspace===currentWorkspace));
+  document.getElementById('langBtnEn').classList.toggle('active', LANG==='en');
+  document.getElementById('langBtnMr').classList.toggle('active', LANG==='mr');
+  document.querySelector('.searchbox input').placeholder = tr('Search employee, batch, order…');
+}
+
+function switchWorkspace(workspace){
+  currentWorkspace = workspace;
+  currentRole = 'owner';
+  globalSearchQuery = '';
+  const input = document.getElementById('globalSearch');
+  if(input) input.value = '';
+  route(workspace==='internal' ? 'dashboard' : `${workspace}-dashboard`);
+}
+
+function onRoleChange(v){
+  currentRole = v;
+  document.getElementById('roleAvatar').textContent = v==='owner'?'O': v==='ops'?'F':'E';
+  if(v==='employee'){
+    pickEmployeeThenGo();
+  } else {
+    route('dashboard');
+  }
+}
+function pickEmployeeThenGo(){
+  openModal(`
+    <div class="modal-head"><h3>View as employee</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field"><label>Choose employee</label>
+        <select id="pickEmp">${state.employees.filter(e=>e.type==='internal'||e.type==='vendor').map(e=>`<option value="${e.id}">${e.name} — ${e.type==='vendor'?'Vendor':deptName(e.dept)}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmPickEmployee()">Continue</button></div>
+  `);
+}
+function confirmPickEmployee(){
+  currentEmployeeView = document.getElementById('pickEmp').value;
+  closeModal();
+  route('mypassbook');
+}
+let globalSearchQuery = '';
+let searchReturnHash = 'dashboard';
+function onGlobalSearch(v){
+  globalSearchQuery = v.trim();
+  if(globalSearchQuery){
+    const currentHash = (window.location.hash||'#dashboard').slice(1);
+    if(currentHash !== 'search') searchReturnHash = currentHash;
+    if(currentHash !== 'search') route('search'); else render();
+  } else if((window.location.hash||'').slice(1) === 'search') {
+    route(searchReturnHash || 'dashboard');
+  }
+}
+
+function render(){
+  renderNav();
+  const hash = (window.location.hash||'#dashboard').slice(1);
+  const c = document.getElementById('content');
+  if(currentRole==='employee'){
+    c.innerHTML = viewEmployeeDetail(currentEmployeeView, true);
+    return;
+  }
+  if(hash==='search') c.innerHTML = viewSearch();
+  else if(hash==='external-dashboard') c.innerHTML = viewExternalDashboard();
+  else if(hash==='client-dashboard') c.innerHTML = viewClientDashboard();
+  else if(hash==='dashboard') c.innerHTML = viewDashboard();
+  else if(hash==='materials') c.innerHTML = viewMaterials();
+  else if(hash.startsWith('materials-')) c.innerHTML = viewBatchDetail(hash.replace('materials-',''));
+  else if(hash==='employees') c.innerHTML = viewEmployees();
+  else if(hash.startsWith('emp-')) c.innerHTML = viewEmployeeDetail(hash.replace('emp-',''), false);
+  else if(hash==='assign') c.innerHTML = viewAssignWork();
+  else if(hash==='production') c.innerHTML = viewProductionPipeline();
+  else if(hash.startsWith('dept-')) c.innerHTML = viewDepartment(hash.replace('dept-',''));
+  else if(hash==='payments') c.innerHTML = viewPayments();
+  else if(hash==='ratecard') c.innerHTML = viewRateCard();
+  else c.innerHTML = viewDashboard();
+}
+
+function selectSearchResult(destination){
+  globalSearchQuery = '';
+  const input = document.getElementById('globalSearch');
+  if(input) input.value = '';
+  route(destination);
+}
+
+function viewSearch(){
+  const query = globalSearchQuery.toLowerCase();
+  const matches = [];
+  const add = (type, title, detail, destination, value) => {
+    if(value.toLowerCase().includes(query)) matches.push({type, title, detail, destination});
+  };
+
+  state.employees.forEach(e => add(
+    'Employee', e.name, `${e.id} · ${e.type==='vendor' ? 'Vendor' : deptName(e.dept)}`, `emp-${e.id}`,
+    `${e.name} ${e.id} ${e.type} ${deptName(e.dept)}`
+  ));
+  state.batches.forEach(b => add(
+    'Raw material', `${b.id} — ${b.clothName}`, `${b.supplier} · Bill ${b.billNo}`, `materials-${b.id}`,
+    `${b.id} ${b.clothName} ${b.supplier} ${b.billNo}`
+  ));
+  state.assignments.forEach(a => {
+    const employee = state.employees.find(e => e.id===a.employeeId);
+    add('Work order', `${a.id} — ${itemName(a.item)}`, `${a.batchId} · ${employee ? employee.name : deptName(a.dept)} · ${a.status}`, `dept-${a.dept}`,
+      `${a.id} ${a.batchId} ${itemName(a.item)} ${deptName(a.dept)} ${employee ? employee.name : ''} ${a.status}`);
+  });
+  NAV.flatMap(group => group.items).forEach(item => add(
+    'Page', item.dept ? deptName(item.dept) : item.label, 'Open this section', item.id,
+    `${item.label} ${item.dept ? deptName(item.dept) : ''} ${item.group || ''}`
+  ));
+
+  const results = matches.slice(0, 30).map(result => `
+    <button class="search-result" onclick="selectSearchResult('${result.destination}')">
+      <div class="search-result-type">${result.type}</div>
+      <div class="search-result-title">${result.title}</div>
+      <div class="search-result-detail">${result.detail}</div>
+    </button>`).join('');
+  return `<div class="page-head"><div><h1 class="page-title">Search results</h1><p class="page-sub">Results for “${globalSearchQuery}”</p></div></div>
+    <div class="search-results">${results || `<div class="panel panel-pad empty">No results found. Try an employee name, batch ID, supplier, item, work-order ID, or page name.</div>`}</div>`;
+}
+
+/* ============================================================
+   MODAL + TOAST HELPERS
+============================================================ */
+function openModal(html){
+  document.getElementById('modalRoot').innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="modal">${html}</div></div>`;
+}
+function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+/* ============================================================
+   VIEW: EXTERNAL AGENTS
+============================================================ */
+function viewExternalDashboard(){
+  const jobs = state.assignments.filter(a=>a.dept==='vendor').slice().reverse();
+  const clothIssued = jobs.reduce((sum,a)=>sum+a.qtyIn,0);
+  const clothUsed = jobs.reduce((sum,a)=>sum+(a.materialUsed||0),0);
+  const finalised = jobs.reduce((sum,a)=>sum+(a.earnings||0),0);
+  const rows = jobs.map(a=>{
+    const agent = state.employees.find(e=>e.id===a.employeeId);
+    const status = a.status==='in-progress' ? '<span class="badge badge-amber">In progress</span>' : '<span class="badge badge-green">Finalised</span>';
+    return `<tr>
+      <td><span class="tbl-name">${agent ? agent.name : 'External agent'}</span><br><span class="tbl-sub mono">${a.id}</span></td>
+      <td><span class="tbl-name mono">${a.batchId}</span><br><span class="tbl-sub">${itemName(a.item)}</span></td>
+      <td>${a.qtyIn} M</td>
+      <td>${a.materialUsed!=null ? `${a.materialUsed} M` : 'Not submitted'}</td>
+      <td>${a.piecesProduced!=null ? `${a.piecesProduced} pcs` : 'Awaiting completion'}</td>
+      <td>${a.earnings ? inr(a.earnings) : 'Not finalised'}</td>
+      <td>${status}</td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="page-head">
+    <div><h1 class="page-title">External Dashboard</h1><p class="page-sub">Cloth issued to external agents, production progress, and finalised amounts.</p></div>
+    <button class="btn btn-primary" onclick="route('assign')">Assign external work</button>
+  </div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px;">
+    <div class="kpi-card"><div class="kpi-label">External agents</div><div class="kpi-value">${state.employees.filter(e=>e.type==='vendor').length}</div><div class="kpi-delta flat">Active partners</div></div>
+    <div class="kpi-card"><div class="kpi-label">Cloth issued</div><div class="kpi-value">${clothIssued.toFixed(1)}<span class="unit">M</span></div><div class="kpi-delta flat">Across external work</div></div>
+    <div class="kpi-card"><div class="kpi-label">Cloth used</div><div class="kpi-value">${clothUsed.toFixed(1)}<span class="unit">M</span></div><div class="kpi-delta up">Reported by agents</div></div>
+    <div class="kpi-card"><div class="kpi-label">Finalised amount</div><div class="kpi-value">${inr(finalised)}</div><div class="kpi-delta warn">Completed external work</div></div>
+  </div>
+  <div class="panel"><div style="overflow-x:auto;"><table>
+    <tr><th>External agent</th><th>Batch & item</th><th>Cloth taken</th><th>Cloth used</th><th>Finished quantity</th><th>Final amount</th><th>Status</th></tr>
+    ${rows || '<tr><td colspan="7" class="empty">No external work has been assigned yet.</td></tr>'}
+  </table></div></div>`;
+}
+
+/* ============================================================
+   VIEW: CLIENT DASHBOARD
+============================================================ */
+function viewClientDashboard(){
+  return `
+  <div class="page-head"><div><h1 class="page-title">Client Dashboard</h1><p class="page-sub">A dedicated workspace for client information and follow-up.</p></div></div>
+  <div class="panel panel-pad client-empty-state">
+    <div class="client-empty-icon">C</div>
+    <h2 class="section-title" style="margin:0;">Client workspace is ready</h2>
+    <p class="page-sub">Client records, orders, communications, and delivery details can be added here when you are ready.</p>
+  </div>`;
+}
+
+/* ============================================================
+   VIEW: DASHBOARD
+============================================================ */
+function viewDashboard(){
+  const alerts = attentionItems().slice(0,7);
+  const deptCards = DEPTS.map(d=>{
+    const st = deptStats(d.id);
+    const pct = st.received>0 ? Math.round((st.completed/st.received)*100) : 0;
+    return `<div class="dept-card" onclick="route('dept-${d.id}')">
+      <div class="ic">${d.icon}</div>
+      <h4>${deptName(d.id)}</h4>
+      <div class="sub">${st.employeeCount} ${tr('employees')}</div>
+      <div class="bar-wrap"><div class="bar" style="width:${Math.min(pct,100)}%"></div></div>
+      <div class="stat"><span>${st.pendingCount} ${tr('active job(s)')}</span><span>${pct}% ${tr('done')}</span></div>
+    </div>`;
+  }).join('');
+
+  const topEmployees = state.employees.filter(e=>e.type!=='vendor').slice(0,6).map(e=>{
+    const t = empTotals(e.id);
+    const list = empAssignments(e.id);
+    const current = list.filter(a=>a.status==='in-progress')[0];
+    return `<tr class="row-click" onclick="route('emp-${e.id}')">
+      <td><span class="tbl-name">${e.name}</span><br><span class="tbl-sub">${e.id}</span></td>
+      <td>${deptName(e.dept)}</td>
+      <td>${current? itemName(current.item)+' · '+current.qtyIn+(current.unitIn==='meters'?' M':' pcs') : '—'}</td>
+      <td>${list.filter(a=>a.status!=='in-progress').reduce((s,a)=>s+(a.piecesProduced||0),0)} pcs</td>
+      <td>${inr(t.earned)}</td>
+      <td>${t.pending>0?`<span class="badge badge-amber">${inr(t.pending)} due</span>`:`<span class="badge badge-green">Settled</span>`}</td>
+    </tr>`; // NOTE: variable name 't' here shadows the translate fn inside this map — status text kept in English to avoid breaking tr()
+  }).join('');
+
+  return `
+  <div class="page-head">
+    <div><h1 class="page-title">${tr('Owner Dashboard')}</h1><p class="page-sub">${tr('Complete production, material & workforce control')}</p></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" onclick="route('ratecard')">${tr('✎ Manage Prices')}</button>
+      <button class="btn btn-ghost" onclick="route('materials')">${tr('＋ Raw Material')}</button>
+      <button class="btn btn-primary" onclick="route('assign')">${tr('＋ Assign Work')}</button>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">${tr('Total Raw Material Purchased')}</div><div class="kpi-value">${totalRawMeters().toFixed(1)}<span class="unit">M</span></div><div class="kpi-delta flat">${state.batches.length} ${tr('batches')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Current Inventory')}</div><div class="kpi-value">${totalInventoryMeters()}<span class="unit">M</span></div><div class="kpi-delta up">${tr('Ready to distribute')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Material With Employees')}</div><div class="kpi-value">${materialWithEmployees()}<span class="unit">M</span></div><div class="kpi-delta warn">${tr('In active production')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Material Return Pending')}</div><div class="kpi-value">${materialReturnPending()}<span class="unit">M</span></div><div class="kpi-delta warn">${tr('Needs follow-up')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Active Production Jobs')}</div><div class="kpi-value">${activeProductionCount()}</div><div class="kpi-delta flat">${tr('Across 5 departments')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Ready for Delivery')}</div><div class="kpi-value">${readyForDeliveryCount()}<span class="unit">pcs</span></div><div class="kpi-delta up">${tr('Packed & finished')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Payments Pending')}</div><div class="kpi-value">${inr(totalPaymentsPending())}</div><div class="kpi-delta warn">${tr('Owed to workforce')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Active Employees')}</div><div class="kpi-value">${activeEmployeeCount()}</div><div class="kpi-delta flat">${tr('Internal + vendor')}</div></div>
+  </div>
+
+  <div class="two-col" style="margin-top:22px;">
+    <div class="panel panel-pad">
+      <h2 class="section-title" style="margin-top:0;">${tr('⚠ What needs my attention')}</h2>
+      ${alerts.length? alerts.map(a=>`<div class="alert-row"><div class="alert-dot ${a.level}"></div><div class="alert-text">${a.text}</div><div class="alert-tag mono">${a.tag}</div></div>`).join('') : `<div class="empty">${tr('All clear — nothing needs attention right now.')}</div>`}
+    </div>
+    <div class="panel panel-pad">
+      <h2 class="section-title" style="margin-top:0;">${tr('Suppliers')}</h2>
+      ${SUPPLIERS.map(s=>{
+        const total = state.batches.filter(b=>b.supplier===s).reduce((sum,b)=>sum+b.meters,0);
+        return `<div class="alert-row"><div class="alert-text">${s}</div><div class="tbl-sub">${total.toFixed(0)} ${tr('sourced')}</div></div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <h2 class="section-title">${tr('Department overview')}</h2>
+  <div class="dept-grid">${deptCards}</div>
+
+  <h2 class="section-title">${tr('Employee productivity')} <span class="badge badge-sky" style="font-weight:600;">${tr('live')}</span></h2>
+  <div class="panel">
+    <table>
+      <tr><th>${tr('Employee')}</th><th>${tr('Department')}</th><th>${tr('Current work')}</th><th>${tr('Units completed')}</th><th>${tr('Earned')}</th><th>${tr('Payment')}</th></tr>
+      ${topEmployees}
+    </table>
+  </div>
+  `;
+}
+
+/* ============================================================
+   VIEW: RAW MATERIAL
+============================================================ */
+function viewMaterials(){
+  const rows = state.batches.slice().reverse().map(b=>{
+    const rem = batchRemaining(b);
+    const status = b.pendingAmount<=0 ? `<span class="badge badge-green">${tr('Paid')}</span>` : `<span class="badge badge-amber">${inr(b.pendingAmount)} ${tr('pending')}</span>`;
+    const thumb = b.imageUrl ? `<img class="cloth-thumb" src="${b.imageUrl}">` : `<span class="cloth-thumb-empty">—</span>`;
+    return `<tr>
+      <td>${thumb}</td>
+      <td class="row-click" onclick="route('materials-${b.id}')"><span class="tbl-name mono">${b.id}</span></td>
+      <td>${fmtDate(b.purchaseDate)}</td>
+      <td class="mono">${b.billNo}</td>
+      <td>${b.supplier}</td>
+      <td>${b.clothName}</td>
+      <td>${b.meters} M</td>
+      <td>₹${b.ratePerMeter}/M</td>
+      <td>${inr(b.amount)}</td>
+      <td>${status}</td>
+      <td><span class="badge ${rem<30?'badge-red':'badge-grey'}">${rem.toFixed(1)} M ${tr('left')}</span></td>
+    </tr>`;
+  }).join('');
+
+  return `
+  <div class="page-head">
+    <div><h1 class="page-title">${tr('Raw Material')}</h1><p class="page-sub">${tr('Purchases, batch ledgers and current cloth stock')}</p></div>
+    <button class="btn btn-primary" onclick="openAddBatchModal()">${tr('＋ New Raw Material Entry')}</button>
+  </div>
+
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:22px;">
+    <div class="kpi-card"><div class="kpi-label">${tr('Total Purchased')}</div><div class="kpi-value">${totalRawMeters().toFixed(1)}<span class="unit">M</span></div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Distributed')}</div><div class="kpi-value">${state.batches.reduce((s,b)=>s+b.distributedM,0).toFixed(1)}<span class="unit">M</span></div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Current Stock')}</div><div class="kpi-value">${totalInventoryMeters()}<span class="unit">M</span></div></div>
+  </div>
+
+  <div class="panel">
+    <table>
+      <tr><th>${tr('Photo')}</th><th>${tr('Batch')}</th><th>${tr('Purchase Date')}</th><th>${tr('Bill No')}</th><th>${tr('Supplier')}</th><th>${tr('Cloth')}</th><th>${tr('Meters')}</th><th>${tr('Rate')}</th><th>${tr('Amount')}</th><th>${tr('Payment ')}</th><th>${tr('Stock')}</th></tr>
+      ${rows || `<tr><td colspan="11" class="empty">${tr('No purchases yet.')}</td></tr>`}
+    </table>
+  </div>`;
+}
+
+let pendingBatchImage = null;
+function openAddBatchModal(){
+  pendingBatchImage = null;
+  openModal(`
+    <div class="modal-head"><h3>${tr('New Raw Material Entry')}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field"><label>${tr('Purchase Date')}</label><input type="date" id="f_date" value="${todayStr()}"></div>
+        <div class="field"><label>${tr('Bill Number')}</label><input id="f_bill" placeholder="e.g. MH-2298"></div>
+      </div>
+      <div class="field"><label>${tr('Purchased From')}</label>
+        <select id="f_supplier">${SUPPLIERS.map(s=>`<option>${s}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>${tr('Cloth Name / Description')}</label><input id="f_cloth" placeholder="e.g. Sky Blue Poplin"></div>
+      <div class="field-row">
+        <div class="field"><label>${tr('Pieces (rolls)')}</label><input type="number" id="f_pcs" value="10"></div>
+        <div class="field"><label>${tr('Total Meters')}</label><input type="number" id="f_meters" value="200"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>${tr('Rate per Meter (₹)')}</label><input type="number" id="f_rate" value="65"></div>
+        <div class="field"><label>${tr('Amount Paid Now (₹)')}</label><input type="number" id="f_paid" value="0"></div>
+      </div>
+      <div class="field">
+        <label>${tr('Cloth Photo (optional)')}</label>
+        <div class="upload-row">
+          <div id="imgPreviewWrap"><div class="upload-preview-empty">📷</div></div>
+          <label class="upload-btn" id="uploadBtnLabel">
+            📷 ${tr('Add Photo')}
+            <input type="file" accept="image/*" style="display:none;" id="f_image" onchange="handleBatchImageSelect(this)">
+          </label>
+        </div>
+        <div class="hint">${tr('Upload a photo of this cloth roll or bill for easy identification later.')}</div>
+      </div>
+      <div class="hint">${tr('A unique batch number will be generated automatically and this stock becomes available for distribution immediately.')}</div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">${tr('Cancel')}</button>
+      <button class="btn btn-primary" onclick="submitAddBatch()">${tr('Save Purchase')}</button></div>
+  `);
+}
+function handleBatchImageSelect(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    pendingBatchImage = e.target.result;
+    document.getElementById('imgPreviewWrap').innerHTML = `<img class="upload-preview" src="${pendingBatchImage}">`;
+    document.getElementById('uploadBtnLabel').innerHTML = `📷 ${tr('Change Photo')}<input type="file" accept="image/*" style="display:none;" id="f_image" onchange="handleBatchImageSelect(this)">`;
+  };
+  reader.readAsDataURL(file);
+}
+function submitAddBatch(){
+  const meters = parseFloat(document.getElementById('f_meters').value)||0;
+  const rate = parseFloat(document.getElementById('f_rate').value)||0;
+  const b = addBatch({
+    clothName: document.getElementById('f_cloth').value || 'Unnamed Cloth',
+    supplier: document.getElementById('f_supplier').value,
+    purchaseDate: document.getElementById('f_date').value,
+    billNo: document.getElementById('f_bill').value || '—',
+    pcs: parseFloat(document.getElementById('f_pcs').value)||0,
+    meters, ratePerMeter: rate,
+    paidAmount: parseFloat(document.getElementById('f_paid').value)||0,
+    imageUrl: pendingBatchImage,
+  });
+  closeModal();
+  toast(`Batch ${b.id} added — ${meters} M added to inventory`);
+  render();
+}
+
+function viewBatchDetail(id){
+  const b = state.batches.find(x=>x.id===id);
+  if(!b) return '<div class="empty">Batch not found.</div>';
+  const related = state.assignments.filter(a=>a.batchId===id && (a.dept==='cutting'||a.dept==='vendor'));
+  const used = related.reduce((s,a)=>s+(a.materialUsed||0),0);
+  const returned = related.reduce((s,a)=> s + (a.materialUsed!=null? Math.max(0,a.qtyIn-a.materialUsed)*0 : 0),0); // returns tracked as pending below
+  const rows = related.map(a=>{
+    const emp = state.employees.find(e=>e.id===a.employeeId);
+    const rem = a.materialUsed!=null? Math.max(0,a.qtyIn-a.materialUsed) : null;
+    return `<tr class="row-click" onclick="route('emp-${a.employeeId}')">
+      <td><span class="tbl-name">${emp.name}</span><br><span class="tbl-sub">${emp.id}</span></td>
+      <td>${itemName(a.item)}</td>
+      <td>${a.qtyIn} M</td>
+      <td>${a.materialUsed??'—'} ${a.materialUsed!=null?'M':''}</td>
+      <td>${rem!=null? rem.toFixed(1)+' M':'—'}</td>
+      <td>${a.status==='in-progress'?'<span class="badge badge-sky">In progress</span>': rem>0?'<span class="badge badge-amber">Return pending</span>':'<span class="badge badge-green">Settled</span>'}</td>
+    </tr>`;
+  }).join('');
+  return `
+  <div class="page-head">
+    <div><h1 class="page-title">${tr('Batch')} ${b.id} — ${tr('Cloth Ledger')}</h1><p class="page-sub">${b.clothName} · ${tr('from')} ${b.supplier}</p></div>
+    <button class="btn btn-ghost" onclick="route('materials')">${tr('← Back to Raw Material')}</button>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">${tr('Purchased')}</div><div class="kpi-value">${b.meters}<span class="unit">M</span></div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Distributed')}</div><div class="kpi-value">${b.distributedM}<span class="unit">M</span></div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Used')}</div><div class="kpi-value">${used.toFixed(1)}<span class="unit">M</span></div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Remaining Stock')}</div><div class="kpi-value">${batchRemaining(b)}<span class="unit">M</span></div></div>
+  </div>
+  <h2 class="section-title">${tr('Purchase details')}</h2>
+  <div class="panel panel-pad" style="display:flex;gap:22px;align-items:flex-start;">
+    ${b.imageUrl ? `<img src="${b.imageUrl}" style="width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex-shrink:0;">` : `<div class="upload-preview-empty" style="width:96px;height:96px;font-size:28px;">📷</div>`}
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;flex:1;">
+      <div><div class="tbl-sub">${tr('Bill No')}</div><div class="tbl-name mono">${b.billNo}</div></div>
+      <div><div class="tbl-sub">${tr('Purchase Date ')}</div><div class="tbl-name">${fmtDate(b.purchaseDate)}</div></div>
+      <div><div class="tbl-sub">${tr('Rate / Meter')}</div><div class="tbl-name">₹${b.ratePerMeter}</div></div>
+      <div><div class="tbl-sub">${tr('Total Amount')}</div><div class="tbl-name">${inr(b.amount)}</div></div>
+      <div><div class="tbl-sub">${tr('Paid')}</div><div class="tbl-name">${inr(b.paidAmount)}</div></div>
+      <div><div class="tbl-sub">${tr('Pending')}</div><div class="tbl-name">${inr(b.pendingAmount)}</div></div>
+    </div>
+  </div>
+  <h2 class="section-title">${tr('Distributed to')}</h2>
+  <div class="panel">
+    <table><tr><th>${tr('Employee')}</th><th>${tr('Item')}</th><th>${tr('Assigned')}</th><th>${tr('Used')}</th><th>${tr('Remaining')}</th><th>${tr('Status')}</th></tr>
+    ${rows || `<tr><td colspan="6" class="empty">${tr('Not yet distributed to anyone.')}</td></tr>`}</table>
+  </div>`;
+}
+
+/* ============================================================
+   VIEW: EMPLOYEES DIRECTORY
+============================================================ */
+function viewEmployees(){
+  const cards = state.employees.map(e=>{
+    const t = empTotals(e.id);
+    const list = empAssignments(e.id);
+    const active = list.filter(a=>a.status==='in-progress').length;
+    return `<div class="emp-card" onclick="route('emp-${e.id}')">
+      <div class="emp-top">
+        <div class="emp-avatar">${initials(e.name)}</div>
+        <div>
+          <div class="emp-name">${e.name}</div>
+          <div class="emp-role">${e.type==='vendor'?'Vendor':deptName(e.dept)} · <span class="mono">${e.id}</span></div>
+        </div>
+      </div>
+      <div class="emp-stats">
+        <div class="emp-stat"><div class="l">${tr('Active jobs')}</div><div class="v">${active}</div></div>
+        <div class="emp-stat"><div class="l">${tr('Total earned')}</div><div class="v">${inr(t.earned)}</div></div>
+        <div class="emp-stat"><div class="l">${tr('Paid')}</div><div class="v">${inr(t.paid)}</div></div>
+        <div class="emp-stat"><div class="l">${tr('Pending')}</div><div class="v" style="color:${t.pending>0?'var(--amber)':'var(--green)'}">${inr(t.pending)}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+  <div class="page-head">
+    <div><h1 class="page-title">${tr('Employees & Vendors')}</h1><p class="page-sub">${state.employees.length} ${tr('accounts · internal workforce and outsourced vendors')}</p></div>
+    <button class="btn btn-primary" onclick="openAddEmployeeModal()">${tr('＋ Add Employee')}</button>
+  </div>
+  <div class="pill-nav">
+    <div class="pill active">${tr('All')} (${state.employees.length})</div>
+    <div class="pill">${tr('Internal')} (${state.employees.filter(e=>e.type==='internal').length})</div>
+    <div class="pill">${tr('Vendors')} (${state.employees.filter(e=>e.type==='vendor').length})</div>
+  </div>
+  <div class="card-grid">${cards}</div>`;
+}
+function openAddEmployeeModal(){
+  openModal(`
+    <div class="modal-head"><h3>${tr('Add Employee / Vendor')}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field"><label>${tr('Full Name')}</label><input id="f_name" placeholder="e.g. Vikram"></div>
+      <div class="field"><label>${tr('Type')}</label>
+        <select id="f_type" onchange="document.getElementById('deptField').style.display=this.value==='vendor'?'none':'block'">
+          <option value="internal">${tr('Internal Employee')}</option>
+          <option value="vendor">${tr('Vendor')}</option>
+        </select>
+      </div>
+      <div class="field" id="deptField"><label>${tr('Department')}</label>
+        <select id="f_dept">${DEPTS.map(d=>`<option value="${d.id}">${deptName(d.id)}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">${tr('Cancel')}</button>
+      <button class="btn btn-primary" onclick="submitAddEmployee()">${tr('Create Account')}</button></div>
+  `);
+}
+function submitAddEmployee(){
+  const type = document.getElementById('f_type').value;
+  const dept = type==='vendor' ? 'vendor' : document.getElementById('f_dept').value;
+  const prefix = type==='vendor' ? 'VEN' : 'EMP-'+dept.slice(0,3).toUpperCase();
+  const count = state.employees.filter(e=> type==='vendor'? e.type==='vendor' : e.dept===dept).length + 1;
+  const id = type==='vendor' ? `VEN-${String(count).padStart(3,'0')}` : `${prefix}-${String(count).padStart(3,'0')}`;
+  state.employees.push({id, name: document.getElementById('f_name').value || 'New Employee', dept, type, active:true});
+  closeModal();
+  toast(`Account ${id} created`);
+  route('employees');
+}
+
+/* ============================================================
+   VIEW: EMPLOYEE PASSBOOK
+============================================================ */
+function viewEmployeeDetail(id, isSelf){
+  const e = state.employees.find(x=>x.id===id);
+  if(!e) return '<div class="empty">Employee not found.</div>';
+  const list = empAssignments(id).slice().reverse();
+  const t = empTotals(id);
+  const rows = list.map(a=>{
+    const item = ITEMS.find(i=>i.id===a.item);
+    const rate = a.dept==='vendor'? item.vendorRate : item.rates[a.dept];
+    const statusBadge = a.status==='in-progress' ? '<span class="badge badge-sky">In progress</span>'
+      : a.status==='forwarded' ? '<span class="badge badge-grey">Forwarded</span>'
+      : a.status==='ready' ? '<span class="badge badge-green">Ready</span>'
+      : '<span class="badge badge-amber">Awaiting forward</span>';
+    return `<tr>
+      <td>${fmtDate(a.dateAssigned)}</td>
+      <td><span class="mono tbl-sub">${a.batchId}</span></td>
+      <td>${itemName(a.item)}</td>
+      <td>${deptName(a.dept)}</td>
+      <td>${a.qtyIn} ${a.unitIn==='meters'?'M':'pcs'}</td>
+      <td>${a.piecesProduced ?? '—'}</td>
+      <td>₹${rate}/pc</td>
+      <td>${inr(a.earnings||0)}</td>
+      <td>${statusBadge}</td>
+    </tr>`;
+  }).join('');
+
+  const timeline = list.slice(0,8).map(a=>{
+    let text = `Received ${a.qtyIn} ${a.unitIn==='meters'?'M':'pcs'} of ${itemName(a.item)} for ${deptName(a.dept)}`;
+    if(a.status!=='in-progress') text = `Completed ${a.piecesProduced} ${itemName(a.item)} · earned ${inr(a.earnings)}`;
+    return `<div class="tl-item"><div class="tl-date">${fmtDate(a.dateCompleted||a.dateAssigned)}</div><div class="tl-text">${text}</div></div>`;
+  }).join('');
+
+  const activeJob = list.find(a=>a.status==='in-progress');
+  const forwardableJobs = list.filter(a=>a.status==='completed' && DEPTS.find(d=>d.id===a.dept)?.next);
+  const readyJobs = list.filter(a=>a.status==='completed' && a.dept==='packing');
+
+  return `
+  <div class="page-head">
+    ${isSelf? '' : `<div><h1 class="page-title">${tr('Employee Profile')}</h1><p class="page-sub">${tr('Bank-style account of work, material and earnings')}</p></div>`}
+    ${isSelf? '' : `<button class="btn btn-ghost" onclick="route('employees')">${tr('← Back to Employees')}</button>`}
+  </div>
+  ${isSelf? `<p class="page-sub" style="margin-bottom:16px;">${e.name.split(' ')[0]} — here's your account.</p>`:''}
+
+  <div class="passbook-head">
+    <div class="passbook-id">
+      <div class="name">${e.name}</div>
+      <div class="code mono">${e.id}</div>
+      <div class="tags">
+        <span class="badge" style="background:rgba(255,255,255,.12);color:#fff;">${e.type==='vendor'?tr('Vendor'):deptName(e.dept)}</span>
+        <span class="badge" style="background:rgba(255,255,255,.12);color:#fff;">${e.active?tr('Active'):tr('Inactive')}</span>
+      </div>
+    </div>
+    <div class="summary-strip" style="flex:1.4;">
+      <div class="strip-card"><div class="l">${tr('Total Earned')}</div><div class="v">${inr(t.earned)}</div></div>
+      <div class="strip-card"><div class="l">${tr('Paid')}</div><div class="v">${inr(t.paid)}</div></div>
+      <div class="strip-card"><div class="l">${tr('Pending')}</div><div class="v" style="color:var(--amber)">${inr(t.pending)}</div></div>
+      <div class="strip-card"><div class="l">${tr('Total Jobs')}</div><div class="v">${t.jobs}</div></div>
+    </div>
+  </div>
+
+  ${!isSelf ? `<h2 class="section-title">${tr("Log today's production")}</h2>
+  <div class="panel panel-pad">
+    ${activeJob ? `
+      <p style="font-size:13px;margin-bottom:12px;">${tr('Current assignment:')} <b>${activeJob.qtyIn} ${activeJob.unitIn==='meters'?'M':'pcs'} ${tr('of')} ${itemName(activeJob.item)}</b> ${tr('for')} <b>${deptName(activeJob.dept)}</b> (${tr('Batch')} ${activeJob.batchId}) — ${tr('assigned')} ${fmtDate(activeJob.dateAssigned)}</p>
+      <button class="btn btn-primary btn-sm" onclick="openSubmitProductionModal('${activeJob.id}')">${tr('Submit Completed Work')}</button>
+    ` : `<div class="empty">${tr('No active assignment right now. Use “Assign Work” to give this employee a new job.')}</div>`}
+  </div>` : (activeJob ? `
+  <h2 class="section-title">${tr('My current work')}</h2>
+  <div class="panel panel-pad">
+    <p style="font-size:13px;margin-bottom:12px;">${tr('You have')} <b>${activeJob.qtyIn} ${activeJob.unitIn==='meters'?'M':'pcs'} ${tr('of')} ${itemName(activeJob.item)}</b> ${tr('assigned for')} <b>${deptName(activeJob.dept)}</b> · ${tr('Batch')} ${activeJob.batchId}</p>
+    <button class="btn btn-primary btn-sm" onclick="openSubmitProductionModal('${activeJob.id}')">${tr('Submit My Completed Work')}</button>
+  </div>` : '')}
+
+  ${forwardableJobs.length ? `
+  <h2 class="section-title">${tr('Ready to forward')}</h2>
+  <div class="panel panel-pad">
+    ${forwardableJobs.map(a=>`<div class="alert-row"><div class="alert-text">${a.piecesProduced} ${itemName(a.item)} ${tr('completed in')} ${deptName(a.dept)} → ${tr('forward to')} <b>${deptName(DEPTS.find(d=>d.id===a.dept).next)}</b></div>
+    <button class="btn btn-ghost btn-sm" onclick="openForwardModal('${a.id}')">${tr('Forward')}</button></div>`).join('')}
+  </div>` : ''}
+
+  ${readyJobs.length ? `
+  <h2 class="section-title">${tr('Packed & ready for delivery')}</h2>
+  <div class="panel panel-pad">
+    ${readyJobs.map(a=>`<div class="alert-row"><div class="alert-dot" style="background:var(--green)"></div><div class="alert-text">${a.piecesProduced} ${itemName(a.item)} — ${tr('Batch')} ${a.batchId} — ${tr('ready for dispatch')}</div></div>`).join('')}
+  </div>` : ''}
+
+  <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:26px;">
+    <div>
+      <h2 class="section-title" style="margin-top:0;">${tr('Work & material ledger')}</h2>
+      <div class="panel"><div style="overflow-x:auto;">
+        <table><tr><th>${tr('Date')}</th><th>${tr('Batch')}</th><th>${tr('Item')}</th><th>${tr('Dept')}</th><th>${tr('Received')}</th><th>${tr('Produced')}</th><th>${tr('Rate')}</th><th>${tr('Earned')}</th><th>${tr('Status')}</th></tr>
+        ${rows || `<tr><td colspan="9" class="empty">${tr('No work recorded yet.')}</td></tr>`}</table>
+      </div></div>
+    </div>
+    <div>
+      <h2 class="section-title" style="margin-top:0;">${tr('Timeline')}</h2>
+      <div class="panel panel-pad"><div class="timeline">${timeline || `<div class="empty">${tr('Nothing yet.')}</div>`}</div></div>
+    </div>
+  </div>
+  `;
+}
+
+function openSubmitProductionModal(assignId){
+  const a = state.assignments.find(x=>x.id===assignId);
+  const item = ITEMS.find(i=>i.id===a.item);
+  const isCuttingOrVendor = a.dept==='cutting' || a.dept==='vendor';
+  const suggestedUse = isCuttingOrVendor ? (a.qtyIn * 0.85).toFixed(1) : null;
+  openModal(`
+    <div class="modal-head"><h3>${tr('Submit Completed Work')}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <p class="hint" style="margin-bottom:14px;">${tr('Assignment:')} ${a.qtyIn} ${a.unitIn==='meters'?'M':'pcs'} ${tr('of')} ${itemName(a.item)} · ${deptName(a.dept)} · ${tr('Batch')} ${a.batchId}</p>
+      ${isCuttingOrVendor ? `<div class="field"><label>${tr('Material Used (Meters)')}</label><input type="number" id="f_used" value="${suggestedUse}"><div class="hint">${tr('Suggested from')} ${item.clothPerPc} M/piece average — edit to actual.</div></div>` : ''}
+      <div class="field"><label>${tr('Pieces Completed')}</label><input type="number" id="f_pieces" value="${isCuttingOrVendor? Math.round(a.qtyIn/item.clothPerPc*0.9) : a.qtyIn}"></div>
+      <div class="hint">${tr('Earnings = pieces × rate. Current rate for')} ${itemName(a.item)} ${tr('in')} ${deptName(a.dept)}: ₹${a.dept==='vendor'?item.vendorRate:item.rates[a.dept]}/pc.</div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">${tr('Cancel')}</button>
+      <button class="btn btn-primary" onclick="confirmSubmitProduction('${assignId}', ${isCuttingOrVendor})">${tr('Save & Calculate Earnings')}</button></div>
+  `);
+}
+function confirmSubmitProduction(assignId, hasMaterial){
+  const pieces = parseInt(document.getElementById('f_pieces').value)||0;
+  const used = hasMaterial ? parseFloat(document.getElementById('f_used').value)||0 : null;
+  submitProduction(assignId, used, pieces);
+  const a = state.assignments.find(x=>x.id===assignId);
+  closeModal();
+  toast(`Saved — ${pieces} pcs logged, ${inr(a.earnings)} earned`);
+  render();
+}
+function openForwardModal(assignId){
+  const a = state.assignments.find(x=>x.id===assignId);
+  const nextDeptId = DEPTS.find(d=>d.id===a.dept).next;
+  const options = state.employees.filter(e=>e.dept===nextDeptId);
+  openModal(`
+    <div class="modal-head"><h3>${tr('Forward to')} ${deptName(nextDeptId)}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field"><label>${tr('Send to employee')}</label>
+        <select id="f_toEmp">${options.map(o=>`<option value="${o.id}">${o.name}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>${tr('Quantity (pieces)')}</label><input type="number" id="f_qty" value="${a.piecesProduced}"></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">${tr('Cancel')}</button>
+      <button class="btn btn-primary" onclick="confirmForward('${assignId}')">${tr('Forward')}</button></div>
+  `);
+}
+function confirmForward(assignId){
+  const toEmp = document.getElementById('f_toEmp').value;
+  const qty = parseInt(document.getElementById('f_qty').value)||0;
+  const next = forwardAssignment(assignId, toEmp, qty);
+  closeModal();
+  toast(`Forwarded ${qty} pcs to ${state.employees.find(e=>e.id===toEmp).name}`);
+  render();
+}
+
+/* ============================================================
+   VIEW: ASSIGN WORK
+============================================================ */
+function viewAssignWork(){
+  const active = state.assignments.filter(a=>a.status==='in-progress').slice().reverse();
+  const rows = active.map(a=>{
+    const emp = state.employees.find(e=>e.id===a.employeeId);
+    return `<tr><td><span class="tbl-name">${emp.name}</span></td><td>${deptName(a.dept)}</td><td>${itemName(a.item)}</td><td>${a.qtyIn} ${a.unitIn==='meters'?'M':'pcs'}</td><td class="mono">${a.batchId}</td><td>${fmtDate(a.dateAssigned)}</td><td><span class="badge badge-sky">In progress</span></td></tr>`;
+  }).join('');
+  return `
+  <div class="page-head">
+    <div><h1 class="page-title">${tr('Assign Work ')}</h1><p class="page-sub">${tr('Distribute raw material and hand off jobs to employees or vendors')}</p></div>
+    <button class="btn btn-primary" onclick="openAssignModal()">${tr('＋ New Assignment')}</button>
+  </div>
+  <h2 class="section-title" style="margin-top:0;">${tr('Currently in progress')}</h2>
+  <div class="panel"><div style="overflow-x:auto;">
+    <table><tr><th>${tr('Employee')}</th><th>${tr('Department')}</th><th>${tr('Item')}</th><th>${tr('Quantity')}</th><th>${tr('Batch')}</th><th>${tr('Assigned')}</th><th>${tr('Status')}</th></tr>
+    ${rows || `<tr><td colspan="7" class="empty">${tr('Nothing in progress.')}</td></tr>`}</table>
+  </div></div>`;
+}
+function openAssignModal(){
+  const batchOptions = state.batches.map(b=>`<option value="${b.id}">${b.id} — ${b.clothName} (${batchRemaining(b)} M avail.)</option>`).join('');
+  openModal(`
+    <div class="modal-head"><h3>${tr('Assign Work ')}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field"><label>${tr('Assign to')}</label>
+        <select id="f_emp" onchange="onAssignEmpChange()">${state.employees.filter(e=>e.dept==='cutting'||e.dept==='vendor').map(e=>`<option value="${e.id}">${e.name} — ${e.type==='vendor'?tr('Vendor'):deptName(e.dept)}</option>`).join('')}</select>
+        <div class="hint">${tr('New work always starts at Cutting (internal chain) or goes straight to a Vendor.')}</div>
+      </div>
+      <div class="field"><label>${tr('Cloth Batch')}</label><select id="f_batch">${batchOptions}</select></div>
+      <div class="field-row">
+        <div class="field"><label>${tr('Item')}</label><select id="f_item">${ITEMS.map(i=>`<option value="${i.id}">${itemName(i.id)}</option>`).join('')}</select></div>
+        <div class="field"><label>${tr('Meters to Give')}</label><input type="number" id="f_qty" value="50"></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">${tr('Cancel')}</button>
+      <button class="btn btn-primary" onclick="submitAssign()">${tr('Assign')}</button></div>
+  `);
+}
+function submitAssign(){
+  const empId = document.getElementById('f_emp').value;
+  const emp = state.employees.find(e=>e.id===empId);
+  const batchId = document.getElementById('f_batch').value;
+  const b = state.batches.find(x=>x.id===batchId);
+  const qty = parseFloat(document.getElementById('f_qty').value)||0;
+  if(qty > batchRemaining(b)){ toast(`Only ${batchRemaining(b)} M available in ${batchId}`); return; }
+  createAssignment({batchId, item:document.getElementById('f_item').value, dept: emp.type==='vendor'?'vendor':'cutting', employeeId:empId, qtyIn:qty, unitIn:'meters'});
+  closeModal();
+  toast(`Assigned ${qty} M to ${emp.name}`);
+  render();
+}
+
+/* ============================================================
+   VIEW: PRODUCTION PIPELINE
+============================================================ */
+function viewProductionPipeline(){
+  const stages = DEPTS.map(d=>{
+    const st = deptStats(d.id);
+    return {d, st};
+  });
+  const pipes = stages.map(({d,st},i)=>{
+    return `<div class="pipe-stage" onclick="route('dept-${d.id}')">
+      <h5>${d.icon} ${deptName(d.id).toUpperCase()}</h5>
+      <div class="pipe-num">${st.received}</div>
+      <div class="pipe-meta">
+        <span>${st.completed} ${tr('completed')}</span>
+        <span>${st.pendingCount} ${tr('pending job(s)')}</span>
+      </div>
+    </div>` + (i<stages.length-1 ? `<div class="pipe-arrow">→</div>` : '');
+  }).join('');
+  const vst = deptStats('vendor');
+  return `
+  <div class="page-head"><div><h1 class="page-title">${tr('Production Pipeline')}</h1><p class="page-sub">${tr('Where is the material and product right now, across every stage')}</p></div></div>
+  <div class="pipeline">${pipes}</div>
+  <h2 class="section-title">${tr('Vendor route')} <span class="badge badge-grey">${tr('bypasses internal chain')}</span></h2>
+  <div class="panel panel-pad">
+    <p style="font-size:13px;">${tr('Vendors receive cloth directly and deliver finished product without passing through internal departments.')}</p>
+    <div class="summary-strip" style="margin-top:14px;">
+      <div class="strip-card"><div class="l">${tr('Cloth given')}</div><div class="v">${state.assignments.filter(a=>a.dept==='vendor').reduce((s,a)=>s+a.qtyIn,0).toFixed(1)} M</div></div>
+      <div class="strip-card"><div class="l">${tr('Pieces delivered')}</div><div class="v">${vst.completed}</div></div>
+      <div class="strip-card"><div class="l">${tr('Active vendor jobs')}</div><div class="v">${vst.pendingCount}</div></div>
+      <div class="strip-card"><div class="l">${tr('Vendors')}</div><div class="v">${state.employees.filter(e=>e.type==='vendor').length}</div></div>
+    </div>
+  </div>`;
+}
+
+/* ============================================================
+   VIEW: DEPARTMENT
+============================================================ */
+function viewDepartment(deptId){
+  const dept = DEPTS.find(d=>d.id===deptId);
+  if(!dept) return '<div class="empty">Department not found.</div>';
+  const employees = state.employees.filter(e=>e.dept===deptId);
+  const list = state.assignments.filter(a=>a.dept===deptId).slice().reverse();
+  const isClothIntake = deptId==='cutting'; // this stage receives raw cloth in meters, not finished pieces
+  const et = tr;
+
+  const rows = list.map(a=>{
+    const emp = state.employees.find(e=>e.id===a.employeeId);
+    const statusBadge = a.status==='in-progress' ? `<span class="badge badge-sky">${et('In progress')}</span>`
+      : a.status==='forwarded' ? `<span class="badge badge-grey">${et('Forwarded')}</span>`
+      : a.status==='ready' ? `<span class="badge badge-green">${et('Ready')}</span>`
+      : `<span class="badge badge-amber">${et('Completed — not forwarded')}</span>`;
+    let action = '';
+    if(a.status==='in-progress') action = `<button class="btn btn-ghost btn-sm" onclick="openSubmitProductionModal('${a.id}')">${et('Submit')}</button>`;
+    else if(a.status==='completed' && dept.next) action = `<button class="btn btn-ghost btn-sm" onclick="openForwardModal('${a.id}')">${et('Forward')}</button>`;
+    else if(a.status==='completed' && !dept.next) action = `<button class="btn btn-ghost btn-sm" onclick="markReady('${a.id}');render();toast('Marked ready for delivery')">${et('Mark Ready')}</button>`;
+
+    if(isClothIntake){
+      const used = a.materialUsed;
+      const remaining = used!=null ? Math.max(0, +(a.qtyIn - used).toFixed(1)) : null;
+      const avg = (used!=null && a.piecesProduced) ? (used/a.piecesProduced).toFixed(2) : '—';
+      let submitCell = '—';
+      if(remaining!=null){
+        if(remaining<=0) submitCell = `<span class="badge badge-grey">—</span>`;
+        else if(a.materialReturned) submitCell = `<span class="badge badge-green">✓ ${et('Submitted')}</span>`;
+        else submitCell = `<button class="btn btn-danger-ghost btn-tiny" onclick="toggleMaterialReturn('${a.id}')">${et('Submit Cloth')}</button>`;
+      }
+      return `<tr>
+        <td onclick="route('emp-${emp.id}')" class="row-click"><span class="tbl-name">${emp.name}</span></td>
+        <td>${itemName(a.item)}</td>
+        <td class="mono tbl-sub">${a.batchId}</td>
+        <td>${a.qtyIn} M</td>
+        <td>${used!=null? used+' M' : '—'}</td>
+        <td>${avg}${avg!=='—'?' M':''}</td>
+        <td>${remaining!=null? remaining+' M' : '—'}</td>
+        <td>${submitCell}</td>
+        <td>${a.piecesProduced??'—'}</td>
+        <td>${inr(a.earnings||0)}</td>
+        <td>${statusBadge}</td>
+        <td>${action}</td>
+      </tr>`;
+    }
+    return `<tr>
+      <td onclick="route('emp-${emp.id}')" class="row-click"><span class="tbl-name">${emp.name}</span></td>
+      <td>${itemName(a.item)}</td>
+      <td class="mono tbl-sub">${a.batchId}</td>
+      <td>${a.qtyIn} ${a.unitIn==='meters'?'M':'pcs'}</td>
+      <td>${a.piecesProduced??'—'}</td>
+      <td>${inr(a.earnings||0)}</td>
+      <td>${fmtDate(a.dateAssigned)}</td>
+      <td>${statusBadge}</td>
+      <td>${action}</td>
+    </tr>`;
+  }).join('');
+
+  const st = deptStats(deptId);
+  return `
+  <div class="page-head">
+    <div><h1 class="page-title">${dept.icon} ${deptName(deptId)}</h1><p class="page-sub">${employees.length} ${et('employees ')} · ${dept.next? et('forwards to')+' '+deptName(dept.next) : et('final stage — ready for delivery')}</p></div>
+    <button class="btn btn-primary" onclick="openAssignToDeptModal('${deptId}')">${et('＋ Assign Job')}</button>
+  </div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+    <div class="kpi-card"><div class="kpi-label">${et('Received')}</div><div class="kpi-value">${st.received}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${et('Completed')}</div><div class="kpi-value">${st.completed}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${et('Active jobs ')}</div><div class="kpi-value">${st.pendingCount}</div></div>
+  </div>
+  <h2 class="section-title">${et('Team')}</h2>
+  <div class="card-grid">${employees.map(e=>{
+    const tt = empTotals(e.id);
+    return `<div class="emp-card" onclick="route('emp-${e.id}')"><div class="emp-top"><div class="emp-avatar">${initials(e.name)}</div><div><div class="emp-name">${e.name}</div><div class="emp-role mono">${e.id}</div></div></div>
+    <div class="emp-stats"><div class="emp-stat"><div class="l">${et('Earned')}</div><div class="v">${inr(tt.earned)}</div></div><div class="emp-stat"><div class="l">${et('Pending')}</div><div class="v">${inr(tt.pending)}</div></div></div></div>`;
+  }).join('')}</div>
+  <h2 class="section-title">${et('Job log')}</h2>
+  <div class="panel"><div style="overflow-x:auto;">
+    <table>${isClothIntake ? `
+      <tr><th>${et('Employee')}</th><th>${et('Item')}</th><th>${et('Batch')}</th><th>${et('Cloth Given')}</th><th>${et('Cloth Used')}</th><th>${et('Avg / Piece')}</th><th>${et('Cloth Remaining')}</th><th>${et('Cloth Submitted?')}</th><th>${et('Produced')}</th><th>${et('Earned')}</th><th>${et('Status')}</th><th></th></tr>
+      ${rows || `<tr><td colspan="12" class="empty">${et('No jobs yet in this department.')}</td></tr>`}
+    ` : `
+      <tr><th>${et('Employee')}</th><th>${et('Item')}</th><th>${et('Batch')}</th><th>${et('Received')}</th><th>${et('Produced')}</th><th>${et('Earned')}</th><th>${et('Date')}</th><th>${et('Status')}</th><th></th></tr>
+      ${rows || `<tr><td colspan="9" class="empty">${et('No jobs yet in this department.')}</td></tr>`}
+    `}</table>
+  </div></div>`;
+}
+function openAssignToDeptModal(deptId){
+  if(deptId!=='cutting'){ toast('Jobs enter this department automatically when forwarded from the previous stage.'); return; }
+  openAssignModal();
+}
+
+/* ============================================================
+   VIEW: PAYMENTS
+============================================================ */
+function viewPayments(){
+  const rows = state.employees.map(e=>{
+    const t = empTotals(e.id);
+    const status = t.pending<=0 ? 'badge-green' : (t.paid>0? 'badge-amber':'badge-red');
+    const label = t.pending<=0 ? tr('Paid') : (t.paid>0? tr('Partially Paid'):tr('Pending'));
+    return `<tr>
+      <td onclick="route('emp-${e.id}')" class="row-click"><span class="tbl-name">${e.name}</span><br><span class="tbl-sub">${e.id}</span></td>
+      <td>${e.type==='vendor'?tr('Vendor'):deptName(e.dept)}</td>
+      <td>${e.type==='vendor'?tr('Contract'):tr('Piece Rate')}</td>
+      <td>${inr(t.earned)}</td>
+      <td>${inr(t.paid)}</td>
+      <td>${inr(t.pending)}</td>
+      <td><span class="badge ${status}">${label}</span></td>
+      <td>${t.pending>0? `<button class="btn btn-ghost btn-sm" onclick="openPayModal('${e.id}')">${tr('Pay Now')}</button>`:''}</td>
+    </tr>`;
+  }).join('');
+  const totalEarned = state.employees.reduce((s,e)=>s+empTotals(e.id).earned,0);
+  const totalPaid = state.employees.reduce((s,e)=>s+empTotals(e.id).paid,0);
+  return `
+  <div class="page-head"><div><h1 class="page-title">${tr('Salary & Payments')}</h1><p class="page-sub">${tr('Weekly payout based on piece-rate work, calculated automatically — no manual counting')}</p></div></div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+    <div class="kpi-card"><div class="kpi-label">${tr('Total Payroll (Earned)')}</div><div class="kpi-value">${inr(totalEarned)}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Paid Out')}</div><div class="kpi-value">${inr(totalPaid)}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Pending')}</div><div class="kpi-value">${inr(totalEarned-totalPaid)}</div></div>
+  </div>
+  <h2 class="section-title">${tr("This week's ledger")}</h2>
+  <div class="panel"><div style="overflow-x:auto;">
+    <table><tr><th>${tr('Employee')}</th><th>${tr('Dept / Type')}</th><th>${tr('Pay Type')}</th><th>${tr('Earned')}</th><th>${tr('Paid')}</th><th>${tr('Pending')}</th><th>${tr('Status')}</th><th></th></tr>
+    ${rows}</table>
+  </div></div>`;
+}
+function openPayModal(empId){
+  const e = state.employees.find(x=>x.id===empId);
+  const t = empTotals(empId);
+  openModal(`
+    <div class="modal-head"><h3>${tr('Settle Payment')} — ${e.name}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <p class="hint" style="margin-bottom:12px;">${tr('Earned')} ${inr(t.earned)} · ${tr('Already paid')} ${inr(t.paid)} · ${tr('Pending')} ${inr(t.pending)}</p>
+      <div class="field"><label>${tr('Amount to Pay Now (₹)')}</label><input type="number" id="f_amt" value="${t.pending}"></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">${tr('Cancel')}</button>
+      <button class="btn btn-primary" onclick="confirmPay('${empId}')">${tr('Confirm Payment')}</button></div>
+  `);
+}
+function confirmPay(empId){
+  const amt = parseFloat(document.getElementById('f_amt').value)||0;
+  if(!state.payments[empId]) state.payments[empId] = {paid:0};
+  state.payments[empId].paid += amt;
+  closeModal();
+  toast(`${inr(amt)} paid to ${state.employees.find(e=>e.id===empId).name}`);
+  render();
+}
+
+/* ============================================================
+   VIEW: RATE CARD & PRICING (admin price control)
+   Every item's ₹/piece rate, per department + vendor lump-sum.
+   Editing here changes what NEW work earns from now on;
+   jobs already submitted keep the earnings they were paid at.
+============================================================ */
+function viewRateCard(){
+  const rowsHtml = ITEMS.map(item=>`
+    <tr>
+      <td><span class="tbl-name">${itemName(item.id)}</span></td>
+      ${DEPTS.map(d=>`<td><input class="rate-input" type="number" min="0" step="0.5" id="rate_${item.id}_${d.id}" value="${item.rates[d.id]}"></td>`).join('')}
+      <td><input class="rate-input" type="number" min="0" step="0.5" id="rate_${item.id}_vendor" value="${item.vendorRate}"></td>
+    </tr>
+  `).join('');
+
+  return `
+  <div class="page-head">
+    <div><h1 class="page-title">${tr('Rate Card')}</h1><p class="page-sub">${tr('Set what each employee earns per piece, by item and by department. Changes apply to work logged from now on.')}</p></div>
+    <button class="btn btn-primary" onclick="saveRateCard()">${tr('Save Changes')}</button>
+  </div>
+  <div class="panel panel-pad">
+    <div style="overflow-x:auto;">
+      <table class="rate-table">
+        <tr>
+          <th>${tr('Item')}</th>
+          ${DEPTS.map(d=>`<th>${deptName(d.id)}<br><span class="hint">₹ / pc</span></th>`).join('')}
+          <th>${tr('Vendor Rate (full making)')}<br><span class="hint">₹ / pc</span></th>
+        </tr>
+        ${rowsHtml}
+      </table>
+    </div>
+    <div class="rate-note">${tr('Rates saved. New work will be calculated using the updated price list; already-completed jobs keep their original earnings.')}</div>
+  </div>`;
+}
+function saveRateCard(){
+  ITEMS.forEach(item=>{
+    DEPTS.forEach(d=>{
+      const v = parseFloat(document.getElementById(`rate_${item.id}_${d.id}`).value);
+      if(!isNaN(v) && v>=0) item.rates[d.id] = v;
+    });
+    const vv = parseFloat(document.getElementById(`rate_${item.id}_vendor`).value);
+    if(!isNaN(vv) && vv>=0) item.vendorRate = vv;
+  });
+  toast(tr('Rates saved. New work will be calculated using the updated price list; already-completed jobs keep their original earnings.'));
+  render();
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+function toggleDarkMode(){
+  document.documentElement.classList.toggle('dark-mode');
+  const dark = document.documentElement.classList.contains('dark-mode');
+  localStorage.setItem('threadline_erp_dark', dark ? '1' : '0');
+  const b=document.getElementById('darkToggle'); if(b) b.textContent=dark?'☀ Light':'☾ Dark';
+}
+function init(){
+  document.title = 'CRB — Uniform Manufacturing ERP';
+  document.querySelector('.brand-sub').textContent = 'Owner Workspace';
+  currentWorkspace = 'internal';
+  if(localStorage.getItem('threadline_erp_dark')==='1'){document.documentElement.classList.add('dark-mode');}
+  route('dashboard');
+  render();
+  const b=document.getElementById('darkToggle'); if(b) b.textContent=document.documentElement.classList.contains('dark-mode')?'☀ Light':'☾ Dark';
+}
+init();
+</script>
+</body>
+</html>
