@@ -7,7 +7,9 @@
     "server": "node server/index.js",
     "client": "vite --config client/vite.config.js --host 127.0.0.1",
     "build": "node node_modules/vite/bin/vite.js build --config client/vite.config.js",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "db:reset": "rm -f data/threadline.db data/threadline.db-shm data/threadline.db-wal && node -e \"require('./server/db').getDb(); console.log('Database seeded at', require('./server/db').DB_PATH)\"",
+    "seed": "npm run db:reset"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

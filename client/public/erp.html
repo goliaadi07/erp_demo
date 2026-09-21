@@ -214,6 +214,29 @@ tr.row-click:hover{background:var(--sky-tint);}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .hint{font-size:11px;color:var(--slate-soft);margin-top:4px;}
 
+.field textarea{
+  width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:7px;outline:none;background:var(--canvas);
+  font-family:inherit;font-size:13px;min-height:72px;resize:vertical;
+}
+.field textarea:focus{border-color:var(--sky);background:#fff;}
+.dress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.dress-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;}
+.dress-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.dress-card-title{font-size:15px;font-weight:700;color:var(--navy);}
+.dress-card-notes{font-size:12px;color:var(--slate);margin-top:2px;}
+.dress-size-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.dress-size-table th,.dress-size-table td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;}
+.dress-size-table th{font-size:11px;color:var(--slate);font-weight:600;}
+.meas-chip{display:inline-block;background:var(--canvas);border:1px solid var(--line);border-radius:6px;padding:2px 7px;margin:2px 3px 2px 0;font-size:11.5px;color:var(--ink);}
+.meas-chip b{color:var(--navy);}
+.dress-card-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.meas-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:600px){
+  .dress-grid{grid-template-columns:1fr;}
+  .meas-edit-grid{grid-template-columns:1fr;}
+}
+
+
 /* misc */
 .empty{padding:40px 20px;text-align:center;color:var(--slate-soft);font-size:13px;}
 .pill-nav{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
@@ -307,6 +330,72 @@ html.dark-mode{--paper:#151D30;--canvas:#0C1220;--line:#26334B;--ink:#EDF2FC;--n
 .client-empty-state{min-height:280px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:10px}.client-empty-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:var(--sky-tint);color:var(--sky-dark);font-weight:800;font-size:20px}
 html.dark-mode .workspace-tabs{background:#111A2C;border-color:#26334B}html.dark-mode .workspace-tab.active{background:#202A40;color:#DCD8FF}
 @media(max-width:760px){.workspace-tabs{order:3;width:100%;justify-content:space-between}.workspace-tab{flex:1}.topbar-right{flex-wrap:wrap;justify-content:flex-end}}
+
+/* searchable Purchase From */
+.combo{position:relative}
+.combo-input-row{display:flex;gap:8px;align-items:stretch}
+.combo-input-row input{flex:1}
+.combo-menu{display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:40;max-height:220px;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px rgba(15,23,42,.16)}
+.combo-menu.open{display:block}
+.combo-option,.combo-add{padding:9px 12px;cursor:pointer;font-size:13px}
+.combo-option:hover,.combo-add:hover{background:var(--sky-tint);color:var(--sky-dark)}
+.combo-empty{padding:10px 12px;font-size:12px;color:var(--slate-soft)}
+.combo-add{font-weight:700;border-top:1px solid var(--line);color:var(--sky-dark)}
+/* dark-mode hardcode overrides */
+html.dark-mode #topbar{background:rgba(15,22,38,.82)!important}
+html.dark-mode .searchbox,html.dark-mode .lang-toggle,html.dark-mode .dark-toggle,html.dark-mode .workspace-tabs{background:#111A2C!important}
+html.dark-mode .btn-ghost,html.dark-mode .kpi-card,html.dark-mode .panel,html.dark-mode .dept-card,html.dark-mode .emp-card,html.dark-mode .strip-card,html.dark-mode .pipe-stage,html.dark-mode .modal,html.dark-mode .search-result,html.dark-mode .client-empty-state{background:#151D30!important;border-color:#26334B!important;color:var(--ink)}
+html.dark-mode th,html.dark-mode .emp-stat,html.dark-mode .field input,html.dark-mode .field select,html.dark-mode .rate-input{background:#101829!important;color:var(--ink)}
+html.dark-mode .upload-btn{background:#201F3C!important;border-color:#423D77!important}
+html.dark-mode .workspace-tab.active{background:#202A40!important;color:#DCD8FF!important}
+html.dark-mode #shell{background:radial-gradient(circle at 85% 0%,#25234E 0,transparent 28%),var(--canvas)!important}
+
+
+/* table-scroll panel overflow */
+.panel{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* ===== Mobile / responsive ERP ===== */
+.menu-btn{display:none;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--canvas);color:var(--ink);font-size:20px;cursor:pointer;flex-shrink:0}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(10,16,32,.45);z-index:35}
+.sidebar-backdrop.show{display:block}
+.table-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table-scroll table{min-width:640px}
+@media(max-width:1000px){
+  .menu-btn{display:inline-flex}
+  #sidebar{position:fixed !important;left:0 !important;top:0;bottom:0;width:min(280px,86vw);transform:translateX(-105%);z-index:45;transition:transform .22s ease;box-shadow:none}
+  #sidebar.open{transform:translateX(0);box-shadow:12px 0 40px rgba(0,0,0,.28)}
+  #main{width:100%;max-width:100%}
+}
+@media(max-width:720px){
+  #topbar{height:auto;min-height:64px;flex-wrap:wrap;gap:8px;padding:10px 12px;margin:0 -12px 14px}
+  .searchbox{order:3;width:100%;max-width:none}
+  .topbar-right{gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .workspace-tabs{order:4;width:100%}
+  .workspace-tab{flex:1;text-align:center;padding:8px 6px}
+  .page-head{flex-direction:column;align-items:stretch;gap:12px}
+  .page-head .btn{width:100%}
+  .kpi-grid,.dept-grid,.card-grid,.summary-strip{grid-template-columns:1fr !important}
+  .field-row{grid-template-columns:1fr !important}
+  .modal{width:min(100vw - 16px, 520px);max-height:92vh;overflow:auto;margin:8px}
+  .modal-head,.modal-body,.modal-foot{padding:14px 16px}
+  .modal-foot{flex-wrap:wrap;gap:8px}
+  .modal-foot .btn{flex:1;min-width:120px}
+  .combo-input-row{flex-direction:column}
+  .combo-input-row .btn{width:100%}
+  .pipeline{overflow-x:auto;padding-bottom:8px}
+  .pipe-stage{min-width:150px}
+  .role-pill select{max-width:110px}
+  .btn,.lang-btn,.dark-toggle,.workspace-tab,.nav-link{min-height:40px}
+  .nav-link{padding:12px 11px}
+  .upload-row{flex-wrap:wrap}
+}
+@media(max-width:480px){
+  h1.page-title{font-size:22px}
+  .kpi-value{font-size:22px}
+  .topbar-right .bell{display:none}
+}
+html.dark-mode .menu-btn{background:#111A2C;border-color:#26334B}
+html.dark-mode .sidebar-backdrop{background:rgba(0,0,0,.55)}
+
 </style>
 </head>
 <body>
@@ -325,8 +414,10 @@ html.dark-mode .workspace-tabs{background:#111A2C;border-color:#26334B}html.dark
     <div class="sidebar-foot">Prototype demo · in-memory data</div>
   </aside>
 
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
   <div id="main">
     <div id="topbar">
+      <button type="button" class="menu-btn" id="menuBtn" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
       <div class="searchbox">
         <span>⌕</span>
         <input id="globalSearch" placeholder="Search employee, batch, order…" oninput="onGlobalSearch(this.value)">
@@ -384,7 +475,7 @@ const itemName = id => {
   return LANG==='mr' ? (ITEM_NAME_MR[id]||i.name) : i.name;
 };
 
-const SUPPLIERS = ['Mahaveer Textiles','Surya Suiting & Shirting','Akem Industry','Ambika Suiting & Shirtings'];
+let SUPPLIERS = ['Mahaveer Textiles','Surya Suiting & Shirting','Akem Industry','Ambika Suiting & Shirtings'];
 
 /* ============================================================
    LANGUAGE / TRANSLATION (English <-> Marathi)
@@ -393,7 +484,7 @@ const SUPPLIERS = ['Mahaveer Textiles','Surya Suiting & Shirting','Akem Industry
    English in this prototype (they mix names + live numbers).
 ============================================================ */
 let LANG = 'en';
-function setLang(l){ LANG = l; render(); }
+function setLang(l){ LANG = l; localStorage.setItem('threadline_lang', l); render(); }
 const DEPT_NAME_MR = {cutting:'कटिंग', stitching:'शिलाई', kbv:'काजा, बटण व वारलक', ironing:'इस्त्री', packing:'पॅकिंग', vendor:'व्हेंडर'};
 const ITEM_NAME_MR  = {shirt:'शर्ट', pant:'पँट', pinaco:'पिनॅको', grammer:'ग्रामर', halfhastin:'हाफ हस्तीन', skirt:'स्कर्ट', bandi:'बंडी'};
 
@@ -491,8 +582,148 @@ const T = {
   'Rate Card':'दर सूची','Set what each employee earns per piece, by item and by department. Changes apply to work logged from now on.':'प्रत्येक कर्मचाऱ्याला वस्तू व विभागानुसार प्रति नग किती मिळेल ते ठरवा. बदल आतापासून नोंदवलेल्या कामाला लागू होतील.',
   'Save Changes':'बदल जतन करा','Vendor Rate (full making)':'व्हेंडर दर (संपूर्ण बनवणी)',
   'Rates saved. New work will be calculated using the updated price list; already-completed jobs keep their original earnings.':'दर जतन केले. नवीन कामाला अद्ययावत दर लागू होईल; आधीच पूर्ण झालेल्या कामाची कमाई तशीच राहील.',
+
+  'Search results':'शोध निकाल','Results for':'निकाल','External Dashboard':'बाह्य डॅशबोर्ड',
+  'Cloth issued to external agents, production progress, and finalised amounts.':'बाह्य एजंटांना दिलेले कापड, उत्पादन प्रगती आणि अंतिम रक्कम.',
+  'Assign external work':'बाह्य काम नेमून द्या','Client Dashboard':'क्लायंट डॅशबोर्ड',
+  'A dedicated workspace for client information and follow-up.':'क्लायंट माहिती व पाठपुराव्यासाठी स्वतंत्र कार्यक्षेत्र.',
+  'Client workspace is ready':'क्लायंट कार्यक्षेत्र तयार आहे',
+  'No results found. Try an employee name, batch ID, supplier, item, work-order ID, or page name.':'काही सापडले नाही. कर्मचारी नाव, बॅच आयडी, पुरवठादार, वस्तू, वर्क-ऑर्डर आयडी किंवा पृष्ठाचे नाव वापरून पहा.',
+  'Internal':'अंतर्गत','External':'बाह्य','Client':'क्लायंट','Owner Workspace':'मालक कार्यक्षेत्र',
+  'Type to search or add…':'शोधण्यासाठी किंवा जोडण्यासाठी टाइप करा…','＋ Add company':'＋ कंपनी जोडा',
+  'No matching companies':'जुळणाऱ्या कंपन्या नाहीत','Company saved':'कंपनी जतन झाली','Enter a company name':'कंपनीचे नाव लिहा',
+  'External agents':'बाह्य एजंट','Cloth issued':'दिलेले कापड','Cloth used':'वापरलेले कापड','Finalised amount':'अंतिम रक्कम',
+  'Active partners':'सक्रिय भागीदार','Across external work':'बाह्य कामात','Reported by agents':'एजंटांनी नोंदवले','Completed external work':'पूर्ण झालेले बाह्य काम',
+  'External agent':'बाह्य एजंट','Batch & item':'बॅच व वस्तू','Cloth taken':'घेतलेले कापड','Finished quantity':'तयार प्रमाण','Final amount':'अंतिम रक्कम',
+  'Not submitted':'सादर केलेले नाही','Awaiting completion':'पूर्ण होण्याची वाट','Not finalised':'अंतिम नाही','In progress':'सुरू आहे','Finalised':'अंतिम',
+  'No external work has been assigned yet.':'अजून बाह्य काम नेमून दिलेले नाही.',
+  'Client records, orders, communications, and delivery details can be added here when you are ready.':'क्लायंट नोंदी, ऑर्डर, संवाद व डिलिव्हरी तपशील येथे जोडता येतील.',
+
+  // dress sizes / size notes
+  'Dress Sizes':'ड्रेस साइजेस','Size Notes':'साइज नोट्स',
+  'Ladies, gents and kids dress size charts — jot measurements and keep them handy':'महिला, पुरुष व मुलांचे ड्रेस साइज चार्ट — मोजमाप लिहून ठेवा',
+  'Ladies':'महिला','Gents':'पुरुष','Kids':'मुले',
+  '＋ Add Dress Type':'＋ ड्रेस प्रकार जोडा','Add Dress Type':'ड्रेस प्रकार जोडा',
+  'Dress / garment name':'ड्रेस / कपड्याचे नाव','Category':'श्रेणी','Notes (optional)':'टिपा (ऐच्छिक)',
+  'Save Dress Type':'ड्रेस प्रकार जतन करा','Edit Dress Type':'ड्रेस प्रकार संपादा',
+  'Delete dress type?':'ड्रेस प्रकार हटवायचा?','Dress type saved':'ड्रेस प्रकार जतन झाला',
+  'Dress type updated':'ड्रेस प्रकार अद्ययावत','Dress type deleted':'ड्रेस प्रकार हटवला',
+  'No dress types in this category yet.':'या श्रेणीत अजून ड्रेस प्रकार नाही.',
+  '＋ Add Size':'＋ साइज जोडा','Add Size':'साइज जोडा','Edit Size':'साइज संपादा',
+  'Size label':'साइज लेबल','e.g. S, M, L or 38, 40':'उदा. S, M, L किंवा 38, 40',
+  'Measurements (inches)':'मोजमाप (इंच)','Chest':'छाती','Waist':'कंबर','Hip':'हिप',
+  'Length':'लांबी','Shoulder':'खांदा','Sleeve':'बाही','Inseam':'इनसीम',
+  'Save Size':'साइज जतन करा','Size saved':'साइज जतन झाला','Size updated':'साइज अद्ययावत',
+  'Size deleted':'साइज हटवला','Delete this size?':'हा साइज हटवायचा?',
+  'Custom key':'इतर की','Custom value':'इतर मूल्य','Add custom field':'इतर फील्ड जोडा',
+  'sizes':'साइजेस','type(s)':'प्रकार',
+
 };
 function tr(s){ return LANG==='mr' ? (T[s] || s) : s; }
+
+
+/* ===== API persistence helpers ===== */
+let __authToken = null;
+function readAuthToken(){
+  if(__authToken) return __authToken;
+  try{
+    const t = sessionStorage.getItem('threadline_token') || localStorage.getItem('threadline_token');
+    if(t){ __authToken = t; return t; }
+  }catch(e){}
+  return null;
+}
+function authHeaders(){
+  const h={'Content-Type':'application/json'};
+  const t = readAuthToken();
+  if(t) h.Authorization = 'Bearer '+t;
+  return h;
+}
+async function api(url, opts={}){
+  const res=await fetch(url,{...opts, headers:{...authHeaders(), ...(opts.headers||{})}});
+  let data={}; try{ data=await res.json(); }catch(e){}
+  if(!res.ok) throw new Error(data.message||('HTTP '+res.status));
+  return data;
+}
+window.addEventListener('message', (ev)=>{
+  if(!ev || !ev.data) return;
+  if(ev.data.type==='threadline-auth' && ev.data.token){
+    __authToken = ev.data.token;
+    try{
+      sessionStorage.setItem('threadline_token', ev.data.token);
+      localStorage.setItem('threadline_token', ev.data.token);
+    }catch(e){}
+  }
+  if(ev.data.type==='threadline-auth-clear'){
+    __authToken = null;
+    try{
+      sessionStorage.removeItem('threadline_token');
+      localStorage.removeItem('threadline_token');
+    }catch(e){}
+  }
+});
+// Ask parent for token (iframe may not share sessionStorage reliably)
+try{ if(window.parent && window.parent!==window) window.parent.postMessage({type:'threadline-auth-request'}, '*'); }catch(e){}
+
+function mapDressTypeFromApi(t){
+  return {
+    id:t.id,
+    name:t.name,
+    category:t.category,
+    notes:t.notes||'',
+    createdAt:t.createdAt||null,
+    sizes:(t.sizes||[]).map(s=>({
+      id:s.id,
+      dressTypeId:s.dressTypeId||t.id,
+      sizeLabel:s.sizeLabel||s.label||'',
+      measurements:s.measurements||{},
+      notes:s.notes||''
+    }))
+  };
+}
+function applyBootstrap(data){
+  if(!data) return;
+  if(Array.isArray(data.suppliers)&&data.suppliers.length){
+    SUPPLIERS=data.suppliers.slice().sort((a,b)=>a.localeCompare(b));
+  }
+  if(Array.isArray(data.employees)&&data.employees.length){
+    state.employees=data.employees.map(e=>({id:e.id,name:e.name,dept:e.dept,type:e.type||'internal',active:e.active!==false}));
+  }
+  if(Array.isArray(data.batches)){
+    state.batches=data.batches.map(b=>({
+      id:b.id, clothName:b.clothName, supplier:b.supplier, purchaseDate:b.purchaseDate,
+      billNo:b.billNo, pcs:b.pcs, meters:b.meters, ratePerMeter:b.ratePerMeter,
+      amount:b.amount, paidAmount:b.paidAmount,
+      pendingAmount:b.pendingAmount!=null?b.pendingAmount:(b.amount-(b.paidAmount||0)),
+      distributedM:b.distributedM||0, imageUrl:b.imageUrl||null
+    }));
+  }
+  if(Array.isArray(data.assignments)){
+    state.assignments=data.assignments.map(a=>({
+      id:a.id, batchId:a.batchId, item:a.item, dept:a.dept, employeeId:a.employeeId,
+      qtyIn:a.qtyIn, unitIn:a.unitIn, dateAssigned:a.dateAssigned, status:a.status,
+      materialUsed:a.materialUsed, piecesProduced:a.piecesProduced, dateCompleted:a.dateCompleted,
+      sourceAssignmentId:a.sourceAssignmentId, earnings:a.earnings||0,
+      materialReturned:!!a.materialReturned, materialReturnDate:a.materialReturnDate||null
+    }));
+  }
+  if(data.payments) state.payments=data.payments;
+  if(Array.isArray(data.dressTypes)){
+    state.dressTypes=data.dressTypes.map(mapDressTypeFromApi);
+  }
+  if(data.seq){
+    state.seq.batch=data.seq.batch||state.batches.length;
+    state.seq.assign=data.seq.assign||state.assignments.length;
+  }
+}
+async function persistAssignment(a){
+  try{ await api('/api/assignments/'+encodeURIComponent(a.id),{method:'PUT', body:JSON.stringify(a)}); }
+  catch(err){ console.warn('persistAssignment', err.message); }
+}
+async function persistBatchDistributed(b){
+  try{ await api('/api/batches/'+encodeURIComponent(b.id),{method:'PATCH', body:JSON.stringify({distributedM:b.distributedM})}); }
+  catch(err){ console.warn('persistBatchDistributed', err.message); }
+}
+
 
 let state = {
   employees: [
@@ -512,6 +743,7 @@ let state = {
   batches: [],
   assignments: [],
   payments: {}, // employeeId -> {paid: number}
+  dressTypes: [],
   seq: {batch:0, assign:0},
 };
 
@@ -557,8 +789,9 @@ function createAssignment(o){
   state.assignments.push(a);
   if(o.dept==='cutting' || o.dept==='vendor'){
     const b = state.batches.find(x=>x.id===o.batchId);
-    if(b){ b.distributedM = +(b.distributedM + o.qtyIn).toFixed(1); }
+    if(b){ b.distributedM = +(b.distributedM + o.qtyIn).toFixed(1); persistBatchDistributed(b); }
   }
+  persistAssignment(a);
   return a;
 }
 function empEarn(a){
@@ -575,6 +808,7 @@ function submitProduction(assignId, materialUsed, piecesProduced){
   a.status='completed';
   a.dateCompleted = todayStr();
   a.earnings = empEarn(a);
+  persistAssignment(a);
 }
 function forwardAssignment(assignId, toEmployeeId, qty){
   const a = state.assignments.find(x=>x.id===assignId);
@@ -582,6 +816,7 @@ function forwardAssignment(assignId, toEmployeeId, qty){
   const emp = state.employees.find(e=>e.id===toEmployeeId);
   const dept = DEPTS.find(d=>d.id===a.dept);
   a.status='forwarded';
+  persistAssignment(a);
   const next = createAssignment({
     batchId:a.batchId, item:a.item, dept:dept.next, employeeId:toEmployeeId,
     qtyIn: qty, unitIn:'pieces', sourceAssignmentId:a.id
@@ -591,6 +826,7 @@ function forwardAssignment(assignId, toEmployeeId, qty){
 function markReady(assignId){
   const a = state.assignments.find(x=>x.id===assignId);
   a.status='ready';
+  persistAssignment(a);
 }
 function toggleMaterialReturn(assignId){
   const a = state.assignments.find(x=>x.id===assignId);
@@ -740,6 +976,7 @@ const NAV = [
   ]},
   {group:'Materials', items:[
     {id:'materials', label:'Raw Material', icon:'▤'},
+    {id:'dress-sizes', label:'Dress Sizes', icon:'📏'},
   ]},
   {group:'Workforce', items:[
     {id:'employees', label:'Employees', icon:'◍'},
@@ -767,6 +1004,7 @@ const CLIENT_NAV = [
 ];
 
 function route(hash){
+  try{ closeSidebar(); }catch(e){}
   if(!hash) hash = currentRole==='employee' ? 'mypassbook' : 'dashboard';
   window.location.hash = hash;
 }
@@ -784,7 +1022,11 @@ function renderNav(){
     });
   });
   document.getElementById('navlinks').innerHTML = html;
-  document.querySelectorAll('.workspace-tab').forEach(tab=>tab.classList.toggle('active', tab.dataset.workspace===currentWorkspace));
+  document.querySelectorAll('.workspace-tab').forEach(tab=>{
+    tab.classList.toggle('active', tab.dataset.workspace===currentWorkspace);
+    const label = tab.dataset.workspace==='internal'?'Internal': tab.dataset.workspace==='external'?'External':'Client';
+    if(tab.dataset.workspace) tab.textContent = tr(label);
+  });
   document.getElementById('langBtnEn').classList.toggle('active', LANG==='en');
   document.getElementById('langBtnMr').classList.toggle('active', LANG==='mr');
   document.querySelector('.searchbox input').placeholder = tr('Search employee, batch, order…');
@@ -852,6 +1094,7 @@ function render(){
   else if(hash==='dashboard') c.innerHTML = viewDashboard();
   else if(hash==='materials') c.innerHTML = viewMaterials();
   else if(hash.startsWith('materials-')) c.innerHTML = viewBatchDetail(hash.replace('materials-',''));
+  else if(hash==='dress-sizes') c.innerHTML = viewDressSizes();
   else if(hash==='employees') c.innerHTML = viewEmployees();
   else if(hash.startsWith('emp-')) c.innerHTML = viewEmployeeDetail(hash.replace('emp-',''), false);
   else if(hash==='assign') c.innerHTML = viewAssignWork();
@@ -900,8 +1143,8 @@ function viewSearch(){
       <div class="search-result-title">${result.title}</div>
       <div class="search-result-detail">${result.detail}</div>
     </button>`).join('');
-  return `<div class="page-head"><div><h1 class="page-title">Search results</h1><p class="page-sub">Results for “${globalSearchQuery}”</p></div></div>
-    <div class="search-results">${results || `<div class="panel panel-pad empty">No results found. Try an employee name, batch ID, supplier, item, work-order ID, or page name.</div>`}</div>`;
+  return `<div class="page-head"><div><h1 class="page-title">${tr('Search results')}</h1><p class="page-sub">${tr('Results for')} “${globalSearchQuery}”</p></div></div>
+    <div class="search-results">${results || `<div class="panel panel-pad empty">${tr('No results found. Try an employee name, batch ID, supplier, item, work-order ID, or page name.')}</div>`}</div>`;
 }
 
 /* ============================================================
@@ -941,8 +1184,8 @@ function viewExternalDashboard(){
   }).join('');
   return `
   <div class="page-head">
-    <div><h1 class="page-title">External Dashboard</h1><p class="page-sub">Cloth issued to external agents, production progress, and finalised amounts.</p></div>
-    <button class="btn btn-primary" onclick="route('assign')">Assign external work</button>
+    <div><h1 class="page-title">${tr('External Dashboard')}</h1><p class="page-sub">${tr('Cloth issued to external agents, production progress, and finalised amounts.')}</p></div>
+    <button class="btn btn-primary" onclick="route('assign')">${tr('Assign external work')}</button>
   </div>
   <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px;">
     <div class="kpi-card"><div class="kpi-label">External agents</div><div class="kpi-value">${state.employees.filter(e=>e.type==='vendor').length}</div><div class="kpi-delta flat">Active partners</div></div>
@@ -961,11 +1204,11 @@ function viewExternalDashboard(){
 ============================================================ */
 function viewClientDashboard(){
   return `
-  <div class="page-head"><div><h1 class="page-title">Client Dashboard</h1><p class="page-sub">A dedicated workspace for client information and follow-up.</p></div></div>
+  <div class="page-head"><div><h1 class="page-title">${tr('Client Dashboard')}</h1><p class="page-sub">${tr('A dedicated workspace for client information and follow-up.')}</p></div></div>
   <div class="panel panel-pad client-empty-state">
     <div class="client-empty-icon">C</div>
-    <h2 class="section-title" style="margin:0;">Client workspace is ready</h2>
-    <p class="page-sub">Client records, orders, communications, and delivery details can be added here when you are ready.</p>
+    <h2 class="section-title" style="margin:0;">${tr('Client workspace is ready')}</h2>
+    <p class="page-sub">${tr('Client records, orders, communications, and delivery details can be added here when you are ready.')}</p>
   </div>`;
 }
 
@@ -1048,6 +1291,250 @@ function viewDashboard(){
   `;
 }
 
+
+/* ============================================================
+   VIEW: DRESS SIZES / SIZE NOTES (Ladies · Gents · Kids)
+============================================================ */
+let dressSizeTab = 'ladies';
+const DRESS_MEASURE_KEYS = ['chest','waist','hip','length','shoulder','sleeve','inseam'];
+
+function dressCategoryLabel(cat){
+  const c = (cat||'').toLowerCase();
+  if(c==='ladies') return tr('Ladies');
+  if(c==='gents') return tr('Gents');
+  if(c==='kids') return tr('Kids');
+  return cat;
+}
+function formatMeasurements(m){
+  if(!m || typeof m!=='object') return '—';
+  const keys = Object.keys(m);
+  if(!keys.length) return '—';
+  return keys.map(k=>{
+    const label = DRESS_MEASURE_KEYS.includes(k) ? tr(k.charAt(0).toUpperCase()+k.slice(1)) : k;
+    return `<span class="meas-chip"><b>${label}</b> ${m[k]}</span>`;
+  }).join('');
+}
+function viewDressSizes(){
+  const cats = ['ladies','gents','kids'];
+  const pills = cats.map(c=>`<button class="pill ${dressSizeTab===c?'active':''}" onclick="dressSizeTab='${c}';render()">${dressCategoryLabel(c)}</button>`).join('');
+  const types = (state.dressTypes||[]).filter(t=>t.category===dressSizeTab);
+  const cards = types.map(t=>{
+    const sizeRows = (t.sizes||[]).map(s=>`<tr>
+      <td><strong>${escHtml(s.sizeLabel)}</strong></td>
+      <td>${formatMeasurements(s.measurements)}</td>
+      <td class="dress-card-actions" style="white-space:nowrap;">
+        <button class="btn btn-ghost" style="padding:4px 8px;font-size:12px;" onclick="openEditDressSizeModal(${t.id},${s.id})">${tr('Edit Size')}</button>
+        <button class="btn btn-ghost" style="padding:4px 8px;font-size:12px;color:#c0392b;" onclick="deleteDressSizeEntry(${s.id})">✕</button>
+      </td>
+    </tr>`).join('');
+    return `<div class="dress-card">
+      <div class="dress-card-head">
+        <div>
+          <div class="dress-card-title">${escHtml(t.name)}</div>
+          ${t.notes?`<div class="dress-card-notes">${escHtml(t.notes)}</div>`:''}
+        </div>
+        <span class="badge badge-grey">${(t.sizes||[]).length} ${tr('sizes')}</span>
+      </div>
+      <table class="dress-size-table">
+        <tr><th>${tr('Size label')}</th><th>${tr('Measurements (inches)')}</th><th></th></tr>
+        ${sizeRows || `<tr><td colspan="3" class="empty" style="padding:16px;">—</td></tr>`}
+      </table>
+      <div class="dress-card-actions">
+        <button class="btn btn-primary" onclick="openAddDressSizeModal(${t.id})">${tr('＋ Add Size')}</button>
+        <button class="btn btn-ghost" onclick="openEditDressTypeModal(${t.id})">${tr('Edit Dress Type')}</button>
+        <button class="btn btn-ghost" style="color:#c0392b;" onclick="deleteDressTypeEntry(${t.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="page-head">
+    <div>
+      <h1 class="page-title">${tr('Dress Sizes')}</h1>
+      <p class="page-sub">${tr('Ladies, gents and kids dress size charts — jot measurements and keep them handy')}</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAddDressTypeModal()">${tr('＋ Add Dress Type')}</button>
+  </div>
+  <div class="pill-nav">${pills}</div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:18px;">
+    <div class="kpi-card"><div class="kpi-label">${dressCategoryLabel(dressSizeTab)}</div><div class="kpi-value">${types.length}<span class="unit">${tr('type(s)')}</span></div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('sizes')}</div><div class="kpi-value">${types.reduce((n,t)=>n+(t.sizes||[]).length,0)}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${tr('Dress Sizes')}</div><div class="kpi-value" style="font-size:16px;margin-top:10px;">${tr('Size Notes')}</div></div>
+  </div>
+  <div class="dress-grid">
+    ${cards || `<div class="panel panel-pad empty" style="grid-column:1/-1;">${tr('No dress types in this category yet.')}</div>`}
+  </div>`;
+}
+
+function escHtml(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openAddDressTypeModal(){
+  openModal(`
+    <div class="modal-head"><h3>${tr('Add Dress Type')}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field"><label>${tr('Dress / garment name')}</label><input id="dt_name" placeholder="e.g. Ladies Kurti"></div>
+      <div class="field"><label>${tr('Category')}</label>
+        <select id="dt_cat">
+          <option value="ladies" ${dressSizeTab==='ladies'?'selected':''}>${tr('Ladies')}</option>
+          <option value="gents" ${dressSizeTab==='gents'?'selected':''}>${tr('Gents')}</option>
+          <option value="kids" ${dressSizeTab==='kids'?'selected':''}>${tr('Kids')}</option>
+        </select>
+      </div>
+      <div class="field"><label>${tr('Notes (optional)')}</label><textarea id="dt_notes" placeholder=""></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal()">${tr('Cancel')}</button>
+      <button class="btn btn-primary" onclick="saveDressType()">${tr('Save Dress Type')}</button>
+    </div>`);
+}
+function openEditDressTypeModal(id){
+  const t = (state.dressTypes||[]).find(x=>x.id===id);
+  if(!t) return;
+  openModal(`
+    <div class="modal-head"><h3>${tr('Edit Dress Type')}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field"><label>${tr('Dress / garment name')}</label><input id="dt_name" value="${escHtml(t.name)}"></div>
+      <div class="field"><label>${tr('Category')}</label>
+        <select id="dt_cat">
+          <option value="ladies" ${t.category==='ladies'?'selected':''}>${tr('Ladies')}</option>
+          <option value="gents" ${t.category==='gents'?'selected':''}>${tr('Gents')}</option>
+          <option value="kids" ${t.category==='kids'?'selected':''}>${tr('Kids')}</option>
+        </select>
+      </div>
+      <div class="field"><label>${tr('Notes (optional)')}</label><textarea id="dt_notes">${escHtml(t.notes||'')}</textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal()">${tr('Cancel')}</button>
+      <button class="btn btn-primary" onclick="saveDressType(${id})">${tr('Save Dress Type')}</button>
+    </div>`);
+}
+async function saveDressType(id){
+  const name = (document.getElementById('dt_name').value||'').trim();
+  const category = document.getElementById('dt_cat').value;
+  const notes = (document.getElementById('dt_notes').value||'').trim();
+  if(!name){ toast(tr('Dress / garment name')); return; }
+  try{
+    if(id){
+      const {dressType} = await api('/api/dress-types/'+id,{method:'PATCH',body:JSON.stringify({name,category,notes})});
+      const mapped = mapDressTypeFromApi(dressType);
+      const i = state.dressTypes.findIndex(x=>x.id===id);
+      if(i>=0) state.dressTypes[i]=mapped; else state.dressTypes.push(mapped);
+      toast(tr('Dress type updated'));
+    }else{
+      const {dressType} = await api('/api/dress-types',{method:'POST',body:JSON.stringify({name,category,notes})});
+      state.dressTypes.push(mapDressTypeFromApi(dressType));
+      dressSizeTab = category;
+      toast(tr('Dress type saved'));
+    }
+    closeModal(); render();
+  }catch(err){ toast(err.message||'Error'); }
+}
+async function deleteDressTypeEntry(id){
+  if(!confirm(tr('Delete dress type?'))) return;
+  try{
+    await api('/api/dress-types/'+id,{method:'DELETE'});
+    state.dressTypes = state.dressTypes.filter(t=>t.id!==id);
+    toast(tr('Dress type deleted'));
+    render();
+  }catch(err){ toast(err.message||'Error'); }
+}
+
+function measureFieldsHtml(existing){
+  existing = existing || {};
+  const rows = DRESS_MEASURE_KEYS.map(k=>{
+    const label = tr(k.charAt(0).toUpperCase()+k.slice(1));
+    const val = existing[k]!=null ? existing[k] : '';
+    return `<div class="field"><label>${label}</label><input type="number" step="0.5" id="dm_${k}" value="${val}"></div>`;
+  }).join('');
+  return `<div class="meas-edit-grid">${rows}</div>
+    <div class="field-row" style="margin-top:8px;">
+      <div class="field"><label>${tr('Custom key')}</label><input id="dm_custom_key" placeholder="e.g. neck"></div>
+      <div class="field"><label>${tr('Custom value')}</label><input type="number" step="0.5" id="dm_custom_val"></div>
+    </div>`;
+}
+function readMeasurementsFromForm(){
+  const m = {};
+  DRESS_MEASURE_KEYS.forEach(k=>{
+    const el = document.getElementById('dm_'+k);
+    if(!el) return;
+    const v = el.value;
+    if(v!=='' && v!=null) m[k] = Number(v);
+  });
+  const ck = (document.getElementById('dm_custom_key')||{}).value;
+  const cv = (document.getElementById('dm_custom_val')||{}).value;
+  if(ck && ck.trim() && cv!=='' && cv!=null) m[ck.trim()] = Number(cv);
+  return m;
+}
+function openAddDressSizeModal(typeId){
+  openModal(`
+    <div class="modal-head"><h3>${tr('Add Size')}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field"><label>${tr('Size label')}</label><input id="ds_label" placeholder="${tr('e.g. S, M, L or 38, 40')}"></div>
+      <div class="field"><label>${tr('Measurements (inches)')}</label></div>
+      ${measureFieldsHtml({})}
+      <div class="field"><label>${tr('Notes (optional)')}</label><textarea id="ds_notes"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal()">${tr('Cancel')}</button>
+      <button class="btn btn-primary" onclick="saveDressSize(${typeId})">${tr('Save Size')}</button>
+    </div>`);
+}
+function openEditDressSizeModal(typeId, sizeId){
+  const t = (state.dressTypes||[]).find(x=>x.id===typeId);
+  const s = t && (t.sizes||[]).find(x=>x.id===sizeId);
+  if(!s) return;
+  openModal(`
+    <div class="modal-head"><h3>${tr('Edit Size')}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field"><label>${tr('Size label')}</label><input id="ds_label" value="${escHtml(s.sizeLabel)}"></div>
+      <div class="field"><label>${tr('Measurements (inches)')}</label></div>
+      ${measureFieldsHtml(s.measurements||{})}
+      <div class="field"><label>${tr('Notes (optional)')}</label><textarea id="ds_notes">${escHtml(s.notes||'')}</textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal()">${tr('Cancel')}</button>
+      <button class="btn btn-primary" onclick="saveDressSize(${typeId},${sizeId})">${tr('Save Size')}</button>
+    </div>`);
+}
+async function saveDressSize(typeId, sizeId){
+  const sizeLabel = (document.getElementById('ds_label').value||'').trim();
+  const notes = (document.getElementById('ds_notes').value||'').trim();
+  const measurements = readMeasurementsFromForm();
+  if(!sizeLabel){ toast(tr('Size label')); return; }
+  try{
+    if(sizeId){
+      const {size} = await api('/api/dress-sizes/'+sizeId,{method:'PATCH',body:JSON.stringify({sizeLabel,measurements,notes})});
+      const t = state.dressTypes.find(x=>x.id===typeId);
+      if(t){
+        const i = t.sizes.findIndex(x=>x.id===sizeId);
+        const mapped = {id:size.id, dressTypeId:typeId, sizeLabel:size.sizeLabel, measurements:size.measurements||{}, notes:size.notes||''};
+        if(i>=0) t.sizes[i]=mapped; else t.sizes.push(mapped);
+      }
+      toast(tr('Size updated'));
+    }else{
+      const {size} = await api('/api/dress-types/'+typeId+'/sizes',{method:'POST',body:JSON.stringify({sizeLabel,measurements,notes})});
+      const t = state.dressTypes.find(x=>x.id===typeId);
+      if(t){
+        t.sizes = t.sizes||[];
+        t.sizes.push({id:size.id, dressTypeId:typeId, sizeLabel:size.sizeLabel, measurements:size.measurements||{}, notes:size.notes||''});
+      }
+      toast(tr('Size saved'));
+    }
+    closeModal(); render();
+  }catch(err){ toast(err.message||'Error'); }
+}
+async function deleteDressSizeEntry(sizeId){
+  if(!confirm(tr('Delete this size?'))) return;
+  try{
+    await api('/api/dress-sizes/'+sizeId,{method:'DELETE'});
+    state.dressTypes.forEach(t=>{ t.sizes = (t.sizes||[]).filter(s=>s.id!==sizeId); });
+    toast(tr('Size deleted'));
+    render();
+  }catch(err){ toast(err.message||'Error'); }
+}
+
 /* ============================================================
    VIEW: RAW MATERIAL
 ============================================================ */
@@ -1102,7 +1589,13 @@ function openAddBatchModal(){
         <div class="field"><label>${tr('Bill Number')}</label><input id="f_bill" placeholder="e.g. MH-2298"></div>
       </div>
       <div class="field"><label>${tr('Purchased From')}</label>
-        <select id="f_supplier">${SUPPLIERS.map(s=>`<option>${s}</option>`).join('')}</select>
+        <div class="combo" id="supplierCombo">
+          <div class="combo-input-row">
+            <input id="f_supplier" autocomplete="off" placeholder="${tr('Type to search or add…')}" value="${SUPPLIERS[0]||''}" onfocus="openSupplierMenu()" oninput="filterSupplierMenu(this.value)">
+            <button type="button" class="btn btn-ghost" onclick="addSupplierFromInput()">${tr('＋ Add company')}</button>
+          </div>
+          <div class="combo-menu" id="supplierMenu"></div>
+        </div>
       </div>
       <div class="field"><label>${tr('Cloth Name / Description')}</label><input id="f_cloth" placeholder="e.g. Sky Blue Poplin"></div>
       <div class="field-row">
@@ -1141,22 +1634,98 @@ function handleBatchImageSelect(input){
   };
   reader.readAsDataURL(file);
 }
-function submitAddBatch(){
-  const meters = parseFloat(document.getElementById('f_meters').value)||0;
-  const rate = parseFloat(document.getElementById('f_rate').value)||0;
-  const b = addBatch({
+function openSupplierMenu(){
+  const menu=document.getElementById('supplierMenu'); if(!menu) return;
+  filterSupplierMenu((document.getElementById('f_supplier')||{}).value||'');
+  menu.classList.add('open');
+}
+function filterSupplierMenu(q){
+  const menu=document.getElementById('supplierMenu'); if(!menu) return;
+  const query=(q||'').trim().toLowerCase();
+  const matches=SUPPLIERS.filter(s=>!query || s.toLowerCase().includes(query));
+  let h=matches.map(s=>{
+    const safe=String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+    return '<div class="combo-option" data-name="'+safe+'" onmousedown="event.preventDefault();selectSupplier(this.dataset.name)">'+safe+'</div>';
+  }).join('');
+  if(!matches.length) h='<div class="combo-empty">'+tr('No matching companies')+'</div>';
+  if(query && !SUPPLIERS.some(s=>s.toLowerCase()===query)){
+    h+='<div class="combo-add" onmousedown="event.preventDefault();addSupplierFromInput()">'+tr('＋ Add company')+': "'+query.replace(/</g,'&lt;')+'"</div>';
+  }
+  menu.innerHTML=h; menu.classList.add('open');
+}
+function selectSupplier(name){
+  const input=document.getElementById('f_supplier'); if(input) input.value=name;
+  const menu=document.getElementById('supplierMenu'); if(menu) menu.classList.remove('open');
+}
+async function addSupplierFromInput(){
+  const input=document.getElementById('f_supplier');
+  const name=((input&&input.value)||'').trim();
+  if(!name){ toast(tr('Enter a company name')); return; }
+  try{
+    const data=await api('/api/suppliers',{method:'POST', body:JSON.stringify({name})});
+    const saved=(data.supplier&&data.supplier.name)||name;
+    if(!SUPPLIERS.includes(saved)) SUPPLIERS.push(saved);
+    SUPPLIERS.sort((a,b)=>a.localeCompare(b));
+    selectSupplier(saved);
+    toast(tr('Company saved')+': '+saved);
+  }catch(err){
+    if(!SUPPLIERS.includes(name)) SUPPLIERS.push(name);
+    selectSupplier(name);
+    toast(tr('Company saved')+': '+name);
+  }
+}
+document.addEventListener('click',(ev)=>{
+  const combo=document.getElementById('supplierCombo');
+  const menu=document.getElementById('supplierMenu');
+  if(menu && combo && !combo.contains(ev.target)) menu.classList.remove('open');
+});
+async function submitAddBatch(){
+  const meters=parseFloat(document.getElementById('f_meters').value)||0;
+  const rate=parseFloat(document.getElementById('f_rate').value)||0;
+  const saveBtn = document.querySelector('#modalRoot .btn-primary, .modal-foot .btn-primary');
+  if(saveBtn){ saveBtn.disabled = true; saveBtn.textContent = tr('Saving…') || 'Saving…'; }
+  const payload={
     clothName: document.getElementById('f_cloth').value || 'Unnamed Cloth',
-    supplier: document.getElementById('f_supplier').value,
+    supplier: (document.getElementById('f_supplier').value||'').trim() || 'Unknown',
     purchaseDate: document.getElementById('f_date').value,
     billNo: document.getElementById('f_bill').value || '—',
     pcs: parseFloat(document.getElementById('f_pcs').value)||0,
     meters, ratePerMeter: rate,
     paidAmount: parseFloat(document.getElementById('f_paid').value)||0,
-    imageUrl: pendingBatchImage,
-  });
-  closeModal();
-  toast(`Batch ${b.id} added — ${meters} M added to inventory`);
-  render();
+    imageDataUrl: pendingBatchImage,
+  };
+  // Re-request token from parent (iframe may not share sessionStorage)
+  try{ if(window.parent && window.parent!==window) window.parent.postMessage({type:'threadline-auth-request'}, '*'); }catch(e){}
+  for(let i=0;i<10 && !readAuthToken();i++){ await new Promise(r=>setTimeout(r,30)); }
+  if(!readAuthToken()){
+    if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = tr('Save Purchase'); }
+    toast(tr('Please sign in again to save raw material.'));
+    return;
+  }
+  try{
+    const data=await api('/api/batches',{method:'POST', body:JSON.stringify(payload)});
+    const b=data.batch;
+    if(!SUPPLIERS.includes(b.supplier)) SUPPLIERS.push(b.supplier);
+    // Replace any optimistic local row with the persisted one
+    state.batches = state.batches.filter(x=>x.id!==b.id);
+    state.batches.push({
+      id:b.id, clothName:b.clothName, supplier:b.supplier, purchaseDate:b.purchaseDate,
+      billNo:b.billNo, pcs:b.pcs, meters:b.meters, ratePerMeter:b.ratePerMeter,
+      amount:b.amount, paidAmount:b.paidAmount,
+      pendingAmount:b.pendingAmount!=null?b.pendingAmount:(b.amount-(b.paidAmount||0)),
+      distributedM:b.distributedM||0, imageUrl:b.imageUrl||null,
+    });
+    const num=parseInt(String(b.id).replace(/\D/g,''),10);
+    if(!isNaN(num) && num>state.seq.batch) state.seq.batch=num;
+    pendingBatchImage = null;
+    closeModal();
+    toast('Batch '+b.id+' saved to database — '+meters+' M added');
+    render();
+  }catch(err){
+    if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = tr('Save Purchase'); }
+    console.error('save batch failed', err);
+    toast(tr('Could not save raw material')+': '+err.message);
+  }
 }
 
 function viewBatchDetail(id){
@@ -1714,20 +2283,70 @@ function saveRateCard(){
 /* ============================================================
    INIT
 ============================================================ */
-function toggleDarkMode(){
-  document.documentElement.classList.toggle('dark-mode');
-  const dark = document.documentElement.classList.contains('dark-mode');
-  localStorage.setItem('threadline_erp_dark', dark ? '1' : '0');
+function syncDarkFromStorage(){
+  const dark = localStorage.getItem('threadline_dark')==='1' || localStorage.getItem('threadline_erp_dark')==='1';
+  document.documentElement.classList.toggle('dark-mode', dark);
+  localStorage.setItem('threadline_dark', dark?'1':'0');
+  localStorage.setItem('threadline_erp_dark', dark?'1':'0');
   const b=document.getElementById('darkToggle'); if(b) b.textContent=dark?'☀ Light':'☾ Dark';
+  try{ window.parent && window.parent.postMessage({type:'threadline-theme', dark}, '*'); }catch(e){}
 }
-function init(){
+function toggleDarkMode(){
+  const next = !document.documentElement.classList.contains('dark-mode');
+  localStorage.setItem('threadline_dark', next?'1':'0');
+  localStorage.setItem('threadline_erp_dark', next?'1':'0');
+  syncDarkFromStorage();
+}
+window.addEventListener('message', (ev)=>{
+  if(ev && ev.data && ev.data.type==='threadline-theme'){
+    localStorage.setItem('threadline_dark', ev.data.dark?'1':'0');
+    localStorage.setItem('threadline_erp_dark', ev.data.dark?'1':'0');
+    document.documentElement.classList.toggle('dark-mode', !!ev.data.dark);
+    const b=document.getElementById('darkToggle'); if(b) b.textContent=ev.data.dark?'☀ Light':'☾ Dark';
+  }
+});
+window.addEventListener('storage', (ev)=>{
+  if(ev.key==='threadline_dark' || ev.key==='threadline_erp_dark') syncDarkFromStorage();
+});
+
+
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const bd=document.getElementById('sidebarBackdrop');
+  if(!sb) return;
+  const open = !sb.classList.contains('open');
+  sb.classList.toggle('open', open);
+  if(bd) bd.classList.toggle('show', open);
+}
+function closeSidebar(){
+  const sb=document.getElementById('sidebar');
+  const bd=document.getElementById('sidebarBackdrop');
+  if(sb) sb.classList.remove('open');
+  if(bd) bd.classList.remove('show');
+}
+
+async function init(){
   document.title = 'CRB — Uniform Manufacturing ERP';
-  document.querySelector('.brand-sub').textContent = 'Owner Workspace';
+  const savedLang = localStorage.getItem('threadline_lang');
+  if(savedLang==='en' || savedLang==='mr') LANG = savedLang;
+  syncDarkFromStorage();
+  document.querySelector('.brand-sub').textContent = tr('Owner Workspace');
   currentWorkspace = 'internal';
-  if(localStorage.getItem('threadline_erp_dark')==='1'){document.documentElement.classList.add('dark-mode');}
+
+  try{
+    const data = await api('/api/erp/bootstrap');
+    state.batches = [];
+    state.assignments = [];
+    state.payments = {};
+    state.seq = {batch:0, assign:0};
+    applyBootstrap(data);
+  }catch(err){
+    console.warn('Bootstrap API unavailable, keeping local demo seed:', err.message);
+  }
+
   route('dashboard');
   render();
-  const b=document.getElementById('darkToggle'); if(b) b.textContent=document.documentElement.classList.contains('dark-mode')?'☀ Light':'☾ Dark';
+  syncDarkFromStorage();
 }
 init();
 </script>
