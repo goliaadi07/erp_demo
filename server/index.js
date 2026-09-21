@@ -187,6 +187,67 @@ app.get('/api/meta/next-ids', auth, (req, res) => {
   });
 });
 
+
+// ---- Dress size notes (Ladies / Gents / Kids) ----
+app.get('/api/dress-types', optionalAuth, (req, res) => {
+  const category = req.query.category || null;
+  res.json({ dressTypes: db.listDressTypes(category) });
+});
+
+app.post('/api/dress-types', auth, (req, res) => {
+  try {
+    const dressType = db.createDressType(req.body || {});
+    res.status(201).json({ dressType });
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message || 'Failed to create dress type' });
+  }
+});
+
+app.patch('/api/dress-types/:id', auth, (req, res) => {
+  try {
+    const dressType = db.updateDressType(Number(req.params.id), req.body || {});
+    res.json({ dressType });
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message || 'Failed to update dress type' });
+  }
+});
+
+app.delete('/api/dress-types/:id', auth, (req, res) => {
+  try {
+    db.deleteDressType(Number(req.params.id));
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message || 'Failed to delete dress type' });
+  }
+});
+
+app.post('/api/dress-types/:id/sizes', auth, (req, res) => {
+  try {
+    const size = db.createDressSize(Number(req.params.id), req.body || {});
+    res.status(201).json({ size });
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message || 'Failed to add size' });
+  }
+});
+
+app.patch('/api/dress-sizes/:id', auth, (req, res) => {
+  try {
+    const size = db.updateDressSize(Number(req.params.id), req.body || {});
+    res.json({ size });
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message || 'Failed to update size' });
+  }
+});
+
+app.delete('/api/dress-sizes/:id', auth, (req, res) => {
+  try {
+    db.deleteDressSize(Number(req.params.id));
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message || 'Failed to delete size' });
+  }
+});
+
 // Serve uploaded batch images
 app.get('/api/uploads/batches/:file', (req, res) => {
   const abs = db.resolveUploadPath(req.params.file);

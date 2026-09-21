@@ -138,6 +138,26 @@ function migrate(database) {
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS dress_types (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      category TEXT NOT NULL CHECK(category IN ('ladies','gents','kids')),
+      notes TEXT,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS dress_size_entries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      dress_type_id INTEGER NOT NULL,
+      size_label TEXT NOT NULL,
+      measurements TEXT NOT NULL DEFAULT '{}',
+      notes TEXT,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY(dress_type_id) REFERENCES dress_types(id) ON DELETE CASCADE
+    );
+
   `);
 
   if (tableExists(database, 'users')) {
@@ -197,6 +217,11 @@ function seedIfNeeded(database) {
   if (database.prepare('SELECT COUNT(*) AS c FROM raw_materials').get().c === 0) {
     seedDemoErp(database);
   }
+
+  if (database.prepare('SELECT COUNT(*) AS c FROM dress_types').get().c === 0) {
+    seedDressSizes(database);
+  }
+
 }
 
 function seedDemoErp(database) {
@@ -267,6 +292,259 @@ function seedDemoErp(database) {
     database.prepare('INSERT OR REPLACE INTO app_meta(key, value) VALUES(?,?)').run('seq_assign', '13');
   })();
 }
+
+function seedDressSizes(database) {
+  const insType = database.prepare(
+    'INSERT INTO dress_types(name, category, notes) VALUES(?,?,?)'
+  );
+  const insSize = database.prepare(
+    'INSERT INTO dress_size_entries(dress_type_id, size_label, measurements, notes) VALUES(?,?,?,?)'
+  );
+  const tx = database.transaction(() => {
+    const samples = [
+      {
+        name: 'Ladies Kurti',
+        category: 'ladies',
+        notes: 'Straight kurti — note chest & length carefully',
+        sizes: [
+          { label: 'S', m: { chest: 36, waist: 32, hip: 38, length: 40, shoulder: 14, sleeve: 17 } },
+          { label: 'M', m: { chest: 38, waist: 34, hip: 40, length: 42, shoulder: 14.5, sleeve: 17.5 } },
+          { label: 'L', m: { chest: 40, waist: 36, hip: 42, length: 44, shoulder: 15, sleeve: 18 } },
+        ],
+      },
+      {
+        name: 'Ladies Salwar Suit',
+        category: 'ladies',
+        notes: 'Kameez + salwar set',
+        sizes: [
+          { label: 'M', m: { chest: 38, waist: 34, hip: 40, length: 42, shoulder: 14.5, sleeve: 18 } },
+          { label: 'XL', m: { chest: 42, waist: 38, hip: 44, length: 45, shoulder: 15.5, sleeve: 18.5 } },
+        ],
+      },
+      {
+        name: 'Gents Shirt',
+        category: 'gents',
+        notes: 'Full sleeve formal shirt',
+        sizes: [
+          { label: '38', m: { chest: 38, waist: 34, length: 28, shoulder: 17, sleeve: 24 } },
+          { label: '40', m: { chest: 40, waist: 36, length: 29, shoulder: 17.5, sleeve: 24.5 } },
+          { label: '42', m: { chest: 42, waist: 38, length: 30, shoulder: 18, sleeve: 25 } },
+        ],
+      },
+      {
+        name: 'Gents Pant',
+        category: 'gents',
+        notes: 'Trouser — waist & inseam',
+        sizes: [
+          { label: '30', m: { waist: 30, hip: 36, length: 40, inseam: 30 } },
+          { label: '32', m: { waist: 32, hip: 38, length: 41, inseam: 31 } },
+          { label: '34', m: { waist: 34, hip: 40, length: 42, inseam: 32 } },
+        ],
+      },
+      {
+        name: 'Kids Uniform Shirt',
+        category: 'kids',
+        notes: 'School shirt ages ~6–10',
+        sizes: [
+          { label: '6Y', m: { chest: 26, length: 20, shoulder: 11, sleeve: 14 } },
+          { label: '8Y', m: { chest: 28, length: 22, shoulder: 12, sleeve: 15 } },
+          { label: '10Y', m: { chest: 30, length: 24, shoulder: 12.5, sleeve: 16 } },
+        ],
+      },
+      {
+        name: 'Kids Frock',
+        category: 'kids',
+        notes: 'A-line frock',
+        sizes: [
+          { label: 'S', m: { chest: 24, waist: 22, length: 22, shoulder: 10 } },
+          { label: 'M', m: { chest: 26, waist: 24, length: 24, shoulder: 11 } },
+        ],
+      },
+    ];
+    for (const s of samples) {
+      const info = insType.run(s.name, s.category, s.notes);
+      const typeId = Number(info.lastInsertRowid);
+      for (const sz of s.sizes) {
+        insSize.run(typeId, sz.label, JSON.stringify(sz.m), null);
+      }
+    }
+  });
+  tx();
+}
+
+function parseMeasurements(raw) {
+  if (!raw) return {};
+  if (typeof raw === 'object') return raw;
+  try { return JSON.parse(raw); } catch { return {}; }
+}
+
+function mapSizeEntry(row) {
+  return {
+    id: row.id,
+    dressTypeId: row.dress_type_id,
+    sizeLabel: row.size_label,
+    measurements: parseMeasurements(row.measurements),
+    notes: row.notes || '',
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function mapDressType(row, sizes) {
+  return {
+    id: row.id,
+    name: row.name,
+    category: row.category,
+    notes: row.notes || '',
+    createdAt: row.created_at,
+    sizes: (sizes || []).map(mapSizeEntry),
+  };
+}
+
+function listDressTypes(category) {
+  const database = getDb();
+  let types;
+  if (category) {
+    types = database.prepare(
+      'SELECT * FROM dress_types WHERE category=? ORDER BY name COLLATE NOCASE'
+    ).all(category);
+  } else {
+    types = database.prepare(
+      'SELECT * FROM dress_types ORDER BY category, name COLLATE NOCASE'
+    ).all();
+  }
+  const sizeStmt = database.prepare(
+    'SELECT * FROM dress_size_entries WHERE dress_type_id=? ORDER BY id'
+  );
+  return types.map((t) => mapDressType(t, sizeStmt.all(t.id)));
+}
+
+function getDressType(id) {
+  const database = getDb();
+  const row = database.prepare('SELECT * FROM dress_types WHERE id=?').get(id);
+  if (!row) return null;
+  const sizes = database.prepare(
+    'SELECT * FROM dress_size_entries WHERE dress_type_id=? ORDER BY id'
+  ).all(id);
+  return mapDressType(row, sizes);
+}
+
+function createDressType(payload) {
+  const name = String(payload.name || '').trim();
+  const category = String(payload.category || '').trim().toLowerCase();
+  if (!name) {
+    const err = new Error('Dress name is required');
+    err.status = 400;
+    throw err;
+  }
+  if (!['ladies', 'gents', 'kids'].includes(category)) {
+    const err = new Error('Category must be ladies, gents, or kids');
+    err.status = 400;
+    throw err;
+  }
+  const info = getDb().prepare(
+    'INSERT INTO dress_types(name, category, notes) VALUES(?,?,?)'
+  ).run(name, category, payload.notes || null);
+  return getDressType(Number(info.lastInsertRowid));
+}
+
+function updateDressType(id, payload) {
+  const existing = getDb().prepare('SELECT * FROM dress_types WHERE id=?').get(id);
+  if (!existing) {
+    const err = new Error('Dress type not found');
+    err.status = 404;
+    throw err;
+  }
+  const name = payload.name != null ? String(payload.name).trim() : existing.name;
+  let category = payload.category != null ? String(payload.category).trim().toLowerCase() : existing.category;
+  if (!name) {
+    const err = new Error('Dress name is required');
+    err.status = 400;
+    throw err;
+  }
+  if (!['ladies', 'gents', 'kids'].includes(category)) {
+    const err = new Error('Category must be ladies, gents, or kids');
+    err.status = 400;
+    throw err;
+  }
+  const notes = payload.notes != null ? payload.notes : existing.notes;
+  getDb().prepare(
+    'UPDATE dress_types SET name=?, category=?, notes=? WHERE id=?'
+  ).run(name, category, notes, id);
+  return getDressType(id);
+}
+
+function deleteDressType(id) {
+  const info = getDb().prepare('DELETE FROM dress_types WHERE id=?').run(id);
+  if (!info.changes) {
+    const err = new Error('Dress type not found');
+    err.status = 404;
+    throw err;
+  }
+  return { ok: true };
+}
+
+function createDressSize(dressTypeId, payload) {
+  const type = getDb().prepare('SELECT id FROM dress_types WHERE id=?').get(dressTypeId);
+  if (!type) {
+    const err = new Error('Dress type not found');
+    err.status = 404;
+    throw err;
+  }
+  const label = String(payload.sizeLabel || payload.label || '').trim();
+  if (!label) {
+    const err = new Error('Size label is required');
+    err.status = 400;
+    throw err;
+  }
+  const measurements = payload.measurements && typeof payload.measurements === 'object'
+    ? payload.measurements
+    : {};
+  const info = getDb().prepare(
+    'INSERT INTO dress_size_entries(dress_type_id, size_label, measurements, notes) VALUES(?,?,?,?)'
+  ).run(dressTypeId, label, JSON.stringify(measurements), payload.notes || null);
+  const row = getDb().prepare('SELECT * FROM dress_size_entries WHERE id=?').get(Number(info.lastInsertRowid));
+  return mapSizeEntry(row);
+}
+
+function updateDressSize(id, payload) {
+  const existing = getDb().prepare('SELECT * FROM dress_size_entries WHERE id=?').get(id);
+  if (!existing) {
+    const err = new Error('Size entry not found');
+    err.status = 404;
+    throw err;
+  }
+  const label = payload.sizeLabel != null || payload.label != null
+    ? String(payload.sizeLabel || payload.label || '').trim()
+    : existing.size_label;
+  if (!label) {
+    const err = new Error('Size label is required');
+    err.status = 400;
+    throw err;
+  }
+  const measurements = payload.measurements && typeof payload.measurements === 'object'
+    ? payload.measurements
+    : parseMeasurements(existing.measurements);
+  const notes = payload.notes != null ? payload.notes : existing.notes;
+  getDb().prepare(
+    `UPDATE dress_size_entries
+     SET size_label=?, measurements=?, notes=?, updated_at=CURRENT_TIMESTAMP
+     WHERE id=?`
+  ).run(label, JSON.stringify(measurements), notes, id);
+  const row = getDb().prepare('SELECT * FROM dress_size_entries WHERE id=?').get(id);
+  return mapSizeEntry(row);
+}
+
+function deleteDressSize(id) {
+  const info = getDb().prepare('DELETE FROM dress_size_entries WHERE id=?').run(id);
+  if (!info.changes) {
+    const err = new Error('Size entry not found');
+    err.status = 404;
+    throw err;
+  }
+  return { ok: true };
+}
+
 
 function getMeta(key, fallback) {
   const row = getDb().prepare('SELECT value FROM app_meta WHERE key=?').get(key);
@@ -363,6 +641,7 @@ function getBootstrap() {
     batches,
     assignments,
     payments,
+    dressTypes: listDressTypes(),
     seq: {
       batch: parseInt(getMeta('seq_batch', String(batches.length)), 10),
       assign: parseInt(getMeta('seq_assign', String(assignments.length)), 10),
@@ -579,6 +858,14 @@ module.exports = {
   audit,
   listAudit,
   resolveUploadPath,
+  listDressTypes,
+  getDressType,
+  createDressType,
+  updateDressType,
+  deleteDressType,
+  createDressSize,
+  updateDressSize,
+  deleteDressSize,
   UPLOAD_DIR,
   DB_PATH,
 };
