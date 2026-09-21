@@ -10,7 +10,10 @@ const Database = require('better-sqlite3');
 const bcrypt = require('bcryptjs');
 
 const ROOT = path.join(__dirname, '..');
-const DB_DIR = path.join(ROOT, 'data');
+// On Vercel the deployment FS is read-only except /tmp — keep SQLite + uploads there.
+const DB_DIR = process.env.VERCEL
+  ? path.join('/tmp', 'threadline-data')
+  : path.join(ROOT, 'data');
 const UPLOAD_DIR = path.join(DB_DIR, 'uploads', 'batches');
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 

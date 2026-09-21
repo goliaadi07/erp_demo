@@ -7,3 +7,5 @@ data/*.db-*
 data/uploads/
 *.log
 .DS_Store
+.vercel
+.env*

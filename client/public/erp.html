@@ -327,6 +327,52 @@ html.dark-mode .upload-btn{background:#201F3C!important;border-color:#423D77!imp
 html.dark-mode .workspace-tab.active{background:#202A40!important;color:#DCD8FF!important}
 html.dark-mode #shell{background:radial-gradient(circle at 85% 0%,#25234E 0,transparent 28%),var(--canvas)!important}
 
+
+/* table-scroll panel overflow */
+.panel{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* ===== Mobile / responsive ERP ===== */
+.menu-btn{display:none;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--canvas);color:var(--ink);font-size:20px;cursor:pointer;flex-shrink:0}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(10,16,32,.45);z-index:35}
+.sidebar-backdrop.show{display:block}
+.table-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table-scroll table{min-width:640px}
+@media(max-width:1000px){
+  .menu-btn{display:inline-flex}
+  #sidebar{position:fixed !important;left:0 !important;top:0;bottom:0;width:min(280px,86vw);transform:translateX(-105%);z-index:45;transition:transform .22s ease;box-shadow:none}
+  #sidebar.open{transform:translateX(0);box-shadow:12px 0 40px rgba(0,0,0,.28)}
+  #main{width:100%;max-width:100%}
+}
+@media(max-width:720px){
+  #topbar{height:auto;min-height:64px;flex-wrap:wrap;gap:8px;padding:10px 12px;margin:0 -12px 14px}
+  .searchbox{order:3;width:100%;max-width:none}
+  .topbar-right{gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .workspace-tabs{order:4;width:100%}
+  .workspace-tab{flex:1;text-align:center;padding:8px 6px}
+  .page-head{flex-direction:column;align-items:stretch;gap:12px}
+  .page-head .btn{width:100%}
+  .kpi-grid,.dept-grid,.card-grid,.summary-strip{grid-template-columns:1fr !important}
+  .field-row{grid-template-columns:1fr !important}
+  .modal{width:min(100vw - 16px, 520px);max-height:92vh;overflow:auto;margin:8px}
+  .modal-head,.modal-body,.modal-foot{padding:14px 16px}
+  .modal-foot{flex-wrap:wrap;gap:8px}
+  .modal-foot .btn{flex:1;min-width:120px}
+  .combo-input-row{flex-direction:column}
+  .combo-input-row .btn{width:100%}
+  .pipeline{overflow-x:auto;padding-bottom:8px}
+  .pipe-stage{min-width:150px}
+  .role-pill select{max-width:110px}
+  .btn,.lang-btn,.dark-toggle,.workspace-tab,.nav-link{min-height:40px}
+  .nav-link{padding:12px 11px}
+  .upload-row{flex-wrap:wrap}
+}
+@media(max-width:480px){
+  h1.page-title{font-size:22px}
+  .kpi-value{font-size:22px}
+  .topbar-right .bell{display:none}
+}
+html.dark-mode .menu-btn{background:#111A2C;border-color:#26334B}
+html.dark-mode .sidebar-backdrop{background:rgba(0,0,0,.55)}
+
 </style>
 </head>
 <body>
@@ -345,8 +391,10 @@ html.dark-mode #shell{background:radial-gradient(circle at 85% 0%,#25234E 0,tran
     <div class="sidebar-foot">Prototype demo · in-memory data</div>
   </aside>
 
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
   <div id="main">
     <div id="topbar">
+      <button type="button" class="menu-btn" id="menuBtn" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
       <div class="searchbox">
         <span>⌕</span>
         <input id="globalSearch" placeholder="Search employee, batch, order…" oninput="onGlobalSearch(this.value)">
@@ -533,9 +581,19 @@ function tr(s){ return LANG==='mr' ? (T[s] || s) : s; }
 
 
 /* ===== API persistence helpers ===== */
+let __authToken = null;
+function readAuthToken(){
+  if(__authToken) return __authToken;
+  try{
+    const t = sessionStorage.getItem('threadline_token') || localStorage.getItem('threadline_token');
+    if(t){ __authToken = t; return t; }
+  }catch(e){}
+  return null;
+}
 function authHeaders(){
   const h={'Content-Type':'application/json'};
-  try{ const t=sessionStorage.getItem('threadline_token'); if(t) h.Authorization='Bearer '+t; }catch(e){}
+  const t = readAuthToken();
+  if(t) h.Authorization = 'Bearer '+t;
   return h;
 }
 async function api(url, opts={}){
@@ -544,6 +602,25 @@ async function api(url, opts={}){
   if(!res.ok) throw new Error(data.message||('HTTP '+res.status));
   return data;
 }
+window.addEventListener('message', (ev)=>{
+  if(!ev || !ev.data) return;
+  if(ev.data.type==='threadline-auth' && ev.data.token){
+    __authToken = ev.data.token;
+    try{
+      sessionStorage.setItem('threadline_token', ev.data.token);
+      localStorage.setItem('threadline_token', ev.data.token);
+    }catch(e){}
+  }
+  if(ev.data.type==='threadline-auth-clear'){
+    __authToken = null;
+    try{
+      sessionStorage.removeItem('threadline_token');
+      localStorage.removeItem('threadline_token');
+    }catch(e){}
+  }
+});
+// Ask parent for token (iframe may not share sessionStorage reliably)
+try{ if(window.parent && window.parent!==window) window.parent.postMessage({type:'threadline-auth-request'}, '*'); }catch(e){}
 function applyBootstrap(data){
   if(!data) return;
   if(Array.isArray(data.suppliers)&&data.suppliers.length){
@@ -863,6 +940,7 @@ const CLIENT_NAV = [
 ];
 
 function route(hash){
+  try{ closeSidebar(); }catch(e){}
   if(!hash) hash = currentRole==='employee' ? 'mypassbook' : 'dashboard';
   window.location.hash = hash;
 }
@@ -1295,6 +1373,8 @@ document.addEventListener('click',(ev)=>{
 async function submitAddBatch(){
   const meters=parseFloat(document.getElementById('f_meters').value)||0;
   const rate=parseFloat(document.getElementById('f_rate').value)||0;
+  const saveBtn = document.querySelector('#modalRoot .btn-primary, .modal-foot .btn-primary');
+  if(saveBtn){ saveBtn.disabled = true; saveBtn.textContent = tr('Saving…') || 'Saving…'; }
   const payload={
     clothName: document.getElementById('f_cloth').value || 'Unnamed Cloth',
     supplier: (document.getElementById('f_supplier').value||'').trim() || 'Unknown',
@@ -1305,30 +1385,37 @@ async function submitAddBatch(){
     paidAmount: parseFloat(document.getElementById('f_paid').value)||0,
     imageDataUrl: pendingBatchImage,
   };
+  // Re-request token from parent (iframe may not share sessionStorage)
+  try{ if(window.parent && window.parent!==window) window.parent.postMessage({type:'threadline-auth-request'}, '*'); }catch(e){}
+  for(let i=0;i<10 && !readAuthToken();i++){ await new Promise(r=>setTimeout(r,30)); }
+  if(!readAuthToken()){
+    if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = tr('Save Purchase'); }
+    toast(tr('Please sign in again to save raw material.'));
+    return;
+  }
   try{
     const data=await api('/api/batches',{method:'POST', body:JSON.stringify(payload)});
     const b=data.batch;
     if(!SUPPLIERS.includes(b.supplier)) SUPPLIERS.push(b.supplier);
+    // Replace any optimistic local row with the persisted one
+    state.batches = state.batches.filter(x=>x.id!==b.id);
     state.batches.push({
       id:b.id, clothName:b.clothName, supplier:b.supplier, purchaseDate:b.purchaseDate,
       billNo:b.billNo, pcs:b.pcs, meters:b.meters, ratePerMeter:b.ratePerMeter,
-      amount:b.amount, paidAmount:b.paidAmount, pendingAmount:b.pendingAmount,
+      amount:b.amount, paidAmount:b.paidAmount,
+      pendingAmount:b.pendingAmount!=null?b.pendingAmount:(b.amount-(b.paidAmount||0)),
       distributedM:b.distributedM||0, imageUrl:b.imageUrl||null,
     });
     const num=parseInt(String(b.id).replace(/\D/g,''),10);
     if(!isNaN(num) && num>state.seq.batch) state.seq.batch=num;
+    pendingBatchImage = null;
     closeModal();
-    toast('Batch '+b.id+' added — '+meters+' M added to inventory');
+    toast('Batch '+b.id+' saved to database — '+meters+' M added');
     render();
   }catch(err){
-    const b=addBatch({
-      clothName:payload.clothName, supplier:payload.supplier, purchaseDate:payload.purchaseDate,
-      billNo:payload.billNo, pcs:payload.pcs, meters:payload.meters, ratePerMeter:payload.ratePerMeter,
-      paidAmount:payload.paidAmount, imageUrl: pendingBatchImage,
-    });
-    closeModal();
-    toast('Batch '+b.id+' added (offline) — '+err.message);
-    render();
+    if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = tr('Save Purchase'); }
+    console.error('save batch failed', err);
+    toast(tr('Could not save raw material')+': '+err.message);
   }
 }
 
@@ -1912,6 +1999,22 @@ window.addEventListener('message', (ev)=>{
 window.addEventListener('storage', (ev)=>{
   if(ev.key==='threadline_dark' || ev.key==='threadline_erp_dark') syncDarkFromStorage();
 });
+
+
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const bd=document.getElementById('sidebarBackdrop');
+  if(!sb) return;
+  const open = !sb.classList.contains('open');
+  sb.classList.toggle('open', open);
+  if(bd) bd.classList.toggle('show', open);
+}
+function closeSidebar(){
+  const sb=document.getElementById('sidebar');
+  const bd=document.getElementById('sidebarBackdrop');
+  if(sb) sb.classList.remove('open');
+  if(bd) bd.classList.remove('show');
+}
 
 async function init(){
   document.title = 'CRB — Uniform Manufacturing ERP';

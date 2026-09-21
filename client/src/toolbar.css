@@ -2,3 +2,6 @@
 .erp-toolbar button{cursor:pointer}
 html[data-theme="dark"] .erp-wrap{background:#0c1220}
 html[data-theme="dark"] .erp-wrap iframe{background:#0c1220}
+@media (max-width:720px){
+  .erp-toolbar{flex-wrap:wrap}
+}

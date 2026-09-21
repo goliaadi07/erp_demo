@@ -210,7 +210,11 @@ if (fs.existsSync(DIST)) {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`Threadline API listening on http://127.0.0.1:${PORT}`);
-  console.log(`SQLite database: ${db.DB_PATH}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Threadline API listening on http://127.0.0.1:${PORT}`);
+    console.log(`SQLite database: ${db.DB_PATH}`);
+  });
+}
+
+module.exports = app;

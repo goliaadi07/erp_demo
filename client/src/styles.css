@@ -2,3 +2,13 @@
 
 html[data-theme="dark"] .erp-wrap{background:#0b1220}
 html[data-theme="dark"] .erp-wrap iframe{background:#0b1220}
+
+/* Mobile shell */
+@media (max-width:720px){
+  .login-page{padding:16px;align-items:flex-start;padding-top:32px}
+  .login-card{width:100%;padding:22px 18px;border-radius:14px}
+  .erp-toolbar{height:auto;min-height:44px;flex-wrap:wrap;gap:8px;padding:8px 10px}
+  .erp-toolbar-user{font-size:11px}
+  .erp-toolbar-actions{display:flex;gap:6px}
+  .erp-toolbar button{padding:8px 10px;min-height:36px}
+}
