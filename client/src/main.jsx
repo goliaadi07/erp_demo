@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import './styles.css';
 import './toolbar.css';
@@ -6,6 +6,12 @@ import './crb-redesign.css';
 
 const DEMO_USER='admin';
 const DEMO_PASSWORD='Threadline@123';
+
+function applyTheme(dark){
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  localStorage.setItem('threadline_dark', dark ? '1' : '0');
+  localStorage.setItem('threadline_erp_dark', dark ? '1' : '0');
+}
 
 function Login({onLogin}){
   const [username,setUsername]=useState(DEMO_USER);
@@ -37,16 +43,42 @@ function Login({onLogin}){
 
 function App(){
   const [user,setUser]=useState(null);
-  const [dark,setDark]=useState(localStorage.getItem('threadline_dark')==='1');
-  useEffect(()=>{document.documentElement.dataset.theme=dark?'dark':'light';localStorage.setItem('threadline_dark',dark?'1':'0')},[dark]);
+  const [dark,setDark]=useState(()=>localStorage.getItem('threadline_dark')==='1' || localStorage.getItem('threadline_erp_dark')==='1');
+  const iframeRef=useRef(null);
+
+  useEffect(()=>{
+    applyTheme(dark);
+    const frame=iframeRef.current;
+    if(frame && frame.contentWindow){
+      try{ frame.contentWindow.postMessage({type:'threadline-theme', dark}, '*'); }catch(e){}
+    }
+  },[dark]);
+
+  useEffect(()=>{
+    const onMsg=(ev)=>{
+      if(ev && ev.data && ev.data.type==='threadline-theme'){
+        setDark(!!ev.data.dark);
+      }
+    };
+    window.addEventListener('message', onMsg);
+    return ()=>window.removeEventListener('message', onMsg);
+  },[]);
+
   useEffect(()=>{
     const token=sessionStorage.getItem('threadline_token');
     if(token) fetch('/api/auth/me',{headers:{Authorization:`Bearer ${token}`}}).then(r=>r.ok?r.json():null).then(d=>d&&setUser(d.user)).catch(()=>{});
   },[]);
+
   if(!user) return <Login onLogin={setUser}/>;
   return <div className="erp-wrap">
-    <div className="erp-toolbar"><span>Signed in as <b>{user.username}</b></span><div><button onClick={()=>setDark(v=>!v)}>{dark?'☀ Light':'☾ Dark'}</button><button onClick={()=>{sessionStorage.removeItem('threadline_token');setUser(null)}}>Sign out</button></div></div>
-    <iframe title="CRB ERP" src="/erp.html" />
+    <div className="erp-toolbar">
+      <span>Signed in as <b>{user.username}</b></span>
+      <div>
+        <button type="button" onClick={()=>setDark(v=>!v)}>{dark?'☀ Light':'☾ Dark'}</button>
+        <button type="button" onClick={()=>{sessionStorage.removeItem('threadline_token');setUser(null)}}>Sign out</button>
+      </div>
+    </div>
+    <iframe ref={iframeRef} title="CRB ERP" src="/erp.html" />
   </div>
 }
 createRoot(document.getElementById('root')).render(<App/>);

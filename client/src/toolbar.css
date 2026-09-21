@@ -1,3 +1,4 @@
-.erp-toolbar button:first-child {
-  display: none;
-}
+/* Keep both toolbar actions visible; theme stays in sync with erp.html via localStorage + postMessage */
+.erp-toolbar button{cursor:pointer}
+html[data-theme="dark"] .erp-wrap{background:#0c1220}
+html[data-theme="dark"] .erp-wrap iframe{background:#0c1220}
