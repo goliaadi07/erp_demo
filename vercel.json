@@ -11,6 +11,9 @@
   },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" },
-    { "source": "/((?!api/).*)", "destination": "/$1" }
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/admin/(.*)", "destination": "/admin/index.html" },
+    { "source": "/product/(.*)", "destination": "/index.html" },
+    { "source": "/((?!api/|admin/|assets/).*)", "destination": "/index.html" }
   ]
 }

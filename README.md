@@ -2,6 +2,21 @@
 
 Uniform manufacturing ERP demo with a React auth shell, bilingual (English / Marathi) ERP UI, dark mode, raw-material photos, and SQLite persistence.
 
+## Routes
+| Path | What |
+|------|------|
+| `/` | Public customer website (no login): search, featured carousel, product grid, “Request a quote” form |
+| `/product/:id` | Product detail (opens over the catalogue) with a prefilled quote form |
+| `/admin` | Owners' dashboard (login below). Header bell shows unread quote requests, polled every 25s |
+
+The public site (`client/index.html` → `client/src/site/`) and the dashboard (`client/admin/index.html` → `client/src/main.jsx`) are separate Vite entries, so the public bundle contains no dashboard code.
+
+### Quote API
+- `GET /api/public/products`, `GET /api/public/products/:id` — public, customer-safe product fields only
+- `POST /api/quotes` — public; validates first name, surname, mobile, email, product; honeypot field `website`, per-field length caps, light per-IP rate limit
+- `GET /api/quotes` (JWT) — newest first + `unreadCount`
+- `PATCH /api/quotes/:id/read` (JWT), `POST /api/quotes/read-all` (JWT)
+
 ## Demo login
 - **Username:** `admin`
 - **Password:** `Threadline@123`
@@ -50,6 +65,8 @@ On first server start, SQLite is created at `data/threadline.db` (override with 
 | `assignments` | Work orders across departments |
 | `payments` | Settled amounts per employee |
 | `app_meta` | Sequence counters |
+| `products` | Public catalogue, seeded from the ERP item master (shirt, pant, skirt, …); customer-facing fields only |
+| `quote_requests` | “Request a quote” submissions from the public site (`is_read` / `status`) |
 
 Seed recreates demo suppliers, employees, batches, and assignments so the UI matches the original in-memory demo.
 

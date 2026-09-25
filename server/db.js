@@ -158,6 +158,39 @@ function migrate(database) {
       FOREIGN KEY(dress_type_id) REFERENCES dress_types(id) ON DELETE CASCADE
     );
 
+    -- Garment products (same ids as the ERP item master: shirt, pant, ...).
+    -- Only customer-facing fields live here; piece rates / cloth usage stay internal.
+    CREATE TABLE IF NOT EXISTS products (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      category TEXT NOT NULL,
+      description TEXT,
+      details TEXT,
+      sizes TEXT,
+      price REAL,
+      image_url TEXT,
+      featured INTEGER NOT NULL DEFAULT 0,
+      tagline TEXT,
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      active INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS quote_requests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      first_name TEXT NOT NULL,
+      surname TEXT NOT NULL,
+      mobile TEXT NOT NULL,
+      email TEXT NOT NULL,
+      product_id TEXT,
+      product_name TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'new',
+      is_read INTEGER NOT NULL DEFAULT 0,
+      read_at TEXT,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE INDEX IF NOT EXISTS idx_quote_requests_created ON quote_requests(created_at DESC);
+
   `);
 
   if (tableExists(database, 'users')) {
@@ -222,6 +255,166 @@ function seedIfNeeded(database) {
     seedDressSizes(database);
   }
 
+  if (database.prepare('SELECT COUNT(*) AS c FROM products').get().c === 0) {
+    seedProducts(database);
+  }
+}
+
+// Seeded from the ERP item master (client ITEMS in erp.html) so the public
+// catalogue and production use the same product ids and names.
+const PRODUCT_SEED = [
+  {
+    id: 'shirt', name: 'Shirt', category: 'School Uniform', featured: 1,
+    tagline: 'Crisp, durable uniform shirts for every season',
+    description: 'Half and full sleeve uniform shirts in poly-cotton and oxford fabrics, stitched for daily wear and frequent washing.',
+    details: 'Available in school and corporate colours. Custom pocket embroidery, logo badges and button colours on request. Suitable for bulk school and institutional orders.',
+    sizes: '22–46 (kids to adult)',
+  },
+  {
+    id: 'pant', name: 'Pant', category: 'School Uniform', featured: 1,
+    tagline: 'Tailored uniform trousers built to last',
+    description: 'Uniform trousers with reinforced seams, adjustable waist options and a clean, formal finish.',
+    details: 'Terry-wool, poly-viscose and cotton blends. Elastic or belt-loop waist, single or double pleat. Bulk sizing charts available for schools.',
+    sizes: 'Waist 20–40',
+  },
+  {
+    id: 'skirt', name: 'Skirt', category: 'School Uniform', featured: 1,
+    tagline: 'Pleated and A-line skirts in school colours',
+    description: 'Box-pleated and A-line uniform skirts with neat pleats that hold their shape wash after wash.',
+    details: 'Checks and solids in poly-cotton and terry-wool. Side zip or elastic waist. Matching pinafores and ties can be supplied together.',
+    sizes: 'Waist 18–34, lengths on request',
+  },
+  {
+    id: 'pinaco', name: 'Pinaco', category: 'Kids Wear', featured: 1,
+    tagline: 'Comfortable pinafores for the youngest learners',
+    description: 'Pinafore (pinaco) dresses for pre-primary and primary students, designed for comfort and easy dressing.',
+    details: 'Soft, breathable fabric with adjustable straps or buttoned shoulders. Pair with our uniform shirts for a complete set.',
+    sizes: 'Ages 3–10',
+  },
+  {
+    id: 'grammer', name: 'Grammer', category: 'Kids Wear', featured: 0,
+    tagline: 'Sturdy dungaree-style grammers',
+    description: 'Grammer / dungaree-style uniform wear for young children, made for active school days.',
+    details: 'Durable twill and poly-cotton fabrics with secure buttons and generous seam allowances for growing kids.',
+    sizes: 'Ages 3–10',
+  },
+  {
+    id: 'halfhastin', name: 'Half Hastin', category: 'School Uniform', featured: 0,
+    tagline: 'Half-sleeve essentials',
+    description: 'Half-sleeve (half hastin) uniform tops for warmer months and sports days.',
+    details: 'Lightweight cotton-rich fabrics, colour-fast dyes and optional school crest printing or embroidery.',
+    sizes: '22–44',
+  },
+  {
+    id: 'bandi', name: 'Bandi', category: 'Ethnic & Occasion', featured: 1,
+    tagline: 'Smart bandi jackets for events and uniforms',
+    description: 'Sleeveless bandi (Nehru-style) jackets for school functions, staff uniforms and festive occasions.',
+    details: 'Available in solid, textured and jacquard fabrics with contrast piping and custom buttons. Great for annual days and team uniforms.',
+    sizes: '24–46',
+  },
+];
+
+function seedProducts(database) {
+  const ins = database.prepare(`
+    INSERT INTO products(id, name, category, description, details, sizes, price, image_url, featured, tagline, sort_order, active)
+    VALUES (?,?,?,?,?,?,NULL,NULL,?,?,?,1)
+  `);
+  database.transaction(() => {
+    PRODUCT_SEED.forEach((p, i) => ins.run(
+      p.id, p.name, p.category, p.description, p.details, p.sizes, p.featured, p.tagline, i + 1
+    ));
+  })();
+}
+
+// ---- Public catalogue (customer-safe fields only) ----
+const PUBLIC_PRODUCT_COLUMNS = 'id, name, category, description, details, sizes, price, image_url, featured, tagline';
+
+function mapPublicProduct(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    category: row.category,
+    description: row.description || '',
+    details: row.details || '',
+    sizes: row.sizes || '',
+    price: row.price == null ? null : Number(row.price),
+    imageUrl: row.image_url || null,
+    featured: !!row.featured,
+    tagline: row.tagline || '',
+  };
+}
+
+function listPublicProducts() {
+  return getDb().prepare(
+    `SELECT ${PUBLIC_PRODUCT_COLUMNS} FROM products WHERE active=1 ORDER BY sort_order, name COLLATE NOCASE`
+  ).all().map(mapPublicProduct);
+}
+
+function getPublicProduct(id) {
+  const row = getDb().prepare(
+    `SELECT ${PUBLIC_PRODUCT_COLUMNS} FROM products WHERE id=? AND active=1`
+  ).get(String(id));
+  return row ? mapPublicProduct(row) : null;
+}
+
+// ---- Quote requests ----
+function sqliteUtcToIso(ts) {
+  if (!ts) return null;
+  return /Z$|[+-]\d\d:?\d\d$/.test(ts) ? ts : `${String(ts).replace(' ', 'T')}Z`;
+}
+
+function mapQuote(row) {
+  return {
+    id: row.id,
+    firstName: row.first_name,
+    surname: row.surname,
+    mobile: row.mobile,
+    email: row.email,
+    productId: row.product_id,
+    productName: row.product_name,
+    status: row.status,
+    isRead: !!row.is_read,
+    readAt: sqliteUtcToIso(row.read_at),
+    createdAt: sqliteUtcToIso(row.created_at),
+  };
+}
+
+function createQuoteRequest(q) {
+  const info = getDb().prepare(`
+    INSERT INTO quote_requests(first_name, surname, mobile, email, product_id, product_name)
+    VALUES (?,?,?,?,?,?)
+  `).run(q.firstName, q.surname, q.mobile, q.email, q.productId, q.productName);
+  return mapQuote(getDb().prepare('SELECT * FROM quote_requests WHERE id=?').get(Number(info.lastInsertRowid)));
+}
+
+function listQuoteRequests(limit = 200) {
+  const database = getDb();
+  const quotes = database.prepare(
+    'SELECT * FROM quote_requests ORDER BY created_at DESC, id DESC LIMIT ?'
+  ).all(limit).map(mapQuote);
+  const unreadCount = database.prepare('SELECT COUNT(*) AS c FROM quote_requests WHERE is_read=0').get().c;
+  const total = database.prepare('SELECT COUNT(*) AS c FROM quote_requests').get().c;
+  return { quotes, unreadCount, total };
+}
+
+function markQuoteRead(id) {
+  const database = getDb();
+  const info = database.prepare(
+    "UPDATE quote_requests SET is_read=1, status=CASE WHEN status='new' THEN 'read' ELSE status END, read_at=COALESCE(read_at, CURRENT_TIMESTAMP) WHERE id=?"
+  ).run(id);
+  if (!info.changes) {
+    const err = new Error('Quote request not found');
+    err.status = 404;
+    throw err;
+  }
+  return mapQuote(database.prepare('SELECT * FROM quote_requests WHERE id=?').get(id));
+}
+
+function markAllQuotesRead() {
+  const info = getDb().prepare(
+    "UPDATE quote_requests SET is_read=1, status=CASE WHEN status='new' THEN 'read' ELSE status END, read_at=COALESCE(read_at, CURRENT_TIMESTAMP) WHERE is_read=0"
+  ).run();
+  return info.changes;
 }
 
 function seedDemoErp(database) {
@@ -866,6 +1059,12 @@ module.exports = {
   createDressSize,
   updateDressSize,
   deleteDressSize,
+  listPublicProducts,
+  getPublicProduct,
+  createQuoteRequest,
+  listQuoteRequests,
+  markQuoteRead,
+  markAllQuotesRead,
   UPLOAD_DIR,
   DB_PATH,
 };

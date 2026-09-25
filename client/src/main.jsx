@@ -1,8 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import './styles.css';
 import './toolbar.css';
 import './crb-redesign.css';
+import './quote-bell.css';
+import QuoteBell from './QuoteBell.jsx';
 
 const DEMO_USER = 'admin';
 const DEMO_PASSWORD = 'Threadline@123';
@@ -73,6 +75,14 @@ function App(){
   const [user,setUser]=useState(null);
   const [dark,setDark]=useState(()=>localStorage.getItem('threadline_dark')==='1' || localStorage.getItem('threadline_erp_dark')==='1');
   const iframeRef=useRef(null);
+  const [quotesOpen,setQuotesOpen]=useState(false);
+  const unreadRef=useRef(0);
+  const pushUnreadToIframe=useCallback((count)=>{
+    unreadRef.current=count;
+    const frame=iframeRef.current;
+    try{ if(frame && frame.contentWindow) frame.contentWindow.postMessage({type:'threadline-quotes', unread:count}, '*'); }catch(e){}
+  },[]);
+  const signOut=useCallback(()=>{clearToken();setQuotesOpen(false);setUser(null)},[]);
 
   useEffect(()=>{
     applyTheme(dark);
@@ -90,6 +100,9 @@ function App(){
       }
       if(ev.data.type==='threadline-auth-request'){
         pushAuthToIframe(iframeRef.current);
+      }
+      if(ev.data.type==='threadline-open-quotes'){
+        setQuotesOpen(true);
       }
     };
     window.addEventListener('message', onMsg);
@@ -110,8 +123,9 @@ function App(){
     <div className="erp-toolbar">
       <span className="erp-toolbar-user">Signed in as <b>{user.username}</b></span>
       <div className="erp-toolbar-actions">
+        <QuoteBell getToken={readToken} open={quotesOpen} setOpen={setQuotesOpen} onUnreadChange={pushUnreadToIframe} onUnauthorized={signOut}/>
         <button type="button" onClick={()=>setDark(v=>!v)}>{dark?'☀ Light':'☾ Dark'}</button>
-        <button type="button" onClick={()=>{clearToken();setUser(null)}}>Sign out</button>
+        <button type="button" onClick={signOut}>Sign out</button>
       </div>
     </div>
     <iframe
@@ -121,6 +135,7 @@ function App(){
       onLoad={()=>{
         pushAuthToIframe(iframeRef.current);
         try{ iframeRef.current.contentWindow.postMessage({type:'threadline-theme', dark}, '*'); }catch(e){}
+        pushUnreadToIframe(unreadRef.current);
       }}
     />
   </div>

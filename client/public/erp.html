@@ -428,7 +428,7 @@ html.dark-mode .sidebar-backdrop{background:rgba(0,0,0,.55)}
           <button class="lang-btn" id="langBtnMr" onclick="setLang('mr')">मराठी</button>
         </div>
         <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()">☾ Dark</button>
-        <div class="bell">🔔<span class="dot"></span></div>
+        <div class="bell" id="quoteBell" role="button" tabindex="0" title="Quote requests" aria-label="Quote requests" onclick="openQuoteRequests()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openQuoteRequests()}">🔔<span class="dot" id="quoteBellDot" style="display:none"></span></div>
         <div class="workspace-tabs" aria-label="Dashboard workspace">
           <button class="workspace-tab active" data-workspace="internal" onclick="switchWorkspace('internal')">Internal</button>
           <button class="workspace-tab" data-workspace="external" onclick="switchWorkspace('external')">External</button>
@@ -2297,6 +2297,19 @@ function toggleDarkMode(){
   localStorage.setItem('threadline_erp_dark', next?'1':'0');
   syncDarkFromStorage();
 }
+// Header bell mirrors unread public quote requests; the list itself lives in the parent shell's bell panel.
+function openQuoteRequests(){
+  try{ if(window.parent && window.parent!==window) window.parent.postMessage({type:'threadline-open-quotes'}, '*'); }catch(e){}
+}
+window.addEventListener('message', (ev)=>{
+  if(ev && ev.data && ev.data.type==='threadline-quotes'){
+    const n = Number(ev.data.unread)||0;
+    const dot = document.getElementById('quoteBellDot');
+    const bell = document.getElementById('quoteBell');
+    if(dot) dot.style.display = n>0 ? '' : 'none';
+    if(bell) bell.title = n>0 ? (n+' unread quote request'+(n===1?'':'s')) : 'Quote requests';
+  }
+});
 window.addEventListener('message', (ev)=>{
   if(ev && ev.data && ev.data.type==='threadline-theme'){
     localStorage.setItem('threadline_dark', ev.data.dark?'1':'0');

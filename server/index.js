@@ -248,6 +248,120 @@ app.delete('/api/dress-sizes/:id', auth, (req, res) => {
   }
 });
 
+// ---- Public customer website API (no login) ----
+// Only customer-safe product fields are exposed (see db.listPublicProducts).
+app.get('/api/public/products', (req, res) => {
+  res.set('Cache-Control', 'public, max-age=60');
+  res.json({ products: db.listPublicProducts() });
+});
+
+app.get('/api/public/products/:id', (req, res) => {
+  const product = db.getPublicProduct(req.params.id);
+  if (!product) return res.status(404).json({ message: 'Product not found' });
+  res.set('Cache-Control', 'public, max-age=60');
+  res.json({ product });
+});
+
+const QUOTE_LIMITS = { firstName: 60, surname: 60, mobile: 20, email: 120, productId: 40 };
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const MOBILE_RE = /^\+?[0-9\s\-().]{7,20}$/;
+const NAME_RE = /^[\p{L}\p{M}][\p{L}\p{M} .'\-]*$/u;
+
+function validateQuote(body) {
+  const errors = {};
+  const clean = {};
+  for (const key of Object.keys(QUOTE_LIMITS)) {
+    const raw = body[key];
+    const v = typeof raw === 'string' || typeof raw === 'number' ? String(raw).trim() : '';
+    clean[key] = v;
+    if (!v) errors[key] = 'This field is required';
+    else if (v.length > QUOTE_LIMITS[key]) errors[key] = `Must be at most ${QUOTE_LIMITS[key]} characters`;
+  }
+  if (!errors.firstName && !NAME_RE.test(clean.firstName)) errors.firstName = 'Please enter a valid first name';
+  if (!errors.surname && !NAME_RE.test(clean.surname)) errors.surname = 'Please enter a valid surname';
+  if (!errors.email && !EMAIL_RE.test(clean.email)) errors.email = 'Please enter a valid email address';
+  if (!errors.mobile) {
+    const digits = clean.mobile.replace(/\D/g, '');
+    if (!MOBILE_RE.test(clean.mobile) || digits.length < 7 || digits.length > 15) {
+      errors.mobile = 'Please enter a valid mobile number';
+    }
+  }
+  let product = null;
+  if (!errors.productId) {
+    product = db.getPublicProduct(clean.productId);
+    if (!product) errors.productId = 'Please choose a product from the list';
+  }
+  return { errors, clean, product };
+}
+
+// Tiny in-memory per-IP limiter (free, best-effort; per serverless instance on Vercel).
+const quoteHits = new Map();
+const QUOTE_WINDOW_MS = 10 * 60 * 1000;
+const QUOTE_MAX_PER_WINDOW = 8;
+function quoteRateLimited(ip) {
+  const now = Date.now();
+  const hits = (quoteHits.get(ip) || []).filter((t) => now - t < QUOTE_WINDOW_MS);
+  hits.push(now);
+  quoteHits.set(ip, hits);
+  if (quoteHits.size > 5000) quoteHits.clear();
+  return hits.length > QUOTE_MAX_PER_WINDOW;
+}
+
+app.post('/api/quotes', (req, res) => {
+  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  // Honeypot: real customers never see or fill the "website" field.
+  if (typeof body.website === 'string' && body.website.trim() !== '') {
+    return res.status(201).json({ ok: true, message: 'Thank you! Your quote request has been received.' });
+  }
+  const ip = String(req.headers['x-forwarded-for'] || req.ip || '').split(',')[0].trim();
+  if (quoteRateLimited(ip)) {
+    return res.status(429).json({ message: 'Too many requests. Please try again in a few minutes.' });
+  }
+  const { errors, clean, product } = validateQuote(body);
+  if (Object.keys(errors).length) {
+    return res.status(400).json({ message: 'Please correct the highlighted fields.', errors });
+  }
+  try {
+    const quote = db.createQuoteRequest({
+      firstName: clean.firstName,
+      surname: clean.surname,
+      mobile: clean.mobile,
+      email: clean.email.toLowerCase(),
+      productId: product.id,
+      productName: product.name,
+    });
+    res.status(201).json({
+      ok: true,
+      id: quote.id,
+      message: 'Thank you! Your quote request has been received. Our team will contact you shortly.',
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Could not save your request. Please try again.' });
+  }
+});
+
+// ---- Quote requests inbox (dashboard, JWT required) ----
+app.get('/api/quotes', auth, (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json(db.listQuoteRequests(200));
+});
+
+app.post('/api/quotes/read-all', auth, (req, res) => {
+  const updated = db.markAllQuotesRead();
+  res.json({ ok: true, updated, unreadCount: 0 });
+});
+
+app.patch('/api/quotes/:id/read', auth, (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ message: 'Invalid id' });
+    const quote = db.markQuoteRead(id);
+    res.json({ quote, unreadCount: db.listQuoteRequests(1).unreadCount });
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message || 'Failed to update quote request' });
+  }
+});
+
 // Serve uploaded batch images
 app.get('/api/uploads/batches/:file', (req, res) => {
   const abs = db.resolveUploadPath(req.params.file);
@@ -255,11 +369,18 @@ app.get('/api/uploads/batches/:file', (req, res) => {
   res.sendFile(abs);
 });
 
+// Static front end:
+//   /            -> public customer website (client/dist/index.html)
+//   /product/:id -> public website (client-side route)
+//   /admin/*     -> owners' dashboard (client/dist/admin/index.html)
 const DIST = path.join(ROOT, 'client', 'dist');
 if (fs.existsSync(DIST)) {
   app.use(express.static(DIST));
   app.get('*', (req, res) => {
-    if (req.path.startsWith('/api/')) return res.status(404).end();
+    if (req.path.startsWith('/api/')) return res.status(404).json({ message: 'Not found' });
+    if (req.path === '/admin' || req.path.startsWith('/admin/')) {
+      return res.sendFile(path.join(DIST, 'admin', 'index.html'));
+    }
     res.sendFile(path.join(DIST, 'index.html'));
   });
 } else {
