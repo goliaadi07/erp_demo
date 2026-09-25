@@ -54,13 +54,13 @@ const SHAPES = {
 };
 
 const PALETTES = {
-  'School Uniform': ['#6758ee', '#2cc6d6'],
-  'Kids Wear': ['#f59e0b', '#ef6f8a'],
-  'Ethnic & Occasion': ['#0f766e', '#6d5dfc'],
+  'School Uniform': ['#26345f', '#4b5d8f'],
+  'Kids Wear': ['#a8582f', '#d19a5b'],
+  'Ethnic & Occasion': ['#5b2333', '#9a6b2f'],
 };
 
 export function paletteFor(category) {
-  return PALETTES[category] || ['#475569', '#6758ee'];
+  return PALETTES[category] || ['#3a3631', '#6b645b'];
 }
 
 export default function GarmentArt({ product, className = '' }) {

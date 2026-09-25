@@ -193,6 +193,13 @@ function migrate(database) {
 
   `);
 
+  if (tableExists(database, 'products')) {
+    const pcols = columnsOf(database, 'products');
+    if (!pcols.includes('image_url_2')) database.exec('ALTER TABLE products ADD COLUMN image_url_2 TEXT');
+    if (!pcols.includes('image_alt')) database.exec('ALTER TABLE products ADD COLUMN image_alt TEXT');
+    if (!pcols.includes('size_note')) database.exec('ALTER TABLE products ADD COLUMN size_note TEXT');
+  }
+
   if (tableExists(database, 'users')) {
     const cols = columnsOf(database, 'users');
     if (!cols.includes('email')) database.exec('ALTER TABLE users ADD COLUMN email TEXT');
@@ -258,6 +265,7 @@ function seedIfNeeded(database) {
   if (database.prepare('SELECT COUNT(*) AS c FROM products').get().c === 0) {
     seedProducts(database);
   }
+  applyProductMedia(database);
 }
 
 // Seeded from the ERP item master (client ITEMS in erp.html) so the public
@@ -268,51 +276,81 @@ const PRODUCT_SEED = [
     tagline: 'Crisp, durable uniform shirts for every season',
     description: 'Half and full sleeve uniform shirts in poly-cotton and oxford fabrics, stitched for daily wear and frequent washing.',
     details: 'Available in school and corporate colours. Custom pocket embroidery, logo badges and button colours on request. Suitable for bulk school and institutional orders.',
-    sizes: '22–46 (kids to adult)',
+    sizes: '22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44',
   },
   {
     id: 'pant', name: 'Pant', category: 'School Uniform', featured: 1,
     tagline: 'Tailored uniform trousers built to last',
     description: 'Uniform trousers with reinforced seams, adjustable waist options and a clean, formal finish.',
     details: 'Terry-wool, poly-viscose and cotton blends. Elastic or belt-loop waist, single or double pleat. Bulk sizing charts available for schools.',
-    sizes: 'Waist 20–40',
+    sizes: '20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40',
   },
   {
     id: 'skirt', name: 'Skirt', category: 'School Uniform', featured: 1,
     tagline: 'Pleated and A-line skirts in school colours',
     description: 'Box-pleated and A-line uniform skirts with neat pleats that hold their shape wash after wash.',
     details: 'Checks and solids in poly-cotton and terry-wool. Side zip or elastic waist. Matching pinafores and ties can be supplied together.',
-    sizes: 'Waist 18–34, lengths on request',
+    sizes: '18, 20, 22, 24, 26, 28, 30, 32, 34',
   },
   {
     id: 'pinaco', name: 'Pinaco', category: 'Kids Wear', featured: 1,
     tagline: 'Comfortable pinafores for the youngest learners',
     description: 'Pinafore (pinaco) dresses for pre-primary and primary students, designed for comfort and easy dressing.',
     details: 'Soft, breathable fabric with adjustable straps or buttoned shoulders. Pair with our uniform shirts for a complete set.',
-    sizes: 'Ages 3–10',
+    sizes: '3–4Y, 5–6Y, 7–8Y, 9–10Y',
   },
   {
     id: 'grammer', name: 'Grammer', category: 'Kids Wear', featured: 0,
     tagline: 'Sturdy dungaree-style grammers',
     description: 'Grammer / dungaree-style uniform wear for young children, made for active school days.',
     details: 'Durable twill and poly-cotton fabrics with secure buttons and generous seam allowances for growing kids.',
-    sizes: 'Ages 3–10',
+    sizes: '3–4Y, 5–6Y, 7–8Y, 9–10Y',
   },
   {
     id: 'halfhastin', name: 'Half Hastin', category: 'School Uniform', featured: 0,
     tagline: 'Half-sleeve essentials',
     description: 'Half-sleeve (half hastin) uniform tops for warmer months and sports days.',
     details: 'Lightweight cotton-rich fabrics, colour-fast dyes and optional school crest printing or embroidery.',
-    sizes: '22–44',
+    sizes: '22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44',
   },
   {
     id: 'bandi', name: 'Bandi', category: 'Ethnic & Occasion', featured: 1,
     tagline: 'Smart bandi jackets for events and uniforms',
     description: 'Sleeveless bandi (Nehru-style) jackets for school functions, staff uniforms and festive occasions.',
     details: 'Available in solid, textured and jacquard fabrics with contrast piping and custom buttons. Great for annual days and team uniforms.',
-    sizes: '24–46',
+    sizes: '24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46',
   },
 ];
+
+// Photos live in client/public/images (Unsplash License, see IMAGE_CREDITS.md).
+// Older seeded values are listed so existing databases get upgraded in place.
+const PRODUCT_MEDIA = {
+  shirt: { img: '/images/shirt.webp', img2: '/images/shirt-2.webp', alt: 'White uniform shirts on wooden hangers', sizeNote: 'Chest size (in)', oldSizes: '22–46 (kids to adult)' },
+  pant: { img: '/images/pant.webp', img2: '/images/pant-2.webp', alt: 'Grey tailored uniform trousers', sizeNote: 'Waist (in)', oldSizes: 'Waist 20–40' },
+  skirt: { img: '/images/skirt.webp', img2: '/images/skirt-2.webp', alt: 'Navy and black pleated plaid skirt', sizeNote: 'Waist (in) — lengths on request', oldSizes: 'Waist 18–34, lengths on request' },
+  pinaco: { img: '/images/pinaco.webp', img2: '/images/pinaco-2.webp', alt: 'Sleeveless pinafore-style dress on a hanger', sizeNote: 'Age', oldSizes: 'Ages 3–10' },
+  grammer: { img: '/images/grammer.webp', img2: '/images/grammer-2.webp', alt: 'Denim dungaree-style overalls', sizeNote: 'Age', oldSizes: 'Ages 3–10' },
+  halfhastin: { img: '/images/halfhastin.webp', img2: '/images/halfhastin-2.webp', alt: 'White half-sleeve shirt on a hanger', sizeNote: 'Chest size (in)', oldSizes: '22–44' },
+  bandi: { img: '/images/bandi.webp', img2: '/images/bandi-2.webp', alt: 'Grey bandi (Nehru-style) jacket worn over a kurta', sizeNote: 'Chest size (in)', oldSizes: '24–46' },
+};
+
+function applyProductMedia(database) {
+  const seedById = Object.fromEntries(PRODUCT_SEED.map((p) => [p.id, p]));
+  const upd = database.prepare(`
+    UPDATE products SET
+      image_url = COALESCE(image_url, @img),
+      image_url_2 = COALESCE(image_url_2, @img2),
+      image_alt = COALESCE(image_alt, @alt),
+      size_note = COALESCE(size_note, @sizeNote),
+      sizes = CASE WHEN sizes IS NULL OR sizes = @oldSizes THEN @sizes ELSE sizes END
+    WHERE id = @id
+  `);
+  database.transaction(() => {
+    for (const [id, m] of Object.entries(PRODUCT_MEDIA)) {
+      upd.run({ id, img: m.img, img2: m.img2, alt: m.alt, sizeNote: m.sizeNote, oldSizes: m.oldSizes, sizes: seedById[id] ? seedById[id].sizes : null });
+    }
+  })();
+}
 
 function seedProducts(database) {
   const ins = database.prepare(`
@@ -327,7 +365,7 @@ function seedProducts(database) {
 }
 
 // ---- Public catalogue (customer-safe fields only) ----
-const PUBLIC_PRODUCT_COLUMNS = 'id, name, category, description, details, sizes, price, image_url, featured, tagline';
+const PUBLIC_PRODUCT_COLUMNS = 'id, name, category, description, details, sizes, size_note, price, image_url, image_url_2, image_alt, featured, tagline';
 
 function mapPublicProduct(row) {
   return {
@@ -337,8 +375,11 @@ function mapPublicProduct(row) {
     description: row.description || '',
     details: row.details || '',
     sizes: row.sizes || '',
+    sizeNote: row.size_note || '',
     price: row.price == null ? null : Number(row.price),
     imageUrl: row.image_url || null,
+    imageUrl2: row.image_url_2 || null,
+    imageAlt: row.image_alt || row.name,
     featured: !!row.featured,
     tagline: row.tagline || '',
   };

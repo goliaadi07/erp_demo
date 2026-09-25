@@ -396,6 +396,67 @@ html.dark-mode #shell{background:radial-gradient(circle at 85% 0%,#25234E 0,tran
 html.dark-mode .menu-btn{background:#111A2C;border-color:#26334B}
 html.dark-mode .sidebar-backdrop{background:rgba(0,0,0,.55)}
 
+
+/* ===== Measurement ruler (side tab + auto-hiding overlay) ===== */
+.ruler-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1px solid var(--line);border-right:0;border-radius:12px 0 0 12px;background:var(--paper);color:var(--navy);font:700 12.5px/1 Inter,system-ui,sans-serif;letter-spacing:.02em;cursor:pointer;box-shadow:-6px 8px 24px rgba(24,34,58,.14);transition:padding .15s,background .15s,color .15s}
+.ruler-tab:hover{padding-right:12px;background:var(--sky);color:#fff;border-color:var(--sky)}
+.ruler-tab:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.ruler-tab[aria-expanded="true"]{background:var(--sky);color:#fff;border-color:var(--sky)}
+.ruler-tab-ico{font-size:17px;line-height:1}
+.ruler-tab-label{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}
+.ruler-tab[hidden]{display:none}
+.ruler-panel{position:fixed;z-index:45;left:50%;top:84px;transform:translateX(-50%);max-width:calc(100vw - 72px);background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 60px rgba(18,33,59,.28);padding:12px 14px 12px;font-family:Inter,system-ui,sans-serif;animation:rulerIn .18s ease}
+.ruler-panel[hidden]{display:none}
+.ruler-panel.is-vertical{top:50%;left:auto;right:60px;transform:translateY(-50%);max-height:calc(100vh - 24px)}
+@keyframes rulerIn{from{opacity:0;margin-top:-6px}}
+.ruler-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.ruler-title{font-weight:800;font-size:14px;color:var(--navy);margin-right:auto}
+.ruler-count{font-size:12px;font-weight:700;color:var(--sky-dark,#5246D8);background:var(--sky-tint);padding:4px 9px;border-radius:999px;font-variant-numeric:tabular-nums}
+.ruler-btn{border:1px solid var(--line);background:var(--canvas);color:var(--ink);border-radius:8px;padding:5px 10px;font:600 12px Inter,system-ui,sans-serif;cursor:pointer}
+.ruler-btn:hover{border-color:var(--sky)}
+.ruler-close{width:30px;height:30px;padding:0;font-size:18px;line-height:1}
+.ruler-btn:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.ruler-body{overflow:auto}
+.ruler-note{margin-top:8px;font-size:11px;color:var(--slate-soft)}
+.ruler-bar{position:absolute;inset:0 auto auto 0;height:3px;background:var(--sky);border-radius:2px;transform-origin:left;width:100%}
+.ruler-progress{position:relative;height:3px;background:var(--line);border-radius:2px;margin-top:8px;overflow:hidden}
+/* scales */
+.ruler{position:relative;background:linear-gradient(180deg,#FFF9E8,#FDF1CF);border:1px solid #E5D3A0;border-radius:6px;color:#2A2416;box-sizing:content-box}
+html.dark-mode .ruler{background:linear-gradient(180deg,#232B40,#1B2234);border-color:#3A4763;color:#E7EEF8}
+.ruler.h{height:108px;padding:0 10px}
+.ruler.v{width:118px;padding:10px 0}
+.ruler .scale{position:absolute}
+.ruler.h .scale{left:10px;right:10px;height:50%}
+.ruler.h .scale.cm{top:0}.ruler.h .scale.in{bottom:0}
+.ruler.v .scale{top:10px;bottom:10px;width:50%}
+.ruler.v .scale.cm{left:0}.ruler.v .scale.in{right:0}
+.ruler .t{position:absolute;background:currentColor}
+.ruler.h .t{width:1px;transform:translateX(-.5px)}
+.ruler.v .t{height:1px;transform:translateY(-.5px)}
+.ruler.h .cm .t{top:0}.ruler.h .in .t{bottom:0}
+.ruler.v .cm .t{left:0}.ruler.v .in .t{right:0}
+.ruler.h .t.s{height:9px}.ruler.h .t.m{height:15px}.ruler.h .t.l{height:24px}.ruler.h .t.q{height:12px}
+.ruler.v .t.s{width:9px}.ruler.v .t.m{width:15px}.ruler.v .t.l{width:24px}.ruler.v .t.q{width:12px}
+.ruler .n{position:absolute;font-size:10.5px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.ruler.h .cm .n{top:27px;transform:translateX(-50%)}
+.ruler.h .in .n{bottom:27px;transform:translateX(-50%)}
+.ruler.v .cm .n{left:27px;transform:translateY(-50%)}
+.ruler.v .in .n{right:27px;transform:translateY(-50%)}
+.ruler .unit{position:absolute;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.55}
+.ruler.h .unit.cm-u{right:14px;top:40px}.ruler.h .unit.in-u{right:14px;bottom:40px}
+.ruler.v .unit{writing-mode:vertical-rl}
+.ruler.v .unit.cm-u{left:40px;bottom:14px}.ruler.v .unit.in-u{right:40px;bottom:14px}
+.ruler .mid{position:absolute;background:currentColor;opacity:.18}
+.ruler.h .mid{left:10px;right:10px;top:50%;height:1px}
+.ruler.v .mid{top:10px;bottom:10px;left:50%;width:1px}
+@media(max-width:640px){
+  .ruler-tab{padding:10px 6px;gap:0;border-radius:10px 0 0 10px}
+  .ruler-tab-label{display:none}
+  .ruler-tab-ico{font-size:16px}
+  .ruler-panel{top:70px;max-width:calc(100vw - 52px);left:8px;transform:none;padding:10px}
+  .ruler-panel.is-vertical{right:46px;left:auto}
+}
+@media(prefers-reduced-motion:reduce){.ruler-panel{animation:none}.ruler-tab{transition:none}}
 </style>
 </head>
 <body>
@@ -441,6 +502,20 @@ html.dark-mode .sidebar-backdrop{background:rgba(0,0,0,.55)}
 </div>
 <div id="toast" class="toast"></div>
 <div id="modalRoot"></div>
+<button type="button" id="rulerTab" class="ruler-tab" hidden aria-expanded="false" aria-controls="rulerPanel" onclick="openRuler()">
+  <span class="ruler-tab-ico" aria-hidden="true">📏</span><span class="ruler-tab-label" id="rulerTabLabel">Measurement Ruler</span>
+</button>
+<div id="rulerPanel" class="ruler-panel" role="dialog" aria-modal="false" aria-labelledby="rulerTitle" hidden tabindex="-1">
+  <div class="ruler-head">
+    <span class="ruler-title" id="rulerTitle">📏 Measurement Ruler</span>
+    <span class="ruler-count" id="rulerCount" aria-live="off">Hides in 20s</span>
+    <button type="button" class="ruler-btn" id="rulerOrient" onclick="toggleRulerOrientation()">↕ Vertical</button>
+    <button type="button" class="ruler-btn ruler-close" id="rulerClose" onclick="closeRuler()" aria-label="Close ruler">×</button>
+  </div>
+  <div class="ruler-body" id="rulerBody"></div>
+  <div class="ruler-progress" aria-hidden="true"><span class="ruler-bar" id="rulerBar"></span></div>
+  <div class="ruler-note" id="rulerNote">Approximate — depends on screen</div>
+</div>
 
 <script>
 /* ============================================================
@@ -617,6 +692,10 @@ const T = {
   'Size deleted':'साइज हटवला','Delete this size?':'हा साइज हटवायचा?',
   'Custom key':'इतर की','Custom value':'इतर मूल्य','Add custom field':'इतर फील्ड जोडा',
   'sizes':'साइजेस','type(s)':'प्रकार',
+  // measurement ruler
+  'Measurement Ruler':'मापन पट्टी','Show measurement ruler':'मापन पट्टी दाखवा','Hides in {n}s':'{n} सेकंदात लपेल',
+  'Close ruler':'पट्टी बंद करा','Vertical':'उभी','Horizontal':'आडवी','Approximate — depends on screen':'अंदाजे — स्क्रीनवर अवलंबून',
+  'Centimetre and inch ruler':'सेंटीमीटर व इंच पट्टी','ruler-unit-cm':'सेमी','ruler-unit-in':'इंच',
 
 };
 function tr(s){ return LANG==='mr' ? (T[s] || s) : s; }
@@ -1082,10 +1161,12 @@ function onGlobalSearch(v){
 
 function render(){
   renderNav();
+  RULER_ON_DASHBOARD = false;
   const hash = (window.location.hash||'#dashboard').slice(1);
   const c = document.getElementById('content');
   if(currentRole==='employee'){
     c.innerHTML = viewEmployeeDetail(currentEmployeeView, true);
+    syncRulerTab();
     return;
   }
   if(hash==='search') c.innerHTML = viewSearch();
@@ -1103,6 +1184,7 @@ function render(){
   else if(hash==='payments') c.innerHTML = viewPayments();
   else if(hash==='ratecard') c.innerHTML = viewRateCard();
   else c.innerHTML = viewDashboard();
+  syncRulerTab();
 }
 
 function selectSearchResult(destination){
@@ -1216,6 +1298,7 @@ function viewClientDashboard(){
    VIEW: DASHBOARD
 ============================================================ */
 function viewDashboard(){
+  RULER_ON_DASHBOARD = true;
   const alerts = attentionItems().slice(0,7);
   const deptCards = DEPTS.map(d=>{
     const st = deptStats(d.id);
@@ -2337,6 +2420,129 @@ function closeSidebar(){
   if(sb) sb.classList.remove('open');
   if(bd) bd.classList.remove('show');
 }
+
+
+/* ============================================================
+   MEASUREMENT RULER — side tab on the owner dashboard.
+   Uses CSS absolute units (1cm / 1in), so the physical size on
+   screen is approximate and depends on the display's DPI.
+   Auto-hides exactly 20s after being shown; clicking the tab
+   again while visible restarts the 20s timer.
+============================================================ */
+let RULER_ON_DASHBOARD = false;
+const RULER_MS = 20000;
+let rulerHideTimer = null, rulerTickTimer = null, rulerDeadline = 0, rulerOrientation = 'h', rulerReturnFocus = null;
+
+function rulerIsOpen(){ const p=document.getElementById('rulerPanel'); return !!p && !p.hidden; }
+function syncRulerTab(){
+  const tab = document.getElementById('rulerTab');
+  if(!tab) return;
+  const show = RULER_ON_DASHBOARD;
+  tab.hidden = !show;
+  document.getElementById('rulerTabLabel').textContent = tr('Measurement Ruler');
+  tab.setAttribute('aria-label', tr('Show measurement ruler'));
+  tab.title = tr('Show measurement ruler');
+  if(!show && rulerIsOpen()) closeRuler(true);
+  if(rulerIsOpen()) updateRulerLabels();
+}
+function cssUnitPx(unit){
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:absolute;visibility:hidden;width:10'+unit+';height:1px';
+  document.body.appendChild(probe);
+  const px = probe.getBoundingClientRect().width / 10;
+  probe.remove();
+  return px || (unit==='cm' ? 37.8 : 96);
+}
+function buildRuler(){
+  const vertical = rulerOrientation === 'v';
+  const pos = vertical ? 'top' : 'left';
+  const pxCm = cssUnitPx('cm');
+  const avail = vertical ? Math.max(200, window.innerHeight - 190) : Math.max(220, Math.min(window.innerWidth - 120, 1400));
+  const cms = Math.max(5, Math.floor(avail / pxCm));
+  const inches = Math.floor((cms / 2.54) * 8) / 8;
+  let cm = '', inch = '';
+  for(let i=0;i<=cms*10;i++){
+    const cls = i%10===0 ? 'l' : (i%5===0 ? 'm' : 's');
+    cm += `<span class="t ${cls}" style="${pos}:${i}mm"></span>`;
+    if(i%10===0) cm += `<span class="n" style="${pos}:${i}mm">${i/10}</span>`;
+  }
+  for(let j=0;j<=Math.floor(inches*8);j++){
+    const cls = j%8===0 ? 'l' : (j%4===0 ? 'm' : (j%2===0 ? 'q' : 's'));
+    inch += `<span class="t ${cls}" style="${pos}:${j/8}in"></span>`;
+    if(j%8===0) inch += `<span class="n" style="${pos}:${j/8}in">${j/8}</span>`;
+  }
+  const len = `${cms}cm`;
+  const size = vertical ? `height:${len}` : `width:${len}`;
+  document.getElementById('rulerBody').innerHTML =
+    `<div class="ruler ${vertical?'v':'h'}" style="${size}" role="img" aria-label="${tr('Centimetre and inch ruler')}: ${cms} cm / ${Math.floor(inches)} in">
+       <div class="scale cm">${cm}</div><div class="mid"></div><div class="scale in">${inch}</div>
+       <span class="unit cm-u">${LANG==='mr' ? tr('ruler-unit-cm') : 'cm'}</span><span class="unit in-u">${LANG==='mr' ? tr('ruler-unit-in') : 'in'}</span>
+     </div>`;
+  document.getElementById('rulerPanel').classList.toggle('is-vertical', vertical);
+}
+function updateRulerLabels(){
+  document.getElementById('rulerTitle').textContent = '📏 ' + tr('Measurement Ruler');
+  document.getElementById('rulerOrient').textContent = rulerOrientation==='h' ? '↕ ' + tr('Vertical') : '↔ ' + tr('Horizontal');
+  const close = document.getElementById('rulerClose');
+  close.setAttribute('aria-label', tr('Close ruler')); close.title = tr('Close ruler');
+  document.getElementById('rulerNote').textContent = tr('Approximate — depends on screen');
+  updateRulerCountdown();
+}
+function updateRulerCountdown(){
+  const left = Math.max(0, rulerDeadline - Date.now());
+  const secs = Math.ceil(left / 1000);
+  const el = document.getElementById('rulerCount');
+  if(el) el.textContent = tr('Hides in {n}s').replace('{n}', secs);
+  const bar = document.getElementById('rulerBar');
+  if(bar) bar.style.transform = `scaleX(${left / RULER_MS})`;
+}
+function clearRulerTimers(){
+  if(rulerHideTimer){ clearTimeout(rulerHideTimer); rulerHideTimer = null; }
+  if(rulerTickTimer){ clearInterval(rulerTickTimer); rulerTickTimer = null; }
+}
+function startRulerTimer(){
+  clearRulerTimers();
+  rulerDeadline = Date.now() + RULER_MS;
+  rulerHideTimer = setTimeout(()=>closeRuler(), RULER_MS);
+  rulerTickTimer = setInterval(updateRulerCountdown, 200);
+  updateRulerCountdown();
+}
+function openRuler(){
+  const panel = document.getElementById('rulerPanel');
+  const wasOpen = rulerIsOpen();
+  if(!wasOpen){
+    rulerReturnFocus = document.activeElement;
+    buildRuler();
+    panel.hidden = false;
+    document.getElementById('rulerTab').setAttribute('aria-expanded','true');
+  }
+  updateRulerLabels();
+  startRulerTimer();            // (re)start the exact 20s window
+  if(!wasOpen) setTimeout(()=>{ try{ document.getElementById('rulerClose').focus({preventScroll:true}); }catch(e){} }, 0);
+}
+function closeRuler(silent){
+  clearRulerTimers();
+  const panel = document.getElementById('rulerPanel');
+  if(!panel || panel.hidden) return;
+  const focusWasInside = panel.contains(document.activeElement);
+  panel.hidden = true;
+  const tab = document.getElementById('rulerTab');
+  tab.setAttribute('aria-expanded','false');
+  // Only move focus back if it was inside the ruler (don't steal focus on auto-hide).
+  if(!silent && focusWasInside){
+    const target = (rulerReturnFocus && document.contains(rulerReturnFocus) && rulerReturnFocus!==document.body) ? rulerReturnFocus : (!tab.hidden ? tab : null);
+    try{ target && target.focus({preventScroll:true}); }catch(e){}
+  }
+  rulerReturnFocus = null;
+}
+function toggleRulerOrientation(){
+  rulerOrientation = rulerOrientation==='h' ? 'v' : 'h';
+  buildRuler();
+  updateRulerLabels();          // timer keeps running — still hides 20s after it was shown
+}
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && rulerIsOpen()){ e.preventDefault(); closeRuler(); } });
+window.addEventListener('resize', ()=>{ if(rulerIsOpen()) buildRuler(); });
+window.addEventListener('pagehide', clearRulerTimers);
 
 async function init(){
   document.title = 'CRB — Uniform Manufacturing ERP';

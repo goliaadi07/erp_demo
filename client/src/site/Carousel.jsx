@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import GarmentArt, { paletteFor } from './GarmentArt.jsx';
 
-const INTERVAL_MS = 5500;
+const INTERVAL_MS = 6000;
 
-export default function Carousel({ slides, onOpen }) {
+// Full-width editorial hero: cross-fade slides, arrows, numbered progress dots,
+// autoplay that pauses on hover/focus (and when the tab is hidden), swipe on touch.
+export default function Carousel({ slides, onAction }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const touchX = useRef(null);
   const count = slides.length;
+  const reduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const go = useCallback((i) => setIndex(((i % count) + count) % count), [count]);
   const next = useCallback(() => go(index + 1), [go, index]);
@@ -15,21 +17,22 @@ export default function Carousel({ slides, onOpen }) {
 
   useEffect(() => {
     if (paused || count < 2) return undefined;
-    const t = setTimeout(() => setIndex((i) => (i + 1) % count), INTERVAL_MS);
+    const t = setTimeout(() => { if (!document.hidden) setIndex((i) => (i + 1) % count); }, INTERVAL_MS);
     return () => clearTimeout(t);
   }, [index, paused, count]);
 
   if (!count) return null;
+  const pad = (n) => String(n).padStart(2, '0');
 
   return (
     <section
-      className="carousel"
+      className={`hero${paused ? ' is-paused' : ''}${reduced ? ' no-motion' : ''}`}
       aria-roledescription="carousel"
-      aria-label="Featured products"
+      aria-label="Featured collections"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setPaused(false); }}
       onKeyDown={(e) => { if (e.key === 'ArrowRight') next(); if (e.key === 'ArrowLeft') prev(); }}
       onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
       onTouchEnd={(e) => {
@@ -39,52 +42,73 @@ export default function Carousel({ slides, onOpen }) {
         touchX.current = null;
       }}
     >
-      <div className="carousel-track" style={{ transform: `translateX(-${index * 100}%)` }}>
-        {slides.map((s, i) => {
-          const [a, b] = paletteFor(s.product && s.product.category);
-          return (
-            <div
-              key={s.key}
-              className="slide"
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${i + 1} of ${count}`}
-              aria-hidden={i !== index}
-              style={{ '--slide-a': a, '--slide-b': b }}
-            >
-              <div className="slide-copy">
-                <span className="slide-eyebrow">{s.eyebrow}</span>
-                <h2>{s.title}</h2>
-                <p>{s.text}</p>
-                {s.product ? (
-                  <button type="button" className="btn btn-light" tabIndex={i === index ? 0 : -1} onClick={() => onOpen(s.product)}>
-                    View {s.product.name}
+      {slides.map((s, i) => {
+        const active = i === index;
+        return (
+          <div
+            key={s.key}
+            className={`hero-slide${active ? ' active' : ''}`}
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`${i + 1} of ${count}: ${s.title}`}
+            aria-hidden={!active}
+          >
+            <img
+              className="hero-img"
+              src={s.image}
+              alt={s.alt}
+              width="1600"
+              height="900"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchPriority={i === 0 ? 'high' : 'auto'}
+              decoding="async"
+              style={s.focus ? { objectPosition: s.focus } : undefined}
+            />
+            <div className="hero-shade" aria-hidden="true" />
+            <div className="hero-copy container">
+              <span className="eyebrow eyebrow-light">{s.eyebrow}</span>
+              <h1 className="hero-title">{s.title}</h1>
+              <p className="hero-text">{s.text}</p>
+              <div className="hero-actions">
+                <button type="button" className="btn btn-ivory" tabIndex={active ? 0 : -1} onClick={() => onAction(s.primary.action)}>
+                  {s.primary.label}
+                </button>
+                {s.secondary && (
+                  <button type="button" className="btn btn-outline-light" tabIndex={active ? 0 : -1} onClick={() => onAction(s.secondary.action)}>
+                    {s.secondary.label}
                   </button>
-                ) : (
-                  <a className="btn btn-light" href="#quote" tabIndex={i === index ? 0 : -1}>Request a quote</a>
                 )}
               </div>
-              <div className="slide-art">
-                <GarmentArt product={s.product || { id: 'default', category: '' }} />
-              </div>
             </div>
-          );
-        })}
-      </div>
-      <button type="button" className="carousel-arrow prev" onClick={prev} aria-label="Previous slide">‹</button>
-      <button type="button" className="carousel-arrow next" onClick={next} aria-label="Next slide">›</button>
-      <div className="carousel-dots" role="tablist" aria-label="Choose slide">
-        {slides.map((s, i) => (
-          <button
-            key={s.key}
-            type="button"
-            role="tab"
-            className={`dot${i === index ? ' active' : ''}`}
-            aria-selected={i === index}
-            aria-label={`Go to slide ${i + 1}`}
-            onClick={() => go(i)}
-          />
-        ))}
+          </div>
+        );
+      })}
+
+      <div className="hero-controls container">
+        <div className="hero-dots" role="tablist" aria-label="Choose slide">
+          {slides.map((s, i) => (
+            <button
+              key={s.key}
+              type="button"
+              role="tab"
+              className={`hero-dot${i === index ? ' active' : ''}`}
+              aria-selected={i === index}
+              aria-label={`Slide ${i + 1}: ${s.title}`}
+              onClick={() => go(i)}
+            >
+              <span className="hero-dot-num">{pad(i + 1)}</span>
+              <span className="hero-dot-bar"><span key={i === index ? `a${index}` : 'i'} className="hero-dot-fill" style={{ animationDuration: `${INTERVAL_MS}ms` }} /></span>
+            </button>
+          ))}
+        </div>
+        <div className="hero-arrows">
+          <button type="button" className="hero-arrow" onClick={prev} aria-label="Previous slide">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+          </button>
+          <button type="button" className="hero-arrow" onClick={next} aria-label="Next slide">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+          </button>
+        </div>
       </div>
     </section>
   );

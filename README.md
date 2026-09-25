@@ -86,6 +86,8 @@ npm run db:reset
 3. **SQLite foundation** — ERP bootstrap via `GET /api/erp/bootstrap`; suppliers & batches write through the API
 4. **Dark mode** — shared `threadline_dark` / `threadline_erp_dark` + `postMessage` sync between shell and iframe; hard-coded light styles overridden
 5. **Purchase From** — searchable combobox + “Add company” saved to `suppliers`
+6. **Public storefront redesign** — editorial fashion look (Cormorant Garamond + DM Sans, ivory/charcoal/indigo palette), 5-slide hero carousel (fade, arrows, dots, autoplay paused on hover/focus, swipe, reduced-motion aware), category chips + search, hover second-image product cards, full `/product/:id` page with size chips and sticky quote form. Photos are Unsplash-licensed WebP files in `client/public/images/` — see `IMAGE_CREDITS.md`. Footer contact details are placeholders.
+7. **Measurement Ruler** — side tab fixed to the right edge (vertically centred) on the owner dashboard view. Opens a cm (mm ticks) + inch (1/8" ticks) ruler built from CSS physical units, with horizontal/vertical toggle; auto-hides exactly 20 s after opening (countdown shown, re-clicking the tab restarts the timer), × button and Esc close it. Physical accuracy depends on the screen's DPI/zoom.
 
 ## Security before deployment
 Set a strong `JWT_SECRET`, use HTTPS, add rate limiting/lockout, keep the SQLite file outside any public static directory, and do not commit `.env` or uploaded media with secrets.
