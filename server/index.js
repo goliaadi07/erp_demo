@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
 const quotes = require('./quotes-store');
+const sizeCharts = require('./size-charts-store');
 
 const PORT = process.env.PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET || 'CHANGE_THIS_SECRET_BEFORE_PRODUCTION';
@@ -246,6 +247,31 @@ app.delete('/api/dress-sizes/:id', auth, (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     res.status(err.status || 500).json({ message: err.message || 'Failed to delete size' });
+  }
+});
+
+// ---- Garment size charts (dashboard "Dress Sizes") ----
+app.get('/api/size-charts', auth, async (req, res) => {
+  try {
+    res.json({ charts: await sizeCharts.listCharts(), backend: sizeCharts.backend() });
+  } catch (err) {
+    console.error('[size-charts] list failed:', err.message);
+    res.status(500).json({ message: 'Size charts are unavailable right now' });
+  }
+});
+app.put('/api/size-charts/:id', auth, async (req, res) => {
+  try {
+    res.json({ chart: await sizeCharts.saveChart(String(req.params.id), req.body || {}) });
+  } catch (err) {
+    if (!err.status) console.error('[size-charts] save failed:', err.message);
+    res.status(err.status || 500).json({ message: err.status ? err.message : 'Could not save the size chart' });
+  }
+});
+app.delete('/api/size-charts/:id', auth, async (req, res) => {
+  try {
+    res.json({ ok: true, deleted: await sizeCharts.deleteChart(String(req.params.id)) });
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.status ? err.message : 'Could not delete the size chart' });
   }
 });
 

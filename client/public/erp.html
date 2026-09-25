@@ -578,6 +578,104 @@ html.dark-mode .bell-count{border-color:var(--paper)}
 html.dark-mode ::-webkit-scrollbar-thumb{background:#3a3742}
 html.dark-mode .ruler-tab{background:#3a4a80;border-color:#3a4a80;color:#fff}
 html[lang="mr"] body :not(.brand-name):not(.mono){letter-spacing:normal!important}
+
+/* ===== Round 4: slim, non-intrusive ruler strip (10 s auto-hide) ===== */
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.ruler-panel.ruler-strip{position:fixed;z-index:44;top:auto;bottom:12px;left:264px;right:40px;transform:none;max-width:none;max-height:none;
+  display:flex;align-items:center;gap:8px;padding:0 6px 0 0;background:transparent;border:0;box-shadow:none;border-radius:10px;pointer-events:none;animation:rulerStripIn .18s ease}
+.ruler-panel.ruler-strip[hidden]{display:none}
+.ruler-strip > *{pointer-events:auto}
+.ruler-strip .ruler-body{overflow:hidden;flex:0 1 auto;min-width:0;border-radius:8px;box-shadow:0 8px 22px -12px rgba(18,24,40,.45)}
+.ruler-strip .ruler-progress{position:absolute;left:0;right:0;top:-5px;height:2px;margin:0;background:transparent;pointer-events:none}
+.ruler-strip .ruler-bar{height:2px;background:var(--brass,#a07a34)}
+.ruler-ctl{display:flex;align-items:center;gap:4px;padding:4px;border-radius:999px;background:rgba(250,246,239,.92);border:1px solid rgba(160,122,52,.35);box-shadow:0 6px 16px -10px rgba(18,24,40,.5);backdrop-filter:blur(6px)}
+.ruler-strip .ruler-count{font:700 11px/1 "DM Sans",system-ui,sans-serif;padding:5px 7px;border-radius:999px;background:transparent;color:#5b4a2a;min-width:30px;text-align:center}
+.ruler-mini{width:26px;height:26px;border-radius:50%;border:1px solid rgba(160,122,52,.35);background:#fffdf8;color:#26345f;font:700 14px/1 system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.ruler-mini:hover{background:#26345f;color:#fff;border-color:#26345f}
+.ruler-mini:focus-visible{outline:2px solid #a07a34;outline-offset:2px}
+.ruler-strip .ruler-close{font-size:17px;width:26px;height:26px}
+.ruler-strip .ruler.h{height:58px;padding:0 30px 0 10px;background:rgba(255,249,232,.9);backdrop-filter:blur(4px)}
+.ruler-strip .ruler.h .t.s{height:6px}.ruler-strip .ruler.h .t.q{height:8px}.ruler-strip .ruler.h .t.m{height:10px}.ruler-strip .ruler.h .t.l{height:15px}
+.ruler-strip .ruler.h .cm .n{top:16px}.ruler-strip .ruler.h .in .n{bottom:16px}
+.ruler-strip .ruler .n{font-size:9.5px}
+.ruler-strip .ruler.h .unit.cm-u{right:5px;top:6px}.ruler-strip .ruler.h .unit.in-u{right:5px;bottom:6px}
+.ruler-strip.is-vertical{left:auto;right:36px;top:150px;bottom:14px;flex-direction:column;align-items:center;padding:0}
+.ruler-strip.is-vertical .ruler-body{max-height:calc(100% - 44px)}
+.ruler-strip.is-vertical .ruler-ctl{order:1;flex-direction:row}
+.ruler-strip.is-vertical .ruler-progress{top:-6px}
+.ruler-strip .ruler.v{width:58px;padding:10px 0 30px;background:rgba(255,249,232,.9);backdrop-filter:blur(4px)}
+.ruler-strip .ruler.v .t.s{width:6px}.ruler-strip .ruler.v .t.q{width:8px}.ruler-strip .ruler.v .t.m{width:10px}.ruler-strip .ruler.v .t.l{width:15px}
+.ruler-strip .ruler.v .cm .n{left:16px}.ruler-strip .ruler.v .in .n{right:16px}
+.ruler-strip .ruler.v .unit.cm-u{left:4px;bottom:4px;writing-mode:horizontal-tb}.ruler-strip .ruler.v .unit.in-u{right:4px;bottom:4px;writing-mode:horizontal-tb}
+html.dark-mode .ruler-strip .ruler{background:rgba(27,30,40,.9)!important;border-color:#3a3f52;color:#ece6da}
+html.dark-mode .ruler-ctl{background:rgba(25,26,38,.92);border-color:#3a3f52}
+html.dark-mode .ruler-strip .ruler-count{color:#d9c49a}
+html.dark-mode .ruler-mini{background:#232536;color:#ece6da;border-color:#3a3f52}
+html.dark-mode .ruler-mini:hover{background:#d6ab6b;color:#191a26}
+@keyframes rulerStripIn{from{opacity:0;transform:translateY(6px)}}
+@media(max-width:1000px){.ruler-panel.ruler-strip{left:8px;right:34px;bottom:8px}.ruler-strip.is-vertical{left:auto;right:32px;top:84px}}
+@media(prefers-reduced-motion:reduce){.ruler-panel.ruler-strip{animation:none}}
+
+/* ===== Round 4: sidebar brand never scrolls away ===== */
+#sidebar{overflow:hidden!important;display:flex;flex-direction:column}
+#sidebar .brand{flex:0 0 auto;position:relative;z-index:1}
+#sidebar nav.navlinks{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(201,163,92,.35) transparent}
+#sidebar .sidebar-foot{flex:0 0 auto}
+@media(min-width:1001px){
+  #sidebar{position:fixed!important;top:0;left:0;bottom:0;height:100vh;width:252px;z-index:30}
+  #main{margin-left:252px}
+}
+@media(max-width:1000px){#sidebar{height:100vh;height:100dvh}}
+
+/* ===== Round 4: employee department chips ===== */
+.dept-chips{flex-wrap:wrap;gap:8px}
+.dept-chip{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;font-weight:600;padding:7px 13px}
+.dept-chip .chip-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:rgba(38,52,95,.08);font-size:11px;font-weight:700}
+.dept-chip.active .chip-count{background:rgba(255,255,255,.22)}
+.dept-chip:focus-visible{outline:2px solid var(--brass,#a07a34);outline-offset:2px}
+html.dark-mode .dept-chip .chip-count{background:rgba(255,255,255,.1)}
+
+/* ===== Round 4: Dress Sizes ===== */
+.sz-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 16px}
+.sz-tab{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:600 13.5px/1 "DM Sans",system-ui,sans-serif;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.sz-tab:hover{border-color:#a07a34}
+.sz-tab.active{background:#26345f;border-color:#26345f;color:#faf6ef}
+.sz-tab-count{font-size:11px;font-weight:700;padding:3px 7px;border-radius:999px;background:rgba(38,52,95,.08)}
+.sz-tab.active .sz-tab-count{background:rgba(255,255,255,.2)}
+.sz-tab:focus-visible{outline:2px solid #a07a34;outline-offset:2px}
+.sz-kpis{grid-template-columns:repeat(3,1fr);margin-bottom:16px}
+.sz-panel{padding:0;overflow:hidden}
+.sz-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;padding:20px 22px 14px;border-bottom:1px solid var(--line)}
+.sz-title{font-family:"Cormorant Garamond",Georgia,serif;font-size:28px;font-weight:700;margin:0;color:var(--navy)}
+.sz-sub{margin:4px 0 0;color:var(--slate);font-size:13px}
+.sz-panel-actions{display:flex;gap:8px;flex-wrap:wrap}
+.sz-del-btn{color:var(--red)!important}
+.sz-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.sz-table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums;min-width:520px}
+.sz-table th,.sz-table td{padding:11px 14px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+.sz-table thead th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);font-weight:700;background:rgba(160,122,52,.06);position:sticky;top:0}
+.sz-table th.sz-size,.sz-table thead th:first-child{text-align:left;font-weight:700;color:var(--navy)}
+.sz-table tbody tr:hover{background:rgba(160,122,52,.06)}
+.sz-table tbody tr:last-child th,.sz-table tbody tr:last-child td{border-bottom:0}
+.sz-empty{color:var(--slate-soft)}
+.sz-actions{text-align:right!important;width:1%}
+.sz-icon{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font-size:14px;margin-left:4px}
+.sz-icon:hover{border-color:#26345f;color:#26345f}
+.sz-icon.sz-del:hover{border-color:var(--red);color:var(--red)}
+.sz-unit{font-weight:400;color:var(--slate-soft);font-size:11px}
+.sz-err{color:var(--red);font-size:13px;margin:8px 0 0;min-height:1em}
+.sz-checks{display:flex;flex-wrap:wrap;gap:6px 14px}
+.sz-check{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer}
+html.dark-mode .sz-tab{background:var(--paper);border-color:var(--line);color:var(--ink)}
+html.dark-mode .sz-tab.active{background:#3a4a80;border-color:#3a4a80;color:#fff}
+html.dark-mode .sz-table thead th{background:rgba(255,255,255,.04)}
+html.dark-mode .sz-icon{background:transparent;border-color:var(--line);color:var(--ink)}
+html.dark-mode .sz-title{color:var(--ink)}
+@media(max-width:640px){.sz-kpis{grid-template-columns:repeat(3,1fr);gap:8px}.sz-panel-head{padding:16px}.sz-title{font-size:24px}}
+html.dark-mode .ruler-panel.ruler-strip,.ruler-panel.ruler-strip{background:transparent!important;border:0!important;box-shadow:none!important}
+html.dark-mode .sz-table th,html.dark-mode .sz-table td{background:transparent!important;border-color:var(--line)!important;color:var(--ink)}
+html.dark-mode .sz-table thead th{background:rgba(255,255,255,.04)!important;color:var(--slate)!important}
+.sz-table th,.sz-table td{border-left:0!important;border-right:0!important}
 </style>
 </head>
 <body>
@@ -627,16 +725,16 @@ html[lang="mr"] body :not(.brand-name):not(.mono){letter-spacing:normal!importan
 <button type="button" id="rulerTab" class="ruler-tab" hidden aria-expanded="false" aria-controls="rulerPanel" aria-label="Measurement ruler" title="Measurement ruler" onclick="openRuler()">
   <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
-<div id="rulerPanel" class="ruler-panel" role="dialog" aria-modal="false" aria-labelledby="rulerTitle" hidden tabindex="-1">
-  <div class="ruler-head">
-    <span class="ruler-title" id="rulerTitle">📏 Measurement Ruler</span>
-    <span class="ruler-count" id="rulerCount" aria-live="off">Hides in 20s</span>
-    <button type="button" class="ruler-btn" id="rulerOrient" onclick="toggleRulerOrientation()">↕ Vertical</button>
-    <button type="button" class="ruler-btn ruler-close" id="rulerClose" onclick="closeRuler()" aria-label="Close ruler">×</button>
-  </div>
-  <div class="ruler-body" id="rulerBody"></div>
+<div id="rulerPanel" class="ruler-panel ruler-strip" role="region" aria-labelledby="rulerTitle" hidden tabindex="-1">
+  <span class="sr-only" id="rulerTitle">Measurement Ruler</span>
   <div class="ruler-progress" aria-hidden="true"><span class="ruler-bar" id="rulerBar"></span></div>
-  <div class="ruler-note" id="rulerNote">Approximate — depends on screen</div>
+  <div class="ruler-body" id="rulerBody"></div>
+  <div class="ruler-ctl">
+    <span class="ruler-count" id="rulerCount" aria-live="off" title="Hides in 10s">10s</span>
+    <button type="button" class="ruler-mini" id="rulerOrient" onclick="toggleRulerOrientation()" aria-label="Vertical" title="Vertical">↕</button>
+    <button type="button" class="ruler-mini ruler-close" id="rulerClose" onclick="closeRuler()" aria-label="Close ruler" title="Close ruler">×</button>
+  </div>
+  <span class="sr-only" id="rulerNote">Approximate — depends on screen</span>
 </div>
 
 <script>
@@ -1595,7 +1693,7 @@ function formatMeasurements(m){
     return `<span class="meas-chip"><b>${label}</b> ${m[k]}</span>`;
   }).join('');
 }
-function viewDressSizes(){
+function viewDressSizesLegacy(){
   const cats = ['ladies','gents','kids'];
   const pills = cats.map(c=>`<button class="pill ${dressSizeTab===c?'active':''}" onclick="dressSizeTab='${c}';render()">${dressCategoryLabel(c)}</button>`).join('');
   const types = (state.dressTypes||[]).filter(t=>t.category===dressSizeTab);
@@ -1645,6 +1743,235 @@ function viewDressSizes(){
   <div class="dress-grid">
     ${cards || `<div class="panel panel-pad empty" style="grid-column:1/-1;">${tr('No dress types in this category yet.')}</div>`}
   </div>`;
+}
+
+/* ============================================================
+   VIEW: DRESS SIZES — garment size charts (shirt, pant, pinaco, ...)
+   Stored server-side via /api/size-charts (whole-chart upserts). This browser also keeps its
+   last saved copy so edits survive a fresh/ephemeral server instance (re-synced on load).
+============================================================ */
+const SIZE_CACHE_KEY = 'threadline_size_charts_v1';
+const SIZES = { charts:null, loading:false, error:'', active:null, backend:'' };
+const SIZE_FIELD_LABELS = {
+  chest:['Chest','छाती'], waist:['Waist','कंबर'], hip:['Hip','हिप'], length:['Length','लांबी'],
+  shoulder:['Shoulder','खांदा'], sleeve:['Sleeve','बाही'], collar:['Collar','कॉलर'], inseam:['Inseam','आतील लांबी'],
+  bottom:['Bottom','मोहरी'], strap:['Strap','पट्टा'], neck:['Neck','गळा'], armhole:['Armhole','आर्महोल'], thigh:['Thigh','मांडी']
+};
+const SIZE_FIELD_PRESETS = ['chest','waist','hip','length','shoulder','sleeve','collar','inseam','bottom','strap','neck','armhole','thigh'];
+const GARMENT_NAME_MR = { 'Shirt':'शर्ट','Pant':'पँट','Skirt':'स्कर्ट','Pinaco':'पिनॅको','Grammer':'ग्रामर','Half Hastin':'हाफ हस्तीन','Bandi':'बंडी' };
+const SIZE_BASIS_MR = { 'Chest (in)':'छाती (इंच)','Waist (in)':'कंबर (इंच)','Age':'वय' };
+const SIZE_NOTES_MR = {
+  'Half sleeve uses the sleeve column; full sleeve add ~14 in.':'हाफ स्लीव्हसाठी बाहीचा कॉलम; फुल स्लीव्हसाठी ~14 इंच जोडा.',
+  'Lengths can be changed per school.':'शाळेनुसार लांबी बदलता येते.',
+  'Pinafore dress — wear over the uniform shirt.':'पिनॅफोर ड्रेस — युनिफॉर्म शर्टवर घालायचा.',
+  'Dungaree style — length is shoulder to hem.':'डंगरी स्टाइल — लांबी खांद्यापासून खालच्या टोकापर्यंत.',
+  'Nehru-style waistcoat.':'नेहरू-स्टाइल जॅकेट.'
+};
+function sizeFieldLabel(f){ const l=SIZE_FIELD_LABELS[f]; if(l) return LANG==='mr'?l[1]:l[0]; return String(f).replace(/_/g,' ').replace(/^./,c=>c.toUpperCase()); }
+function garmentName(c){ return LANG==='mr' ? (GARMENT_NAME_MR[c.name]||c.name) : c.name; }
+function readSizeCache(){ try{ const c=JSON.parse(localStorage.getItem(SIZE_CACHE_KEY)||'{}'); c.charts=c.charts||{}; c.deleted=c.deleted||{}; return c; }catch(e){ return {charts:{},deleted:{}}; } }
+function writeSizeCache(c){ try{ localStorage.setItem(SIZE_CACHE_KEY, JSON.stringify(c)); }catch(e){} }
+function rememberChart(chart){ const c=readSizeCache(); c.charts[chart.id]=chart; delete c.deleted[chart.id]; writeSizeCache(c); }
+function rememberDeletedChart(id){ const c=readSizeCache(); delete c.charts[id]; c.deleted[id]=Date.now(); writeSizeCache(c); }
+function sortCharts(list){ return list.slice().sort((a,b)=>(a.position??999)-(b.position??999) || String(a.name).localeCompare(String(b.name))); }
+function fmtMeasure(v){ if(v==null || v==='') return '<span class="sz-empty">—</span>'; const n=Number(v); return Number.isInteger(n) ? String(n) : String(n).replace(/\.5$/,'½').replace(/\.25$/,'¼').replace(/\.75$/,'¾'); }
+
+async function loadSizeCharts(){
+  if(SIZES.loading) return;
+  SIZES.loading = true; SIZES.error = '';
+  try{
+    const d = await api('/api/size-charts');
+    SIZES.backend = d.backend || '';
+    const byId = {}; (d.charts||[]).forEach(c=>{ byId[c.id]=c; });
+    const cache = readSizeCache();
+    Object.keys(cache.deleted).forEach(id=>{
+      if(byId[id]){ delete byId[id]; api('/api/size-charts/'+encodeURIComponent(id),{method:'DELETE'}).catch(()=>{}); }
+    });
+    for(const local of Object.values(cache.charts)){
+      const srv = byId[local.id];
+      if(!srv || Date.parse(srv.updatedAt||0) < Date.parse(local.updatedAt||0)){
+        try{ const r = await api('/api/size-charts/'+encodeURIComponent(local.id),{method:'PUT',body:JSON.stringify({...local,resync:true})}); byId[local.id]=r.chart; }
+        catch(e){ byId[local.id]=local; }
+      }
+    }
+    SIZES.charts = sortCharts(Object.values(byId));
+  }catch(err){
+    SIZES.error = err.message || 'Error';
+    const cache = readSizeCache();
+    if(!SIZES.charts && Object.keys(cache.charts).length) SIZES.charts = sortCharts(Object.values(cache.charts));
+  }finally{
+    SIZES.loading = false;
+    if(SIZES.charts && (!SIZES.active || !SIZES.charts.find(c=>c.id===SIZES.active))) SIZES.active = SIZES.charts[0] ? SIZES.charts[0].id : null;
+    if((location.hash||'').slice(1)==='dress-sizes') render();
+  }
+}
+async function saveChart(chart){
+  const r = await api('/api/size-charts/'+encodeURIComponent(chart.id),{method:'PUT',body:JSON.stringify(chart)});
+  const saved = r.chart;
+  rememberChart(saved);
+  const i = SIZES.charts.findIndex(c=>c.id===saved.id);
+  if(i>=0) SIZES.charts[i]=saved; else SIZES.charts.push(saved);
+  SIZES.charts = sortCharts(SIZES.charts);
+  return saved;
+}
+
+function viewDressSizes(){
+  const head = `<div class="page-head">
+    <div>
+      <h1 class="page-title">${L('Dress Sizes','ड्रेस साइज')}</h1>
+      <p class="page-sub">${L('Size charts for every garment — measurements in inches. Add, edit or remove sizes any time.','प्रत्येक कपड्याचा साइज चार्ट — मापे इंचांमध्ये. कधीही साइज जोडा, बदला किंवा काढा.')}</p>
+    </div>
+    <button class="btn btn-primary" onclick="openChartModal()">${L('＋ Add Garment','＋ कपडा जोडा')}</button>
+  </div>`;
+  if(!SIZES.charts){
+    if(!SIZES.loading && !SIZES.error) setTimeout(loadSizeCharts, 0);
+    return head + (SIZES.error
+      ? `<div class="panel panel-pad empty">${escHtml(SIZES.error)}<br><button class="btn btn-ghost" style="margin-top:12px" onclick="SIZES.error='';loadSizeCharts()">${L('Try again','पुन्हा प्रयत्न करा')}</button></div>`
+      : `<div class="panel panel-pad empty">${L('Loading size charts…','साइज चार्ट लोड होत आहेत…')}</div>`);
+  }
+  const charts = SIZES.charts;
+  if(!charts.length) return head + `<div class="panel panel-pad empty">${L('No garments yet. Add one to start a size chart.','अजून कपडे नाहीत. साइज चार्ट सुरू करण्यासाठी एक जोडा.')}</div>`;
+  const c = charts.find(x=>x.id===SIZES.active) || charts[0];
+  const tabs = charts.map(x=>`<button type="button" class="sz-tab ${x.id===c.id?'active':''}" aria-pressed="${x.id===c.id}" onclick="SIZES.active='${x.id}';render()">${escHtml(garmentName(x))}<span class="sz-tab-count">${(x.rows||[]).length}</span></button>`).join('');
+  const fields = c.fields||[];
+  const rows = (c.rows||[]).map((r,i)=>`<tr>
+      <th scope="row" class="sz-size">${escHtml(r.size)}</th>
+      ${fields.map(f=>`<td>${fmtMeasure(r[f])}</td>`).join('')}
+      <td class="sz-actions">
+        <button type="button" class="sz-icon" title="${L('Edit size','साइज बदला')}" aria-label="${L('Edit size','साइज बदला')} ${escHtml(r.size)}" onclick="openSizeRowModal('${c.id}',${i})">✎</button>
+        <button type="button" class="sz-icon sz-del" title="${L('Delete size','साइज काढा')}" aria-label="${L('Delete size','साइज काढा')} ${escHtml(r.size)}" onclick="deleteSizeRow('${c.id}',${i})">✕</button>
+      </td>
+    </tr>`).join('');
+  const basis = c.basis ? (LANG==='mr' ? (SIZE_BASIS_MR[c.basis]||c.basis) : c.basis) : '';
+  return head + `
+  <div class="sz-tabs" role="group" aria-label="${L('Garments','कपडे')}">${tabs}</div>
+  <div class="kpi-grid sz-kpis">
+    <div class="kpi-card"><div class="kpi-label">${L('Garments','कपडे')}</div><div class="kpi-value">${charts.length}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${L('Sizes in','साइज —')} ${escHtml(garmentName(c))}</div><div class="kpi-value">${(c.rows||[]).length}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${L('Measurements','मापे')}</div><div class="kpi-value">${fields.length}</div></div>
+  </div>
+  <section class="panel sz-panel">
+    <div class="sz-panel-head">
+      <div>
+        <h2 class="sz-title">${escHtml(garmentName(c))}</h2>
+        <p class="sz-sub">${basis?`${L('Size by','साइज आधार')}: <b>${escHtml(basis)}</b> · `:''}${L('inches','इंच')}${c.notes?` · ${escHtml(LANG==='mr' ? (SIZE_NOTES_MR[c.notes]||c.notes) : c.notes)}`:''}</p>
+      </div>
+      <div class="sz-panel-actions">
+        <button type="button" class="btn btn-primary" onclick="openSizeRowModal('${c.id}')">${L('＋ Add Size','＋ साइज जोडा')}</button>
+        <button type="button" class="btn btn-ghost" onclick="openChartModal('${c.id}')">${L('Edit garment','कपडा बदला')}</button>
+        <button type="button" class="btn btn-ghost sz-del-btn" onclick="deleteChartEntry('${c.id}')">${L('Delete','काढा')}</button>
+      </div>
+    </div>
+    <div class="sz-table-wrap">
+      <table class="sz-table">
+        <thead><tr><th scope="col">${L('Size','साइज')}</th>${fields.map(f=>`<th scope="col">${escHtml(sizeFieldLabel(f))}</th>`).join('')}<th scope="col"><span class="sr-only">${L('Actions','क्रिया')}</span></th></tr></thead>
+        <tbody>${rows || `<tr><td colspan="${fields.length+2}" class="empty" style="padding:22px">${L('No sizes yet — add the first one.','अजून साइज नाहीत — पहिली साइज जोडा.')}</td></tr>`}</tbody>
+      </table>
+    </div>
+  </section>`;
+}
+
+function openSizeRowModal(chartId, idx){
+  const c = (SIZES.charts||[]).find(x=>x.id===chartId); if(!c) return;
+  const editing = Number.isInteger(idx);
+  const r = editing ? (c.rows[idx]||{}) : {};
+  const inputs = (c.fields||[]).map(f=>`<div class="field"><label for="szf_${f}">${escHtml(sizeFieldLabel(f))} <span class="sz-unit">(${L('in','इंच')})</span></label><input type="number" inputmode="decimal" min="0" max="999" step="0.25" id="szf_${f}" value="${r[f]!=null?r[f]:''}"></div>`).join('');
+  openModal(`
+    <div class="modal-head"><h3>${editing?L('Edit size','साइज बदला'):L('Add size','साइज जोडा')} — ${escHtml(garmentName(c))}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field"><label for="szf__size">${L('Size label','साइज लेबल')}</label><input id="szf__size" maxlength="20" value="${escHtml(r.size||'')}" placeholder="${L('e.g. 28 or 5–6Y','उदा. 28 किंवा 5–6Y')}"></div>
+      <div class="meas-edit-grid">${inputs || `<p class="empty">${L('This garment has no measurement columns yet — use “Edit garment” to add some.','या कपड्याला अजून मापांचे कॉलम नाहीत — “कपडा बदला” मधून जोडा.')}</p>`}</div>
+      <p class="sz-err" id="szErr" role="alert"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal()">${L('Cancel','रद्द करा')}</button>
+      <button class="btn btn-primary" id="szSaveBtn" onclick="saveSizeRow('${c.id}',${editing?idx:'null'})">${L('Save size','साइज जतन करा')}</button>
+    </div>`);
+  setTimeout(()=>{ const el=document.getElementById('szf__size'); if(el) el.focus(); }, 30);
+}
+async function saveSizeRow(chartId, idx){
+  const c = (SIZES.charts||[]).find(x=>x.id===chartId); if(!c) return;
+  const err = document.getElementById('szErr');
+  const size = (document.getElementById('szf__size').value||'').trim();
+  if(!size){ err.textContent = L('Please enter a size label.','कृपया साइज लेबल लिहा.'); return; }
+  const dup = (c.rows||[]).findIndex(r=>String(r.size).toLowerCase()===size.toLowerCase());
+  if(dup>=0 && dup!==idx){ err.textContent = L('That size already exists in this chart.','ही साइज या चार्टमध्ये आधीच आहे.'); return; }
+  const row = { size };
+  for(const f of (c.fields||[])){
+    const v = document.getElementById('szf_'+f).value;
+    if(v==='') continue;
+    const n = Number(v);
+    if(!Number.isFinite(n) || n<0 || n>=1000){ err.textContent = L('Measurements must be numbers between 0 and 999.','मापे 0 ते 999 मधील संख्या असावीत.'); return; }
+    row[f] = n;
+  }
+  const rows = (c.rows||[]).slice();
+  if(Number.isInteger(idx)) rows[idx] = row; else rows.push(row);
+  const btn = document.getElementById('szSaveBtn'); if(btn){ btn.disabled = true; btn.textContent = L('Saving…','जतन होत आहे…'); }
+  try{
+    await saveChart({ ...c, rows });
+    closeModal(); render();
+    toast(Number.isInteger(idx) ? L('Size updated','साइज अपडेट झाली') : L('Size added','साइज जोडली'));
+  }catch(e){ err.textContent = e.message || 'Error'; if(btn){ btn.disabled=false; btn.textContent=L('Save size','साइज जतन करा'); } }
+}
+async function deleteSizeRow(chartId, idx){
+  const c = (SIZES.charts||[]).find(x=>x.id===chartId); if(!c || !c.rows[idx]) return;
+  if(!confirm(L(`Delete size ${c.rows[idx].size} from ${c.name}?`, `${garmentName(c)} मधून साइज ${c.rows[idx].size} काढायची?`))) return;
+  const rows = c.rows.filter((_,i)=>i!==idx);
+  try{ await saveChart({ ...c, rows }); render(); toast(L('Size deleted','साइज काढली')); }
+  catch(e){ toast(e.message||'Error'); }
+}
+function openChartModal(chartId){
+  const c = chartId ? (SIZES.charts||[]).find(x=>x.id===chartId) : null;
+  const fields = c ? (c.fields||[]) : ['chest','length','shoulder'];
+  const presetBoxes = SIZE_FIELD_PRESETS.map(f=>`<label class="sz-check"><input type="checkbox" value="${f}" ${fields.includes(f)?'checked':''}> ${escHtml(sizeFieldLabel(f))}</label>`).join('');
+  const custom = fields.filter(f=>!SIZE_FIELD_PRESETS.includes(f)).join(', ');
+  openModal(`
+    <div class="modal-head"><h3>${c?L('Edit garment','कपडा बदला'):L('Add garment','कपडा जोडा')}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
+    <div class="modal-body">
+      <div class="field"><label for="szc_name">${L('Garment name','कपड्याचे नाव')}</label><input id="szc_name" maxlength="60" value="${escHtml(c?c.name:'')}" placeholder="${L('e.g. Frock','उदा. फ्रॉक')}"></div>
+      <div class="field"><label for="szc_basis">${L('Size by','साइज आधार')}</label><input id="szc_basis" maxlength="40" value="${escHtml(c?c.basis:'')}" placeholder="${L('e.g. Chest (in), Waist (in) or Age','उदा. Chest (in), Waist (in) किंवा Age')}"></div>
+      <div class="field"><label>${L('Measurement columns','मापांचे कॉलम')}</label><div class="sz-checks">${presetBoxes}</div></div>
+      <div class="field"><label for="szc_custom">${L('Other columns (comma separated)','इतर कॉलम (स्वल्पविरामाने वेगळे)')}</label><input id="szc_custom" value="${escHtml(custom)}" placeholder="${L('e.g. neck_round, pocket','उदा. neck_round, pocket')}"></div>
+      <div class="field"><label for="szc_notes">${L('Notes (optional)','टीप (ऐच्छिक)')}</label><textarea id="szc_notes" maxlength="300">${escHtml(c?c.notes:'')}</textarea></div>
+      <p class="sz-err" id="szErr" role="alert"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal()">${L('Cancel','रद्द करा')}</button>
+      <button class="btn btn-primary" id="szSaveBtn" onclick="saveChartModal(${c?`'${c.id}'`:'null'})">${L('Save garment','कपडा जतन करा')}</button>
+    </div>`);
+}
+async function saveChartModal(chartId){
+  const err = document.getElementById('szErr');
+  const name = (document.getElementById('szc_name').value||'').trim();
+  if(!name){ err.textContent = L('Please enter a garment name.','कृपया कपड्याचे नाव लिहा.'); return; }
+  const picked = [...document.querySelectorAll('.sz-checks input:checked')].map(i=>i.value);
+  const custom = (document.getElementById('szc_custom').value||'').split(',').map(s=>s.trim().toLowerCase().replace(/\s+/g,'_')).filter(s=>/^[a-z][a-z0-9_]{0,23}$/.test(s) && s!=='size');
+  const fields = Array.from(new Set([...picked, ...custom])).slice(0,12);
+  const existing = chartId ? SIZES.charts.find(x=>x.id===chartId) : null;
+  let id = chartId;
+  if(!id){
+    const base = (name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') || 'garment').slice(0,30);
+    id = base; let n = 2; while(SIZES.charts.find(x=>x.id===id) || readSizeCache().deleted[id]) id = `${base}-${n++}`;
+  }
+  const chart = { id, name, basis:(document.getElementById('szc_basis').value||'').trim(), notes:(document.getElementById('szc_notes').value||'').trim(), fields,
+    rows: existing ? existing.rows : [], position: existing ? existing.position : (SIZES.charts.length + 100) };
+  const btn = document.getElementById('szSaveBtn'); if(btn){ btn.disabled = true; btn.textContent = L('Saving…','जतन होत आहे…'); }
+  try{
+    await saveChart(chart);
+    SIZES.active = id; closeModal(); render();
+    toast(existing ? L('Garment updated','कपडा अपडेट झाला') : L('Garment added','कपडा जोडला'));
+  }catch(e){ err.textContent = e.message || 'Error'; if(btn){ btn.disabled=false; btn.textContent=L('Save garment','कपडा जतन करा'); } }
+}
+async function deleteChartEntry(chartId){
+  const c = (SIZES.charts||[]).find(x=>x.id===chartId); if(!c) return;
+  if(!confirm(L(`Delete the whole ${c.name} size chart?`, `संपूर्ण ${garmentName(c)} साइज चार्ट काढायचा?`))) return;
+  try{
+    await api('/api/size-charts/'+encodeURIComponent(chartId),{method:'DELETE'});
+    rememberDeletedChart(chartId);
+    SIZES.charts = SIZES.charts.filter(x=>x.id!==chartId);
+    SIZES.active = SIZES.charts[0] ? SIZES.charts[0].id : null;
+    render(); toast(L('Size chart deleted','साइज चार्ट काढला'));
+  }catch(e){ toast(e.message||'Error'); }
 }
 
 function escHtml(s){
@@ -2060,8 +2387,14 @@ function viewBatchDetail(id){
 /* ============================================================
    VIEW: EMPLOYEES DIRECTORY
 ============================================================ */
+let EMP_DEPT_FILTER = null;
+// Vendors take raw cloth like the cutting floor (see isCuttingOrVendor), so they are grouped under Cutting.
+function empFilterDept(e){ return (e.type==='vendor' || e.dept==='vendor') ? (e.workDept || 'cutting') : e.dept; }
+function empDeptChipLabel(id){ return id==='kbv' ? (LANG==='mr' ? 'KBV (काजा, बटण व वारलक)' : 'KBV (Kaja, Button & Varlak)') : deptName(id); }
+function toggleEmpDept(id){ EMP_DEPT_FILTER = EMP_DEPT_FILTER===id ? null : id; render(); }
 function viewEmployees(){
-  const cards = state.employees.map(e=>{
+  const shown = EMP_DEPT_FILTER ? state.employees.filter(e=>empFilterDept(e)===EMP_DEPT_FILTER) : state.employees;
+  const cards = shown.map(e=>{
     const t = empTotals(e.id);
     const list = empAssignments(e.id);
     const active = list.filter(a=>a.status==='in-progress').length;
@@ -2070,7 +2403,7 @@ function viewEmployees(){
         <div class="emp-avatar">${initials(e.name)}</div>
         <div>
           <div class="emp-name">${e.name}</div>
-          <div class="emp-role">${e.type==='vendor'?'Vendor':deptName(e.dept)} · <span class="mono">${e.id}</span></div>
+          <div class="emp-role">${e.type==='vendor'?`${tr('Vendor')} · ${deptName(empFilterDept(e))}`:deptName(e.dept)} · <span class="mono">${e.id}</span></div>
         </div>
       </div>
       <div class="emp-stats">
@@ -2083,15 +2416,16 @@ function viewEmployees(){
   }).join('');
   return `
   <div class="page-head">
-    <div><h1 class="page-title">${tr('Employees & Vendors')}</h1><p class="page-sub">${state.employees.length} ${tr('accounts · internal workforce and outsourced vendors')}</p></div>
+    <div><h1 class="page-title">${tr('Employees & Vendors')}</h1><p class="page-sub">${EMP_DEPT_FILTER
+      ? L(`${shown.length} of ${state.employees.length} accounts · ${empDeptChipLabel(EMP_DEPT_FILTER)} (tap the chip again to show everyone)`, `${state.employees.length} पैकी ${shown.length} खाती · ${empDeptChipLabel(EMP_DEPT_FILTER)} (सर्वांना पाहण्यासाठी चिप पुन्हा दाबा)`)
+      : `${state.employees.length} ${tr('accounts · internal workforce and outsourced vendors')}`}</p></div>
     <button class="btn btn-primary" onclick="openAddEmployeeModal()">${tr('＋ Add Employee')}</button>
   </div>
-  <div class="pill-nav">
-    <div class="pill active">${tr('All')} (${state.employees.length})</div>
-    <div class="pill">${tr('Internal')} (${state.employees.filter(e=>e.type==='internal').length})</div>
-    <div class="pill">${tr('Vendors')} (${state.employees.filter(e=>e.type==='vendor').length})</div>
+  <div class="pill-nav dept-chips" role="group" aria-label="${L('Filter by department','विभागानुसार निवडा')}">
+    ${DEPTS.map(d=>{ const n=state.employees.filter(e=>empFilterDept(e)===d.id).length; const on=EMP_DEPT_FILTER===d.id;
+      return `<button type="button" class="pill dept-chip ${on?'active':''}" aria-pressed="${on}" onclick="toggleEmpDept('${d.id}')"><span aria-hidden="true">${d.icon}</span> ${empDeptChipLabel(d.id)} <span class="chip-count">${n}</span></button>`; }).join('')}
   </div>
-  <div class="card-grid">${cards}</div>`;
+  <div class="card-grid">${cards || `<div class="panel panel-pad empty" style="grid-column:1/-1">${L('No one in this department yet.','या विभागात अजून कोणी नाही.')}</div>`}</div>`;
 }
 function openAddEmployeeModal(){
   openModal(`
@@ -2718,10 +3052,10 @@ function closeSidebar(){
    Uses CSS absolute units (1cm / 1in), so the physical size on
    screen is approximate and depends on the display's DPI.
    Auto-hides exactly 20s after being shown; clicking the tab
-   again while visible restarts the 20s timer.
+   again while visible restarts the 10s timer.
 ============================================================ */
 let RULER_ON_DASHBOARD = false;
-const RULER_MS = 20000;
+const RULER_MS = 10000;
 let rulerHideTimer = null, rulerTickTimer = null, rulerDeadline = 0, rulerOrientation = 'h', rulerReturnFocus = null;
 
 function rulerIsOpen(){ const p=document.getElementById('rulerPanel'); return !!p && !p.hidden; }
@@ -2747,7 +3081,9 @@ function buildRuler(){
   const vertical = rulerOrientation === 'v';
   const pos = vertical ? 'top' : 'left';
   const pxCm = cssUnitPx('cm');
-  const avail = vertical ? Math.max(200, window.innerHeight - 190) : Math.max(220, Math.min(window.innerWidth - 120, 1400));
+  // Size the strip to the free space of the content area (it never covers the sidebar).
+  const mainRect = (document.getElementById('main')||document.body).getBoundingClientRect();
+  const avail = vertical ? Math.max(160, window.innerHeight - 150 - 14 - 90) : Math.max(160, Math.min(mainRect.width - 150, 1500));
   const cms = Math.max(5, Math.floor(avail / pxCm));
   const inches = Math.floor((cms / 2.54) * 8) / 8;
   let cm = '', inch = '';
@@ -2771,8 +3107,11 @@ function buildRuler(){
   document.getElementById('rulerPanel').classList.toggle('is-vertical', vertical);
 }
 function updateRulerLabels(){
-  document.getElementById('rulerTitle').textContent = '📏 ' + tr('Measurement Ruler');
-  document.getElementById('rulerOrient').textContent = rulerOrientation==='h' ? '↕ ' + tr('Vertical') : '↔ ' + tr('Horizontal');
+  document.getElementById('rulerTitle').textContent = tr('Measurement Ruler');
+  const orient = document.getElementById('rulerOrient');
+  orient.textContent = rulerOrientation==='h' ? '↕' : '↔';
+  const olabel = rulerOrientation==='h' ? tr('Vertical') : tr('Horizontal');
+  orient.setAttribute('aria-label', olabel); orient.title = olabel;
   const close = document.getElementById('rulerClose');
   close.setAttribute('aria-label', tr('Close ruler')); close.title = tr('Close ruler');
   document.getElementById('rulerNote').textContent = tr('Approximate — depends on screen');
@@ -2782,7 +3121,7 @@ function updateRulerCountdown(){
   const left = Math.max(0, rulerDeadline - Date.now());
   const secs = Math.ceil(left / 1000);
   const el = document.getElementById('rulerCount');
-  if(el) el.textContent = tr('Hides in {n}s').replace('{n}', secs);
+  if(el){ el.textContent = secs + (LANG==='mr' ? ' से.' : 's'); el.title = tr('Hides in {n}s').replace('{n}', secs); }
   const bar = document.getElementById('rulerBar');
   if(bar) bar.style.transform = `scaleX(${left / RULER_MS})`;
 }
@@ -2807,7 +3146,7 @@ function openRuler(){
     document.getElementById('rulerTab').setAttribute('aria-expanded','true');
   }
   updateRulerLabels();
-  startRulerTimer();            // (re)start the exact 20s window
+  startRulerTimer();            // (re)start the exact 10s window
   if(!wasOpen) setTimeout(()=>{ try{ document.getElementById('rulerClose').focus({preventScroll:true}); }catch(e){} }, 0);
 }
 function closeRuler(silent){
@@ -2828,7 +3167,7 @@ function closeRuler(silent){
 function toggleRulerOrientation(){
   rulerOrientation = rulerOrientation==='h' ? 'v' : 'h';
   buildRuler();
-  updateRulerLabels();          // timer keeps running — still hides 20s after it was shown
+  updateRulerLabels();          // timer keeps running — still hides 10s after it was shown
 }
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && rulerIsOpen()){ e.preventDefault(); closeRuler(); } });
 window.addEventListener('resize', ()=>{ if(rulerIsOpen()) buildRuler(); });

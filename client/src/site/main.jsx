@@ -4,7 +4,7 @@ import Carousel from './Carousel.jsx';
 import GarmentArt from './GarmentArt.jsx';
 import QuoteForm from './QuoteForm.jsx';
 import { IconArrow, IconBack, IconBoxes, IconClose, IconFabric, IconMenu, IconSearch, IconTape, IconTruck } from './Icons.jsx';
-import { LangContext, makeT, readPref, useLang, writePref } from './i18n.js';
+import { LangContext, makeT, useLang } from './i18n.js';
 import './site.css';
 
 const HERO_SLIDES = [
@@ -94,7 +94,7 @@ function ProductImage({ product, className = '', eager = false, second = false, 
 }
 
 /* ---------------- Header ---------------- */
-function Header({ query, setQuery, onNav, onHome, lang, setLang, dark, setDark }) {
+function Header({ query, setQuery, onNav, onHome }) {
   const { t } = useLang();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -142,26 +142,6 @@ function Header({ query, setQuery, onNav, onHome, lang, setLang, dark, setDark }
               </button>
             )}
           </form>
-          <div className="header-prefs">
-            <div className="lang-toggle" role="group" aria-label={t('Language')}>
-              <button type="button" className={lang === 'en' ? 'active' : ''} aria-pressed={lang === 'en'} onClick={() => setLang('en')} lang="en">EN</button>
-              <button type="button" className={lang === 'mr' ? 'active' : ''} aria-pressed={lang === 'mr'} onClick={() => setLang('mr')} lang="mr">मराठी</button>
-            </div>
-            <button
-              type="button"
-              className="icon-btn theme-toggle"
-              onClick={() => setDark(!dark)}
-              aria-pressed={dark}
-              aria-label={dark ? t('Switch to light mode') : t('Switch to dark mode')}
-              title={dark ? t('Light mode') : t('Dark mode')}
-            >
-              {dark ? (
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2" /><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" /></svg>
-              ) : (
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z" /></svg>
-              )}
-            </button>
-          </div>
           <button
             type="button"
             className="icon-btn menu-toggle"
@@ -496,8 +476,6 @@ function Footer({ onNav, onCategory, categories }) {
       </div>
       <div className="container footer-bottom">
         <span>© {new Date().getFullYear()} CRB Uniforms &amp; Garments</span>
-        <span>{t('Photography via Unsplash (Unsplash License)')}</span>
-        <a className="footer-login" href="/admin">{t('Owner login')}</a>
       </div>
     </footer>
   );
@@ -512,25 +490,12 @@ function App() {
   const [category, setCategory] = useState('All');
   const [route, setRoute] = useState(() => ({ id: productIdFromPath(window.location.pathname), focusQuote: false }));
   const pendingScroll = useRef(null);
-  const [lang, setLangState] = useState(() => (readPref('threadline_lang', 'en') === 'mr' ? 'mr' : 'en'));
-  const [dark, setDarkState] = useState(() => readPref('threadline_dark', '0') === '1');
-  const setLang = useCallback((l) => { setLangState(l); writePref('threadline_lang', l); }, []);
-  const setDark = useCallback((d) => { setDarkState(d); writePref('threadline_dark', d ? '1' : '0'); }, []);
-  const i18n = useMemo(() => ({ lang, t: makeT(lang) }), [lang]);
-  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
+  // The public website is always English + light mode (the dashboard keeps its own toggles).
+  const i18n = useMemo(() => ({ lang: 'en', t: makeT('en') }), []);
   useEffect(() => {
     const root = document.documentElement;
-    if (dark) root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', dark ? '#14161c' : '#f7f3ec');
-  }, [dark]);
-  useEffect(() => {
-    const onStorage = (e) => {
-      if (e.key === 'threadline_lang') setLangState(e.newValue === 'mr' ? 'mr' : 'en');
-      if (e.key === 'threadline_dark') setDarkState(e.newValue === '1');
-    };
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
+    root.lang = 'en';
+    root.removeAttribute('data-theme');
   }, []);
 
   useEffect(() => {
@@ -630,7 +595,7 @@ function App() {
   return (
     <LangContext.Provider value={i18n}>
     <div className="site">
-      <Header query={query} setQuery={setQueryAndShow} onNav={onNav} onHome={onHome} lang={lang} setLang={setLang} dark={dark} setDark={setDark} />
+      <Header query={query} setQuery={setQueryAndShow} onNav={onNav} onHome={onHome} />
       {route.id ? (
         <ProductPage product={product} products={products} loading={loading} onBack={goHome} onOpen={openProduct} focusQuote={route.focusQuote} />
       ) : (

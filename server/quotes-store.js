@@ -172,6 +172,8 @@ function store() {
 }
 
 module.exports = {
+  pgUrl,
+  getPool,
   backend: () => store().kind,
   createQuote: (q) => store().create(q),
   quoteSummary: () => store().summary(),

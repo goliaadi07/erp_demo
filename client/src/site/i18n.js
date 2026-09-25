@@ -87,7 +87,6 @@ const MR = {
   'School uniforms, kids wear and occasion garments — made to order in our own production unit.': 'शाळा युनिफॉर्म, लहान मुलांचे कपडे आणि समारंभाचे कपडे — आमच्या स्वतःच्या युनिटमध्ये ऑर्डरनुसार बनवलेले.',
   'Company': 'कंपनी', 'About us': 'आमच्याबद्दल', 'Contact': 'संपर्क', 'Placeholder': 'नमुना',
   'Phone:': 'फोन:', 'Email:': 'ईमेल:', 'Address:': 'पत्ता:', '(placeholder)': '(नमुना)', 'Your business address here': 'तुमचा व्यवसायाचा पत्ता येथे',
-  'Photography via Unsplash (Unsplash License)': 'छायाचित्रे: Unsplash (Unsplash License)', 'Owner login': 'मालक लॉगिन',
   'School Uniforms & Garments': 'शाळा युनिफॉर्म्स व गारमेंट्स',
   // product catalogue (names, taglines, descriptions)
   'Shirt': 'शर्ट', 'Pant': 'पँट', 'Skirt': 'स्कर्ट', 'Pinaco': 'पिनॅको', 'Grammer': 'ग्रामर', 'Half Hastin': 'हाफ हस्तीन', 'Bandi': 'बंडी',

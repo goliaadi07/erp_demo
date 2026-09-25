@@ -29,8 +29,8 @@ blurred commuter in the background) were replaced in September 2026.
 | pant-2.webp | Pant (hover) | Ramsés Cervantes | https://unsplash.com/photos/a-mannequin-wearing-a-black-shirt-and-pants-WNYmTVGVDhA |
 | skirt.webp | Skirt (primary) | SHAN LU | https://unsplash.com/photos/woman-in-white-long-sleeve-shirt-and-blue-and-black-plaid-skirt-standing-on-brown-concrete-ZgvlVJhTONI |
 | skirt-2.webp | Skirt (hover) | Gaelle Marcel | https://unsplash.com/photos/brown-skirt-hanged-on-wall-1PKjyPsH8sw |
-| pinaco.webp | Pinaco (primary) ¹ | Nellie Adamyan | https://unsplash.com/photos/a-green-dress-hanging-on-a-clothes-rack-7tDTX5PU5mw |
-| pinaco-2.webp | Pinaco (hover) ¹ | Sandra Seitamaa | https://unsplash.com/photos/hanged-white-and-gray-floral-sleeveless-dress-TaJQaxEkpq0 |
+| pinaco.webp | Pinaco (primary) ² | Amsterdam Museum — “Kinderjurk (overgooier)”, object KA 22323.1 (CC0 1.0 public domain dedication) | https://commons.wikimedia.org/wiki/File:Kinderjurk_(overgooier),_objectnr_KA_22323.1.tif |
+| pinaco-2.webp | Pinaco (hover) ² | Amsterdam Museum — “Overgooier”, object KA 20673 (CC0 1.0 public domain dedication) | https://commons.wikimedia.org/wiki/File:Overgooier,_objectnr_KA_20673.tif |
 | grammer.webp | Grammer (primary) ¹ | Moujib Aghrout | https://unsplash.com/photos/man-in-overall-jeans-S49LTFVM0mw |
 | grammer-2.webp | Grammer (hover) | Shaylyn | https://unsplash.com/photos/a-toddler-in-overalls-standing-in-front-of-a-fence-BIj6PIJH_nU |
 | halfhastin.webp | Half Hastin (primary) | tian dayong | https://unsplash.com/photos/a-white-shirt-hanging-on-a-clothes-line-S4f4apZd-hA |
@@ -45,3 +45,5 @@ denim overalls, bandi as a checked waistcoat and a red shop-window vest). Replac
 photos when possible.
 
 Fonts: Cormorant Garamond and DM Sans come from Google Fonts (SIL Open Font License).
+
+² Pinaco photos (round 4): real children’s pinafore dresses photographed on a headless dress form / flat on a grey backdrop — no people, no faces. Released by the Amsterdam Museum under CC0 via Wikimedia Commons, so no attribution is required (credited here anyway). Cropped to 4:5 and converted to WebP (cwebp q80).

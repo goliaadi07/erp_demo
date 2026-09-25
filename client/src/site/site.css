@@ -390,7 +390,6 @@ h1,h2,h3{margin:0}
 .fl-field.has-error textarea{border-color:var(--danger)}
 .fl-hint{display:block;margin-top:6px;font-size:12px;color:var(--soft)}
 .fl-field label .req{color:var(--brass)}
-.footer-login{color:#cfc7ba;text-decoration:none}
 
 html[lang="mr"] body{line-height:1.7}
 html[lang="mr"] .hero-title,html[lang="mr"] .section-title{letter-spacing:0;line-height:1.2}

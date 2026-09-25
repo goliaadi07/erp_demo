@@ -338,7 +338,7 @@ const PRODUCT_MEDIA = {
   shirt: { img: '/images/shirt.webp', img2: '/images/shirt-2.webp', alt: 'White uniform shirts on wooden hangers', sizeNote: 'Chest size (in)', oldSizes: '22–46 (kids to adult)' },
   pant: { img: '/images/pant.webp', img2: '/images/pant-2.webp', alt: 'Grey tailored uniform trousers', sizeNote: 'Waist (in)', oldSizes: 'Waist 20–40' },
   skirt: { img: '/images/skirt.webp', img2: '/images/skirt-2.webp', alt: 'Navy and black pleated plaid skirt', sizeNote: 'Waist (in) — lengths on request', oldSizes: 'Waist 18–34, lengths on request' },
-  pinaco: { img: '/images/pinaco.webp', img2: '/images/pinaco-2.webp', alt: 'Sleeveless pinafore-style dress on a hanger', sizeNote: 'Age', oldSizes: 'Ages 3–10' },
+  pinaco: { img: '/images/pinaco.webp', img2: '/images/pinaco-2.webp', alt: 'Light pink children’s pinafore dress with wide straps on a dress form', oldAlt: 'Sleeveless pinafore-style dress on a hanger', sizeNote: 'Age', oldSizes: 'Ages 3–10' },
   grammer: { img: '/images/grammer.webp', img2: '/images/grammer-2.webp', alt: 'Denim dungaree-style overalls', sizeNote: 'Age', oldSizes: 'Ages 3–10' },
   halfhastin: { img: '/images/halfhastin.webp', img2: '/images/halfhastin-2.webp', alt: 'White half-sleeve shirt on a hanger', sizeNote: 'Chest size (in)', oldSizes: '22–44' },
   bandi: { img: '/images/bandi.webp', img2: '/images/bandi-2.webp', alt: 'Navy checked bandi-style waistcoat over a light shirt', oldAlt: 'Grey bandi (Nehru-style) jacket worn over a kurta', sizeNote: 'Chest size (in)', oldSizes: '24–46' },
