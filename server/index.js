@@ -5,6 +5,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
+const quotes = require('./quotes-store');
 
 const PORT = process.env.PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET || 'CHANGE_THIS_SECRET_BEFORE_PRODUCTION';
@@ -47,7 +48,7 @@ function optionalAuth(req, res, next) {
 }
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, service: 'threadline-api', db: path.basename(db.DB_PATH) });
+  res.json({ ok: true, service: 'threadline-api', db: path.basename(db.DB_PATH), quotesBackend: quotes.backend() });
 });
 
 app.post('/api/auth/login', (req, res) => {
@@ -262,6 +263,7 @@ app.get('/api/public/products/:id', (req, res) => {
   res.json({ product });
 });
 
+const QUOTE_MESSAGE_MAX = 600;
 const QUOTE_LIMITS = { firstName: 60, surname: 60, mobile: 20, email: 120, productId: 40 };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MOBILE_RE = /^\+?[0-9\s\-().]{7,20}$/;
@@ -286,6 +288,9 @@ function validateQuote(body) {
       errors.mobile = 'Please enter a valid mobile number';
     }
   }
+  const rawMsg = typeof body.message === 'string' ? body.message : '';
+  clean.message = rawMsg.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
+  if (clean.message.length > QUOTE_MESSAGE_MAX) errors.message = `Must be at most ${QUOTE_MESSAGE_MAX} characters`;
   let product = null;
   if (!errors.productId) {
     product = db.getPublicProduct(clean.productId);
@@ -307,7 +312,7 @@ function quoteRateLimited(ip) {
   return hits.length > QUOTE_MAX_PER_WINDOW;
 }
 
-app.post('/api/quotes', (req, res) => {
+app.post('/api/quotes', async (req, res) => {
   const body = req.body && typeof req.body === 'object' ? req.body : {};
   // Honeypot: real customers never see or fill the "website" field.
   if (typeof body.website === 'string' && body.website.trim() !== '') {
@@ -322,13 +327,14 @@ app.post('/api/quotes', (req, res) => {
     return res.status(400).json({ message: 'Please correct the highlighted fields.', errors });
   }
   try {
-    const quote = db.createQuoteRequest({
+    const quote = await quotes.createQuote({
       firstName: clean.firstName,
       surname: clean.surname,
       mobile: clean.mobile,
       email: clean.email.toLowerCase(),
       productId: product.id,
       productName: product.name,
+      message: clean.message,
     });
     res.status(201).json({
       ok: true,
@@ -336,31 +342,67 @@ app.post('/api/quotes', (req, res) => {
       message: 'Thank you! Your quote request has been received. Our team will contact you shortly.',
     });
   } catch (err) {
+    console.error('[quotes] create failed:', err.message);
     res.status(500).json({ message: 'Could not save your request. Please try again.' });
   }
 });
 
-// ---- Quote requests inbox (dashboard, JWT required) ----
-app.get('/api/quotes', auth, (req, res) => {
+// ---- Quote-request notifications (dashboard, JWT required) ----
+// A request is "new" until the owner opens the Notifications page; viewing marks it seen
+// (seen_at), after which it only appears under "Earlier / Seen" and no longer counts.
+const quoteRoute = (fn) => async (req, res) => {
   res.set('Cache-Control', 'no-store');
-  res.json(db.listQuoteRequests(200));
-});
-
-app.post('/api/quotes/read-all', auth, (req, res) => {
-  const updated = db.markAllQuotesRead();
-  res.json({ ok: true, updated, unreadCount: 0 });
-});
-
-app.patch('/api/quotes/:id/read', auth, (req, res) => {
-  try {
-    const id = Number(req.params.id);
-    if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ message: 'Invalid id' });
-    const quote = db.markQuoteRead(id);
-    res.json({ quote, unreadCount: db.listQuoteRequests(1).unreadCount });
-  } catch (err) {
-    res.status(err.status || 500).json({ message: err.message || 'Failed to update quote request' });
+  try { await fn(req, res); } catch (err) {
+    console.error('[quotes]', err.message);
+    res.status(err.status || 500).json({ message: err.status ? err.message : 'Quote storage is unavailable right now' });
   }
-});
+};
+
+app.get('/api/quotes', auth, quoteRoute(async (req, res) => {
+  const data = await quotes.listQuotes(300);
+  res.json({ ...data, unreadCount: data.newCount, backend: quotes.backend() });
+}));
+
+app.get('/api/quotes/summary', auth, quoteRoute(async (req, res) => {
+  const s = await quotes.quoteSummary();
+  res.json({ ...s, unreadCount: s.newCount, backend: quotes.backend() });
+}));
+
+function parseIds(raw) {
+  if (!Array.isArray(raw)) return null;
+  const ids = [...new Set(raw.map(Number).filter((n) => Number.isInteger(n) && n > 0))].slice(0, 500);
+  return ids;
+}
+
+app.post('/api/quotes/seen', auth, quoteRoute(async (req, res) => {
+  const ids = parseIds((req.body || {}).ids);
+  if (ids && !ids.length) return res.json({ ok: true, updated: 0, ...(await quotes.quoteSummary()) });
+  const updated = await quotes.markQuotesSeen(ids);
+  const s = await quotes.quoteSummary();
+  res.json({ ok: true, updated, ...s, unreadCount: s.newCount });
+}));
+
+// Back-compat aliases for the old bell dropdown.
+app.post('/api/quotes/read-all', auth, quoteRoute(async (req, res) => {
+  const updated = await quotes.markQuotesSeen(null);
+  res.json({ ok: true, updated, unreadCount: 0, newCount: 0 });
+}));
+app.patch('/api/quotes/:id/read', auth, quoteRoute(async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ message: 'Invalid id' });
+  await quotes.markQuotesSeen([id]);
+  const s = await quotes.quoteSummary();
+  res.json({ ok: true, unreadCount: s.newCount, newCount: s.newCount });
+}));
+
+// Delete one request (used to clean up clearly-labelled TEST submissions).
+app.delete('/api/quotes/:id', auth, quoteRoute(async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ message: 'Invalid id' });
+  const removed = await quotes.deleteQuote(id);
+  if (!removed) return res.status(404).json({ message: 'Quote request not found' });
+  res.json({ ok: true, removed });
+}));
 
 // Serve uploaded batch images
 app.get('/api/uploads/batches/:file', (req, res) => {

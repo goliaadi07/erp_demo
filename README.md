@@ -91,3 +91,12 @@ npm run db:reset
 
 ## Security before deployment
 Set a strong `JWT_SECRET`, use HTTPS, add rate limiting/lockout, keep the SQLite file outside any public static directory, and do not commit `.env` or uploaded media with secrets.
+
+## Round 3 updates
+
+- **Brand logo** — original CRB mark (`client/public/brand/logo-mark.svg`, `logo-full.svg`, PNG exports) used in the website header/footer, dashboard sidebar, login page and as the favicon / apple-touch-icon.
+- **No faces** — every site photo is faceless (see `IMAGE_CREDITS.md`).
+- **Notifications page** — the dashboard bell (and the sidebar "Notifications" item) opens `#notifications`. New quote requests are shown once as "New", then marked seen in the database (`seen_at`) and moved to "Earlier / Seen". API: `GET /api/quotes`, `GET /api/quotes/summary`, `POST /api/quotes/seen`, `DELETE /api/quotes/:id` (JWT required).
+- **Quote storage** — `server/quotes-store.js` uses Postgres when `QUOTES_DATABASE_URL`, `DATABASE_URL` or `POSTGRES_URL` is set (e.g. Neon via the Vercel Marketplace), otherwise the bundled SQLite file. `/api/health` reports `quotesBackend`. On Vercel without Postgres, SQLite lives in `/tmp` and is per-instance / ephemeral.
+- **Website** — EN / मराठी and dark-mode toggles in the header (shared with the dashboard via `threadline_lang` / `threadline_dark`), inset hero with spacing below the header, optional message field on the quote form.
+- **Dashboard** — restyled to match the website (ivory / indigo / brass, serif headings), full dark-mode palette, broader Marathi coverage, sign-out button, the measurement-ruler tab is now a small arrow.

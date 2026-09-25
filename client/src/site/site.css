@@ -363,3 +363,112 @@ h1,h2,h3{margin:0}
 .pdp-quote{padding:22px 24px}
 .size-chip{height:36px;min-width:44px}
 @media (min-width:961px) and (max-height:820px){.pdp-sticky{position:static}}
+
+/* ==========================================================================
+   Round 3 — logo, inset hero, language + theme toggles, message field, dark mode
+   ========================================================================== */
+.wordmark{flex-direction:row;align-items:center;gap:12px}
+.wordmark-text{display:inline-flex;flex-direction:column;line-height:1}
+.brand-mark{width:46px;height:46px;flex:0 0 auto;border-radius:12px;box-shadow:0 6px 16px -10px rgba(26,36,70,.55)}
+.site-footer .brand-mark{box-shadow:none}
+
+/* Breathing room between the header and the carousel */
+.hero-frame{width:min(1280px,100%);margin:0 auto;padding:22px 32px 0}
+.hero-frame .hero{border-radius:18px;box-shadow:0 30px 60px -40px rgba(31,29,26,.55)}
+
+.header-prefs{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.lang-toggle{display:inline-flex;align-items:center;padding:3px;border:1px solid var(--line-strong);border-radius:999px;background:var(--ivory)}
+.lang-toggle button{border:0;background:transparent;cursor:pointer;min-height:32px;padding:0 11px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.03em;color:var(--muted);transition:background .2s,color .2s}
+.lang-toggle button.active{background:var(--indigo);color:#fff}
+.lang-toggle button:focus-visible,.theme-toggle:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.theme-toggle{width:40px;height:40px;border:1px solid var(--line-strong);border-radius:50%;background:var(--ivory);color:var(--ink-2);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.theme-toggle:hover{border-color:var(--indigo);color:var(--indigo)}
+
+.fl-field textarea{width:100%;min-height:104px;resize:vertical;padding:26px 16px 10px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--ivory);font:inherit;font-size:15px;color:var(--ink);outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
+.fl-field textarea:focus{border-color:var(--indigo);background:#fff;box-shadow:0 0 0 4px rgba(38,52,95,.12)}
+.fl-field textarea:focus+label,.fl-field textarea:not(:placeholder-shown)+label{transform:translateY(-11px) scale(.76);color:var(--ink-2);font-weight:700;letter-spacing:.04em}
+.fl-field.has-error textarea{border-color:var(--danger)}
+.fl-hint{display:block;margin-top:6px;font-size:12px;color:var(--soft)}
+.fl-field label .req{color:var(--brass)}
+.footer-login{color:#cfc7ba;text-decoration:none}
+
+html[lang="mr"] body{line-height:1.7}
+html[lang="mr"] .hero-title,html[lang="mr"] .section-title{letter-spacing:0;line-height:1.2}
+
+@media (max-width:960px){
+  .header-prefs{order:2;margin-left:auto}
+  .menu-toggle{order:2;margin-left:0}
+  .hero-frame{padding:16px 24px 0}
+}
+@media (max-width:640px){
+  .hero-frame{padding:12px 12px 0}
+  .hero-frame .hero{border-radius:14px}
+  .brand-mark{width:38px;height:38px;border-radius:10px}
+  .wordmark{gap:9px}
+  .header-inner{gap:10px 10px}
+  .lang-toggle button{padding:0 8px;min-height:30px;font-size:12px}
+  .theme-toggle{width:36px;height:36px}
+}
+@media (max-width:480px){
+  .site-header .wordmark-sub{display:none}
+  .site-header .wordmark-main{font-size:24px}
+}
+
+/* ---------------- Dark mode ---------------- */
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --ivory:#14161c;--cream:#1b1e26;--sand:#262a34;--line:#2e3340;--line-strong:#434a5a;
+  --ink:#ece6da;--ink-2:#d6cfc2;--muted:#a79f92;--soft:#8c8577;
+  --indigo:#8c9ee0;--indigo-deep:#b4c0ee;--indigo-tint:#232a42;
+  --brass:#d6ab6b;--danger:#f08a78;--danger-bg:#3a1f1b;--ok:#7fcaa4;--ok-bg:#16291f;
+  --shadow:0 18px 50px -24px rgba(0,0,0,.7);
+}
+html[data-theme="dark"] body{
+  background-image:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 5px),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 1px,transparent 1px 5px);
+}
+html[data-theme="dark"] .site-header{background:rgba(20,22,28,.9)}
+html[data-theme="dark"] .site-header.is-scrolled{box-shadow:0 8px 24px -16px rgba(0,0,0,.8)}
+html[data-theme="dark"] .announce{background:#1d2440;color:#d9d3c7}
+html[data-theme="dark"] .header-search,
+html[data-theme="dark"] .toolbar-search,
+html[data-theme="dark"] .size-chip,
+html[data-theme="dark"] .lang-toggle,
+html[data-theme="dark"] .theme-toggle{background:#1b1e26;border-color:var(--line-strong);color:var(--ink-2)}
+html[data-theme="dark"] .header-search input,html[data-theme="dark"] .toolbar-search input{color:var(--ink)}
+html[data-theme="dark"] .lang-toggle button.active{background:#8c9ee0;color:#10131c}
+html[data-theme="dark"] .btn-primary,html[data-theme="dark"] .skip-link{background:#3a4c8f;color:#fff}
+html[data-theme="dark"] .btn-primary:hover{background:#4a5da6}
+html[data-theme="dark"] .btn-ivory{background:#ece6da;color:#14161c}
+html[data-theme="dark"] .btn-ghost{color:var(--ink);border-color:var(--line-strong)}
+html[data-theme="dark"] .chip.active{background:var(--ink);border-color:var(--ink);color:#14161c}
+html[data-theme="dark"] .quote-card,
+html[data-theme="dark"] .pdp-quote{background:#1b1e26;border-color:var(--line)}
+html[data-theme="dark"] .quote-aside{background:#1d2440}
+html[data-theme="dark"] .fl-field input,
+html[data-theme="dark"] .fl-field select,
+html[data-theme="dark"] .fl-field textarea{background-color:#14161c;border-color:var(--line-strong);color:var(--ink)}
+html[data-theme="dark"] .fl-field input:focus,
+html[data-theme="dark"] .fl-field select:focus,
+html[data-theme="dark"] .fl-field textarea:focus{background-color:#101218;border-color:#8c9ee0;box-shadow:0 0 0 4px rgba(140,158,224,.18)}
+html[data-theme="dark"] .fl-field.has-error input,html[data-theme="dark"] .fl-field.has-error select{background-color:#241614}
+html[data-theme="dark"] .fl-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a79f92' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+html[data-theme="dark"] .fl-field select option{background:#1b1e26;color:var(--ink)}
+html[data-theme="dark"] .skeleton{background:linear-gradient(90deg,#1b1e26 25%,#242833 50%,#1b1e26 75%);background-size:200% 100%}
+html[data-theme="dark"] .card-tag{background:rgba(20,22,28,.85);color:var(--ink)}
+html[data-theme="dark"] .card-quote{color:var(--indigo)}
+html[data-theme="dark"] .site-footer{background:#0e1014;border-top:1px solid var(--line)}
+html[data-theme="dark"] .hero-frame .hero{box-shadow:0 30px 60px -40px rgba(0,0,0,.9)}
+html[data-theme="dark"] .quote-success-icon{background:#3a4c8f}
+html[data-theme="dark"] .card-media,html[data-theme="dark"] .pdp-main,html[data-theme="dark"] .pdp-thumb{background-color:#1b1e26}
+html[lang="mr"]{--sans:"DM Sans","Noto Sans Devanagari",Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+html[lang="mr"] .hero-title,html[lang="mr"] .section-title,html[lang="mr"] .pdp-title{font-family:"Noto Sans Devanagari",var(--serif);font-weight:600}
+html[data-theme="dark"] .hero{background:#0e1014}
+@media (max-width:640px){
+  .toolbar,.toolbar-search{min-width:0}
+  .toolbar-search input{min-width:0;width:100%}
+  .section.collection{overflow-x:clip}
+}
+/* Letter-spacing breaks Devanagari conjuncts — keep it only on the Latin wordmark */
+html[lang="mr"] body :not(.wordmark-main){letter-spacing:normal!important}

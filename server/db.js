@@ -200,6 +200,16 @@ function migrate(database) {
     if (!pcols.includes('size_note')) database.exec('ALTER TABLE products ADD COLUMN size_note TEXT');
   }
 
+  if (tableExists(database, 'quote_requests')) {
+    const qcols = columnsOf(database, 'quote_requests');
+    if (!qcols.includes('message')) database.exec('ALTER TABLE quote_requests ADD COLUMN message TEXT');
+    if (!qcols.includes('seen_at')) {
+      database.exec('ALTER TABLE quote_requests ADD COLUMN seen_at TEXT');
+      // Anything already marked read in the old bell counts as seen.
+      database.exec("UPDATE quote_requests SET seen_at = COALESCE(read_at, CURRENT_TIMESTAMP) WHERE is_read = 1 AND seen_at IS NULL");
+    }
+  }
+
   if (tableExists(database, 'users')) {
     const cols = columnsOf(database, 'users');
     if (!cols.includes('email')) database.exec('ALTER TABLE users ADD COLUMN email TEXT');
@@ -331,7 +341,7 @@ const PRODUCT_MEDIA = {
   pinaco: { img: '/images/pinaco.webp', img2: '/images/pinaco-2.webp', alt: 'Sleeveless pinafore-style dress on a hanger', sizeNote: 'Age', oldSizes: 'Ages 3–10' },
   grammer: { img: '/images/grammer.webp', img2: '/images/grammer-2.webp', alt: 'Denim dungaree-style overalls', sizeNote: 'Age', oldSizes: 'Ages 3–10' },
   halfhastin: { img: '/images/halfhastin.webp', img2: '/images/halfhastin-2.webp', alt: 'White half-sleeve shirt on a hanger', sizeNote: 'Chest size (in)', oldSizes: '22–44' },
-  bandi: { img: '/images/bandi.webp', img2: '/images/bandi-2.webp', alt: 'Grey bandi (Nehru-style) jacket worn over a kurta', sizeNote: 'Chest size (in)', oldSizes: '24–46' },
+  bandi: { img: '/images/bandi.webp', img2: '/images/bandi-2.webp', alt: 'Navy checked bandi-style waistcoat over a light shirt', oldAlt: 'Grey bandi (Nehru-style) jacket worn over a kurta', sizeNote: 'Chest size (in)', oldSizes: '24–46' },
 };
 
 function applyProductMedia(database) {
@@ -340,14 +350,14 @@ function applyProductMedia(database) {
     UPDATE products SET
       image_url = COALESCE(image_url, @img),
       image_url_2 = COALESCE(image_url_2, @img2),
-      image_alt = COALESCE(image_alt, @alt),
+      image_alt = CASE WHEN image_alt IS NULL OR image_alt = @oldAlt THEN @alt ELSE image_alt END,
       size_note = COALESCE(size_note, @sizeNote),
       sizes = CASE WHEN sizes IS NULL OR sizes = @oldSizes THEN @sizes ELSE sizes END
     WHERE id = @id
   `);
   database.transaction(() => {
     for (const [id, m] of Object.entries(PRODUCT_MEDIA)) {
-      upd.run({ id, img: m.img, img2: m.img2, alt: m.alt, sizeNote: m.sizeNote, oldSizes: m.oldSizes, sizes: seedById[id] ? seedById[id].sizes : null });
+      upd.run({ id, img: m.img, img2: m.img2, alt: m.alt, oldAlt: m.oldAlt || null, sizeNote: m.sizeNote, oldSizes: m.oldSizes, sizes: seedById[id] ? seedById[id].sizes : null });
     }
   })();
 }

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 80" role="img" aria-labelledby="t">
+  <title id="t">CRB Uniforms &amp; Garments</title>
+  <g transform="translate(8 8)">
+    <rect width="64" height="64" rx="15" fill="#26345f"/>
+    <rect x="2.5" y="2.5" width="59" height="59" rx="12.5" fill="none" stroke="#c9a35c" stroke-opacity=".45" stroke-width="1.2"/>
+    <path d="M32 22.5v-3.2c0-1.4.9-2.3 2.2-3 1.6-.9 2.4-2.2 2.1-3.9-.4-2-2.2-3.3-4.3-3.1-1.9.2-3.3 1.6-3.5 3.4" fill="none" stroke="#d9b56b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M32 22.5 12.8 33.6c-1.3.8-.8 2.4.7 2.4h37c1.5 0 2-1.6.7-2.4Z" fill="none" stroke="#d9b56b" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M22.5 36 32 47.5 41.5 36" fill="none" stroke="#faf6ef" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M32 47.5V56" stroke="#faf6ef" stroke-width="2.4" stroke-linecap="round"/>
+    <circle cx="32" cy="51.8" r="1.7" fill="#d9b56b"/>
+  </g>
+  <text x="88" y="45" font-family="'Cormorant Garamond', Georgia, 'Times New Roman', serif" font-size="40" font-weight="700" letter-spacing="3" fill="currentColor">CRB</text>
+  <text x="90" y="64" font-family="'DM Sans', 'Helvetica Neue', Arial, sans-serif" font-size="11.5" font-weight="500" letter-spacing="3.2" fill="#a07a34">UNIFORMS &amp; GARMENTS</text>
+</svg>

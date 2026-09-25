@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Threadline — Uniform Manufacturing ERP</title>
+<title>CRB — Uniforms &amp; Garments ERP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
 :root{
   --sky:#0C8CE9;
@@ -457,6 +458,126 @@ html.dark-mode .ruler{background:linear-gradient(180deg,#232B40,#1B2234);border-
   .ruler-panel.is-vertical{right:46px;left:auto}
 }
 @media(prefers-reduced-motion:reduce){.ruler-panel{animation:none}.ruler-tab{transition:none}}
+
+/* ===== CRB ATELIER THEME (matches the public website) ===== */
+:root{--sky:#26345f;--sky-dark:#1b264a;--sky-tint:#eceef5;--navy:#1f1d1a;--ink:#2a2723;--slate:#6b645a;--slate-soft:#978e81;--paper:#fffdf9;--canvas:#f6f1e8;--line:#e7dfd1;--brass:#a07a34;--brass-soft:#c9a35c;--green:#2f7a55;--green-tint:#e6f1ea;--amber:#9a6a14;--amber-tint:#f8eedb;--red:#b4443b;--red-tint:#f8e7e4;--radius:14px;--serif:'Cormorant Garamond',Georgia,serif}
+body{font-family:'DM Sans',system-ui,sans-serif;letter-spacing:0;background:var(--canvas);color:var(--ink)}
+#shell{background:var(--canvas) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M0 6L6 0' stroke='%23a07a34' stroke-opacity='.05'/%3E%3C/svg%3E")}
+#sidebar{background:linear-gradient(180deg,#1d2645 0%,#161d36 100%);box-shadow:none;border-right:1px solid rgba(201,163,92,.18)}
+.brand{padding:22px 20px 18px;border-bottom:1px solid rgba(201,163,92,.2)}
+.brand-logo{width:40px;height:40px;border-radius:11px;flex-shrink:0;display:block}
+.brand-name{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.08em;color:#faf6ef;line-height:1}
+.brand-sub{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass-soft);margin-top:4px}
+.nav-group-label{color:rgba(201,163,92,.75);letter-spacing:.16em;font-size:9.5px}
+.nav-link{color:#cfd3df;border-radius:10px}
+.nav-link:hover{background:rgba(250,246,239,.07);color:#fff;transform:none}
+.nav-link.active{background:#faf6ef;color:#1d2645;box-shadow:none;font-weight:700}
+.nav-badge{margin-left:auto;background:var(--brass-soft);color:#1d2645;font-size:10.5px;font-weight:700;border-radius:999px;padding:1px 7px;line-height:16px}
+.sidebar-foot{color:rgba(250,246,239,.5);border-top:1px solid rgba(201,163,92,.18)}
+#topbar{background:rgba(255,253,249,.86);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.searchbox{background:var(--paper);border:1px solid var(--line);border-radius:999px}
+.searchbox:focus-within{background:var(--paper);border-color:var(--sky);box-shadow:0 0 0 3px rgba(38,52,95,.12)}
+.dark-toggle,.lang-toggle,.workspace-tabs{background:var(--paper)!important;border:1px solid var(--line)!important;border-radius:999px}
+.lang-btn,.workspace-tab{border-radius:999px}
+.lang-btn.active{background:var(--sky);color:#faf6ef}
+.workspace-tab.active{background:var(--sky)!important;color:#faf6ef!important;box-shadow:none}
+.bell{display:inline-flex!important;align-items:center;justify-content:center;width:38px;height:38px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink);position:relative;flex-shrink:0}
+.bell:hover,.bell.active{border-color:var(--sky);color:var(--sky)}
+.bell-count{position:absolute;top:-5px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#b4443b;color:#fff;font-size:10.5px;font-weight:700;line-height:14px;text-align:center;border:2px solid var(--paper)}
+.bell-count[hidden]{display:none}
+.signout-btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:7px 12px;font-weight:700;font-size:12px}
+.signout-btn:hover{border-color:var(--red);color:var(--red)}
+h1.page-title{font-family:var(--serif);font-weight:700;font-size:34px;letter-spacing:0;color:var(--navy);line-height:1.1}
+h2.section-title{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:0;color:var(--navy)}
+p.page-sub{color:var(--slate)}
+.btn{border-radius:999px;font-weight:700}
+.btn-primary{background:var(--sky);box-shadow:0 6px 16px rgba(38,52,95,.18);color:#faf6ef}
+.btn-primary:hover{background:var(--sky-dark);box-shadow:0 8px 20px rgba(38,52,95,.24)}
+.btn-ghost{background:var(--paper);border:1px solid var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--sky);color:var(--sky)}
+.kpi-card,.panel,.dept-card,.emp-card,.strip-card,.pipe-stage,.dress-card{background:var(--paper);border:1px solid var(--line);box-shadow:0 1px 0 rgba(31,29,26,.03);border-radius:var(--radius)}
+.kpi-card{position:relative;overflow:hidden}
+.kpi-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brass-soft);opacity:.7}
+.kpi-label{color:var(--slate);letter-spacing:.1em;font-size:10.5px}
+.kpi-value{font-weight:700;color:var(--navy);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.dept-card:hover,.emp-card:hover{border-color:var(--brass-soft);box-shadow:0 10px 24px rgba(31,29,26,.08)}
+.dept-card .ic{background:var(--sky-tint)}
+.dept-card .bar{background:linear-gradient(90deg,var(--sky),var(--brass-soft))}
+.dept-card .bar-wrap{background:var(--line)}
+th{background:#f3ece0;color:var(--slate);font-size:10.5px;letter-spacing:.08em}
+td{font-variant-numeric:tabular-nums}
+tr.row-click:hover{background:var(--sky-tint)}
+.emp-avatar{background:var(--sky)}
+.emp-stat{background:var(--canvas)}
+.passbook-id{background:linear-gradient(135deg,#26345f,#1b264a)}
+.pill.active{background:var(--sky);border-color:var(--sky);color:#faf6ef}
+.tab.active{color:var(--sky);border-color:var(--sky)}
+.field input,.field select,.field textarea{background:var(--paper);border-color:var(--line);color:var(--ink)}
+.field input:focus,.field select:focus,.field textarea:focus{background:var(--paper);border-color:var(--sky);box-shadow:0 0 0 3px rgba(38,52,95,.12)}
+.modal{background:var(--paper);border-radius:18px}
+.modal-head h3{font-family:var(--serif);font-size:22px}
+.overlay{background:rgba(31,29,26,.45)}
+.toast{background:#1d2645;color:#faf6ef}
+.badge-sky{background:var(--sky-tint);color:var(--sky)}
+.upload-btn{background:var(--canvas);border-color:var(--line);color:var(--sky)}
+.combo-menu{background:var(--paper)}
+.rate-input{background:var(--paper);color:var(--ink)}
+.search-result-type{color:var(--brass)}
+.client-empty-icon{background:var(--sky-tint);color:var(--sky)}
+.role-avatar{background:var(--sky)}
+/* ruler: small arrow tab */
+.ruler-tab{width:26px;height:44px;padding:0;gap:0;justify-content:center;border-radius:10px 0 0 10px;background:var(--sky);color:#faf6ef;border:1px solid var(--sky);border-right:0;box-shadow:-4px 6px 16px rgba(31,29,26,.18)}
+.ruler-tab:hover,.ruler-tab[aria-expanded="true"]{padding:0;width:30px;background:var(--sky-dark);color:#fff}
+.ruler-title{font-family:var(--serif);font-size:18px}
+.ruler-panel{font-family:'DM Sans',system-ui,sans-serif}
+@media(max-width:640px){.ruler-tab{width:24px;height:40px;padding:0}}
+/* notifications page */
+.notif-head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.notif-count{font-size:12px;font-weight:700;color:var(--brass);background:var(--amber-tint);padding:4px 10px;border-radius:999px}
+.notif-list{display:grid;gap:12px}
+.notif-card{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--brass-soft);border-radius:var(--radius);padding:16px 18px;display:grid;grid-template-columns:1fr auto;gap:6px 16px}
+.notif-card .who{font-weight:700;font-size:16px;color:var(--navy)}
+.notif-card .new-pill{display:inline-block;margin-left:8px;background:#b4443b;color:#fff;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:2px 8px;vertical-align:middle}
+.notif-card time{font-size:12px;color:var(--slate);text-align:right}
+.notif-meta{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--ink)}
+.notif-meta a{color:var(--sky);font-weight:600}
+.notif-meta a:hover{text-decoration:underline}
+.notif-msg{grid-column:1/-1;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+.notif-note{font-size:12px;color:var(--slate);margin:4px 0 14px}
+.notif-earlier{margin-top:26px}
+.notif-earlier summary{cursor:pointer;font-family:var(--serif);font-size:22px;font-weight:700;color:var(--navy);list-style:none;display:flex;align-items:center;gap:8px}
+.notif-earlier summary::-webkit-details-marker{display:none}
+.notif-earlier summary::before{content:"▸";font-size:14px;color:var(--brass);transition:transform .15s}
+.notif-earlier[open] summary::before{transform:rotate(90deg)}
+.notif-earlier .panel{margin-top:12px}
+.notif-empty{padding:34px 20px;text-align:center;color:var(--slate)}
+@media(max-width:640px){.notif-card{grid-template-columns:1fr}.notif-card time{text-align:left}.signout-btn #signOutLabel{display:none}}
+/* ===== Dark mode (atelier) — every surface uses variables ===== */
+html.dark-mode{--sky:#8ea0d8;--sky-dark:#a9b8e6;--sky-tint:#232a42;--navy:#f3ede3;--ink:#e9e3d8;--slate:#b3aa9c;--slate-soft:#8f877b;--paper:#1c1b21;--canvas:#131217;--line:#312e37;--brass:#d9b56b;--brass-soft:#c9a35c;--green:#6cc497;--green-tint:#16302a;--amber:#e0b35a;--amber-tint:#352a15;--red:#ec8a80;--red-tint:#3a1d1c}
+html.dark-mode body{background:var(--canvas);color:var(--ink)}
+html.dark-mode #shell{background:var(--canvas)!important}
+html.dark-mode #sidebar{background:linear-gradient(180deg,#191a26,#121219)!important;border-right-color:var(--line)}
+html.dark-mode #topbar{background:rgba(28,27,33,.9)!important;border-color:var(--line)}
+html.dark-mode .searchbox,html.dark-mode .lang-toggle,html.dark-mode .dark-toggle,html.dark-mode .workspace-tabs,html.dark-mode .bell,html.dark-mode .signout-btn,html.dark-mode .menu-btn{background:var(--paper)!important;border-color:var(--line)!important;color:var(--ink)}
+html.dark-mode .lang-btn.active,html.dark-mode .workspace-tab.active,html.dark-mode .pill.active{background:#3a4a80!important;color:#fff!important;border-color:#3a4a80!important}
+html.dark-mode .nav-link.active{background:#f3ede3;color:#191a26}
+html.dark-mode .btn-primary{background:#3a4a80;color:#fff;box-shadow:none}
+html.dark-mode .btn-primary:hover{background:#4a5c99}
+html.dark-mode .btn-ghost,html.dark-mode .btn-danger-ghost,html.dark-mode .kpi-card,html.dark-mode .panel,html.dark-mode .dept-card,html.dark-mode .emp-card,html.dark-mode .strip-card,html.dark-mode .pipe-stage,html.dark-mode .modal,html.dark-mode .search-result,html.dark-mode .client-empty-state,html.dark-mode .dress-card,html.dark-mode .notif-card,html.dark-mode .combo-menu,html.dark-mode .ruler-panel,html.dark-mode .pill{background:var(--paper)!important;border-color:var(--line)!important;color:var(--ink)}
+html.dark-mode th,html.dark-mode .emp-stat,html.dark-mode .field input,html.dark-mode .field select,html.dark-mode .field textarea,html.dark-mode .rate-input,html.dark-mode .notif-msg,html.dark-mode .meas-chip,html.dark-mode .upload-preview-empty,html.dark-mode .cloth-thumb-empty,html.dark-mode .badge-grey,html.dark-mode .ruler-btn{background:#16151b!important;color:var(--ink)!important;border-color:var(--line)!important}
+html.dark-mode .field input::placeholder,html.dark-mode .field textarea::placeholder,html.dark-mode .searchbox input::placeholder{color:var(--slate-soft)}
+html.dark-mode .searchbox input{color:var(--ink)}
+html.dark-mode input[type=date]{color-scheme:dark}
+html.dark-mode select option{background:#1c1b21;color:var(--ink)}
+html.dark-mode .upload-btn{background:#16151b!important;border-color:var(--line)!important;color:var(--sky)}
+html.dark-mode .toast{background:#f3ede3;color:#191a26}
+html.dark-mode .overlay{background:rgba(0,0,0,.6)}
+html.dark-mode .passbook-id{background:linear-gradient(135deg,#2c3760,#1d2645)}
+html.dark-mode .tl-item::before{border-color:var(--paper)}
+html.dark-mode .bell-count{border-color:var(--paper)}
+html.dark-mode ::-webkit-scrollbar-thumb{background:#3a3742}
+html.dark-mode .ruler-tab{background:#3a4a80;border-color:#3a4a80;color:#fff}
+html[lang="mr"] body :not(.brand-name):not(.mono){letter-spacing:normal!important}
 </style>
 </head>
 <body>
@@ -464,15 +585,15 @@ html.dark-mode .ruler{background:linear-gradient(180deg,#232B40,#1B2234);border-
   <aside id="sidebar">
     <div class="brand">
       <div class="brand-mark">
-        <div class="brand-swatch"></div>
+        <img class="brand-logo" src="/brand/logo-mark.svg" alt="" width="40" height="40">
         <div>
           <div class="brand-name">CRB</div>
-          <div class="brand-sub">Manufacturing ERP · Phase 1</div>
+          <div class="brand-sub">Uniforms &amp; Garments</div>
         </div>
       </div>
     </div>
     <nav class="navlinks" id="navlinks"></nav>
-    <div class="sidebar-foot">Prototype demo · in-memory data</div>
+    <div class="sidebar-foot" id="sidebarFoot">Owner workspace</div>
   </aside>
 
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
@@ -489,12 +610,13 @@ html.dark-mode .ruler{background:linear-gradient(180deg,#232B40,#1B2234);border-
           <button class="lang-btn" id="langBtnMr" onclick="setLang('mr')">मराठी</button>
         </div>
         <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()">☾ Dark</button>
-        <div class="bell" id="quoteBell" role="button" tabindex="0" title="Quote requests" aria-label="Quote requests" onclick="openQuoteRequests()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openQuoteRequests()}">🔔<span class="dot" id="quoteBellDot" style="display:none"></span></div>
+        <button type="button" class="bell" id="quoteBell" title="Notifications" aria-label="Notifications" onclick="route('notifications')"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 0 0-5.5-6.84V3.5a1.5 1.5 0 0 0-3 0v.66A7 7 0 0 0 5 11v5l-2 2v1h18v-1l-2-2Z"/></svg><span class="bell-count" id="quoteBellCount" hidden>0</span></button>
         <div class="workspace-tabs" aria-label="Dashboard workspace">
           <button class="workspace-tab active" data-workspace="internal" onclick="switchWorkspace('internal')">Internal</button>
           <button class="workspace-tab" data-workspace="external" onclick="switchWorkspace('external')">External</button>
           <button class="workspace-tab" data-workspace="client" onclick="switchWorkspace('client')">Client</button>
         </div>
+        <button type="button" class="signout-btn" id="signOutBtn" onclick="signOut()" title="Sign out"><span aria-hidden="true">⎋</span> <span id="signOutLabel">Sign out</span></button>
       </div>
     </div>
     <div id="content"></div>
@@ -502,8 +624,8 @@ html.dark-mode .ruler{background:linear-gradient(180deg,#232B40,#1B2234);border-
 </div>
 <div id="toast" class="toast"></div>
 <div id="modalRoot"></div>
-<button type="button" id="rulerTab" class="ruler-tab" hidden aria-expanded="false" aria-controls="rulerPanel" onclick="openRuler()">
-  <span class="ruler-tab-ico" aria-hidden="true">📏</span><span class="ruler-tab-label" id="rulerTabLabel">Measurement Ruler</span>
+<button type="button" id="rulerTab" class="ruler-tab" hidden aria-expanded="false" aria-controls="rulerPanel" aria-label="Measurement ruler" title="Measurement ruler" onclick="openRuler()">
+  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
 <div id="rulerPanel" class="ruler-panel" role="dialog" aria-modal="false" aria-labelledby="rulerTitle" hidden tabindex="-1">
   <div class="ruler-head">
@@ -696,9 +818,65 @@ const T = {
   'Measurement Ruler':'मापन पट्टी','Show measurement ruler':'मापन पट्टी दाखवा','Hides in {n}s':'{n} सेकंदात लपेल',
   'Close ruler':'पट्टी बंद करा','Vertical':'उभी','Horizontal':'आडवी','Approximate — depends on screen':'अंदाजे — स्क्रीनवर अवलंबून',
   'Centimetre and inch ruler':'सेंटीमीटर व इंच पट्टी','ruler-unit-cm':'सेमी','ruler-unit-in':'इंच',
+  'Measurement ruler':'मापन पट्टी',
+  // notifications
+  'Notifications':'सूचना','new':'नवीन','New':'नवीन','Quote requests from your website':'तुमच्या वेबसाइटवरून आलेल्या कोटेशन विनंत्या',
+  'Refresh':'रिफ्रेश','Earlier / Seen':'आधीच्या / पाहिलेल्या','No new requests':'नवीन विनंत्या नाहीत',
+  'No quote requests yet. Requests from the public website will appear here.':'अजून कोटेशन विनंत्या नाहीत. वेबसाइटवरील विनंत्या येथे दिसतील.',
+  'These are now marked as seen and will move to “Earlier / Seen” next time.':'या आता पाहिल्या म्हणून नोंदवल्या आहेत; पुढच्या वेळी त्या “आधीच्या / पाहिलेल्या” मध्ये जातील.',
+  'Name':'नाव','Mobile':'मोबाईल','Email':'ईमेल','Product':'उत्पादन','Message':'संदेश','Seen':'पाहिले','Received at':'मिळाल्याची वेळ',
+  'Loading…':'लोड होत आहे…','Could not load notifications':'सूचना लोड करता आल्या नाहीत','just now':'आत्ताच',
+  'No earlier requests.':'आधीच्या विनंत्या नाहीत.','Call':'कॉल करा','Reply by email':'ईमेलने उत्तर द्या','new request(s)':'नवीन विनंती',
+  // chrome
+  'Sign out':'बाहेर पडा','Dark':'डार्क','Light':'लाइट','Owner workspace':'मालक कार्यक्षेत्र','Uniforms & Garments':'युनिफॉर्म्स व गारमेंट्स',
+  'View as employee':'कर्मचारी म्हणून पहा','Choose employee':'कर्मचारी निवडा','Continue':'पुढे चला',
+  'External operations':'बाह्य कामकाज','Client workspace':'क्लायंट कार्यक्षेत्र','Open menu':'मेनू उघडा','Dashboard workspace':'डॅशबोर्ड कार्यक्षेत्र',
+  'Change language / भाषा बदला':'भाषा बदला / Change language','Close':'बंद करा',
+  'Page':'पृष्ठ','Work order':'वर्क ऑर्डर','Raw material':'कच्चा माल','Open this section':'हा विभाग उघडा','Bill':'बिल',
+  'Return pending':'परत करणे बाकी','Awaiting forward':'पुढे पाठवण्याची वाट',
+  'Batch not found.':'बॅच सापडली नाही.','Employee not found.':'कर्मचारी सापडला नाही.','Department not found.':'विभाग सापडला नाही.',
+  'Saving…':'जतन होत आहे…','Please sign in again to save raw material.':'कच्चा माल जतन करण्यासाठी पुन्हा साइन इन करा.',
+  'Could not save raw material':'कच्चा माल जतन करता आला नाही','Marked ready for delivery':'डिलिव्हरीसाठी तयार म्हणून नोंदवले',
+  'Jobs enter this department automatically when forwarded from the previous stage.':'मागील टप्प्यातून पुढे पाठवल्यावर काम या विभागात आपोआप येते.',
+  'Error':'त्रुटी','e.g. Ladies Kurti':'उदा. लेडीज कुर्ती','e.g. neck':'उदा. मान','e.g. MH-2298':'उदा. MH-2298','e.g. Sky Blue Poplin':'उदा. स्काय ब्लू पॉपलिन','e.g. Vikram':'उदा. विक्रम',
+  'in-progress':'सुरू आहे','forwarded':'पुढे पाठवले','ready':'तयार','Delete':'हटवा','Unnamed Cloth':'नाव नसलेले कापड',
+  'Oops':'अरेरे','Quote requests':'कोटेशन विनंत्या',
 
 };
 function tr(s){ return LANG==='mr' ? (T[s] || s) : s; }
+function L(en, mr){ return LANG==='mr' ? mr : en; }
+// Generic Marathi pass: translates any remaining literal UI text (text nodes + placeholder/title/aria-label)
+// that exactly matches a dictionary key, plus a few unit patterns. User data (names, IDs) is left as-is.
+const TR_PATTERNS = [
+  [/\b(\d+(?:\.\d+)?) pcs\b/g, '$1 नग'],
+  [/₹ ?\/ ?pc\b/g, '₹ / नग'],
+  [/\/pc\b/g, '/नग'],
+  [/ M avail\./g, ' M उपलब्ध'],
+  [/^pcs$/g, 'नग'],
+  [/^(₹[\d,]+) due$/g, '$1 बाकी'],
+  [/(^| · )Vendor( ·|$)/g, '$1व्हेंडर$2'],
+  [/ · Bill /g, ' · बिल '],
+  [/^Close ruler$/g, 'पट्टी बंद करा'],
+];
+function trText(s){
+  if(LANG!=='mr' || !s) return s;
+  const m = /^(\s*)([\s\S]*?)(\s*)$/.exec(s);
+  const core = m[2];
+  if(!core) return s;
+  if(Object.prototype.hasOwnProperty.call(T, core)) return m[1] + T[core] + m[3];
+  let out = core;
+  TR_PATTERNS.forEach(([re, rep])=>{ out = out.replace(re, rep); });
+  return m[1] + out + m[3];
+}
+function translateDom(root){
+  if(LANG!=='mr' || !root) return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {acceptNode:n=> (n.parentNode && /^(SCRIPT|STYLE|TEXTAREA)$/.test(n.parentNode.nodeName)) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
+  const nodes=[]; while(w.nextNode()) nodes.push(w.currentNode);
+  nodes.forEach(n=>{ const t=trText(n.nodeValue); if(t!==n.nodeValue) n.nodeValue=t; });
+  root.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el=>['placeholder','title','aria-label'].forEach(a=>{
+    const v=el.getAttribute(a); if(v){ const t=trText(v); if(t!==v) el.setAttribute(a,t); }
+  }));
+}
 
 
 /* ===== API persistence helpers ===== */
@@ -832,7 +1010,7 @@ function todayStr(offsetDays){
   const d = new Date(); d.setDate(d.getDate() + (offsetDays||0));
   return d.toISOString().slice(0,10);
 }
-function fmtDate(s){ const d=new Date(s+'T00:00:00'); return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
+function fmtDate(s){ const d=new Date(s+'T00:00:00'); return d.toLocaleDateString(LANG==='mr'?'mr-IN':'en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
 function inr(n){ return '₹' + Math.round(n).toLocaleString('en-IN'); }
 function initials(name){ return name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
 
@@ -912,7 +1090,7 @@ function toggleMaterialReturn(assignId){
   if(!a) return;
   a.materialReturned = true;
   a.materialReturnDate = todayStr();
-  toast(`Leftover cloth submission recorded for ${state.employees.find(e=>e.id===a.employeeId).name}`);
+  toast(L(`Leftover cloth submission recorded for ${state.employees.find(e=>e.id===a.employeeId).name}`, `${state.employees.find(e=>e.id===a.employeeId).name} यांचे उरलेले कापड जमा झाल्याची नोंद केली`));
   render();
 }
 
@@ -1020,24 +1198,24 @@ function attentionItems(){
     const rem = a.qtyIn - a.materialUsed;
     if(rem > 2){
       const emp = state.employees.find(e=>e.id===a.employeeId);
-      items.push({level:'amber', text:`<b>${emp.name}</b> has ${rem.toFixed(1)} M cloth not yet submitted back`, tag:a.batchId});
+      items.push({level:'amber', text: L(`<b>${emp.name}</b> has ${rem.toFixed(1)} M cloth not yet submitted back`, `<b>${emp.name}</b> यांच्याकडे ${rem.toFixed(1)} M कापड अजून परत जमा केलेले नाही`), tag:a.batchId});
     }
   });
   state.assignments.filter(a=>a.status==='completed' && a.dept!=='packing').forEach(a=>{
     const emp = state.employees.find(e=>e.id===a.employeeId);
-    items.push({level:'amber', text:`<b>${emp.name}</b> completed ${a.piecesProduced} ${itemName(a.item)} in ${deptName(a.dept)} — not yet forwarded`, tag:a.id});
+    items.push({level:'amber', text: L(`<b>${emp.name}</b> completed ${a.piecesProduced} ${itemName(a.item)} in ${deptName(a.dept)} — not yet forwarded`, `<b>${emp.name}</b> यांनी ${deptName(a.dept)} मध्ये ${a.piecesProduced} ${itemName(a.item)} पूर्ण केले — अजून पुढे पाठवलेले नाही`), tag:a.id});
   });
   state.assignments.filter(a=>a.status==='in-progress').forEach(a=>{
     const days = Math.round((new Date(todayStr()) - new Date(a.dateAssigned)) / 86400000);
     if(days >= 3){
       const emp = state.employees.find(e=>e.id===a.employeeId);
-      items.push({level:'red', text:`<b>${emp.name}</b> has overdue work in ${deptName(a.dept)} — assigned ${days} days ago`, tag:a.id});
+      items.push({level:'red', text: L(`<b>${emp.name}</b> has overdue work in ${deptName(a.dept)} — assigned ${days} days ago`, `<b>${emp.name}</b> यांचे ${deptName(a.dept)} मधील काम रखडले आहे — ${days} दिवसांपूर्वी दिले`), tag:a.id});
     }
   });
   const pendingPay = totalPaymentsPending();
-  if(pendingPay>0) items.push({level:'amber', text:`${inr(pendingPay)} in employee payments pending across all departments`, tag:'payroll'});
+  if(pendingPay>0) items.push({level:'amber', text: L(`${inr(pendingPay)} in employee payments pending across all departments`, `सर्व विभागांत कर्मचाऱ्यांचे ${inr(pendingPay)} देयक बाकी आहे`), tag: L('payroll','पगार')});
   state.batches.forEach(b=>{
-    if(batchRemaining(b) < 30) items.push({level:'red', text:`<b>${b.clothName}</b> (${b.id}) stock is running low — ${batchRemaining(b).toFixed(1)} M left`, tag:b.id});
+    if(batchRemaining(b) < 30) items.push({level:'red', text: L(`<b>${b.clothName}</b> (${b.id}) stock is running low — ${batchRemaining(b).toFixed(1)} M left`, `<b>${b.clothName}</b> (${b.id}) साठा कमी आहे — फक्त ${batchRemaining(b).toFixed(1)} M शिल्लक`), tag:b.id});
   });
   return items;
 }
@@ -1052,6 +1230,7 @@ let currentWorkspace = 'internal';
 const NAV = [
   {group:'Overview', items:[
     {id:'dashboard', label:'Dashboard', icon:'▦'},
+    {id:'notifications', label:'Notifications', icon:'🔔', badge:'notifications'},
   ]},
   {group:'Materials', items:[
     {id:'materials', label:'Raw Material', icon:'▤'},
@@ -1097,7 +1276,8 @@ function renderNav(){
     html += `<div class="nav-group-label">${tr(g.group)}</div>`;
     g.items.forEach(it=>{
       const isActive = active===it.id || (it.id!=='dashboard' && active.startsWith(it.id));
-      html += `<div class="nav-link ${isActive?'active':''}" onclick="route('${it.id}')"><span class="nav-ico">${it.icon}</span>${it.dept ? deptName(it.dept) : tr(it.label)}</div>`;
+      const badge = it.badge ? `<span class="nav-badge" data-badge="${it.badge}" ${QUOTE_NEW_COUNT?'':'hidden'}>${QUOTE_NEW_COUNT}</span>` : '';
+      html += `<div class="nav-link ${isActive?'active':''}" role="link" tabindex="0" onclick="route('${it.id}')" onkeydown="if(event.key==='Enter'){route('${it.id}')}"><span class="nav-ico">${it.icon}</span>${it.dept ? deptName(it.dept) : tr(it.label)}${badge}</div>`;
     });
   });
   document.getElementById('navlinks').innerHTML = html;
@@ -1109,6 +1289,16 @@ function renderNav(){
   document.getElementById('langBtnEn').classList.toggle('active', LANG==='en');
   document.getElementById('langBtnMr').classList.toggle('active', LANG==='mr');
   document.querySelector('.searchbox input').placeholder = tr('Search employee, batch, order…');
+  const dark = document.documentElement.classList.contains('dark-mode');
+  const dt = document.getElementById('darkToggle'); if(dt) dt.textContent = dark ? '☀ '+tr('Light') : '☾ '+tr('Dark');
+  const so = document.getElementById('signOutLabel'); if(so) so.textContent = tr('Sign out');
+  const sb = document.getElementById('signOutBtn'); if(sb) sb.title = tr('Sign out');
+  const sf = document.getElementById('sidebarFoot'); if(sf) sf.textContent = tr('Owner workspace');
+  const bs = document.querySelector('.brand-sub'); if(bs) bs.textContent = tr('Uniforms & Garments');
+  const bell = document.getElementById('quoteBell'); if(bell) bell.classList.toggle('active', active==='notifications');
+  document.documentElement.lang = LANG==='mr' ? 'mr' : 'en';
+  setQuoteCount(QUOTE_NEW_COUNT);
+  translateDom(document.getElementById('topbar'));
 }
 
 function switchWorkspace(workspace){
@@ -1159,13 +1349,18 @@ function onGlobalSearch(v){
   }
 }
 
+let lastRenderedHash = null;
 function render(){
   renderNav();
   RULER_ON_DASHBOARD = false;
   const hash = (window.location.hash||'#dashboard').slice(1);
+  if(hash==='notifications' && lastRenderedHash!=='notifications') loadNotifications();
+  if(hash!=='notifications' && lastRenderedHash==='notifications') NOTIF.sessionNewIds = [];
+  lastRenderedHash = hash;
   const c = document.getElementById('content');
   if(currentRole==='employee'){
     c.innerHTML = viewEmployeeDetail(currentEmployeeView, true);
+    translateDom(c);
     syncRulerTab();
     return;
   }
@@ -1173,6 +1368,7 @@ function render(){
   else if(hash==='external-dashboard') c.innerHTML = viewExternalDashboard();
   else if(hash==='client-dashboard') c.innerHTML = viewClientDashboard();
   else if(hash==='dashboard') c.innerHTML = viewDashboard();
+  else if(hash==='notifications') c.innerHTML = viewNotifications();
   else if(hash==='materials') c.innerHTML = viewMaterials();
   else if(hash.startsWith('materials-')) c.innerHTML = viewBatchDetail(hash.replace('materials-',''));
   else if(hash==='dress-sizes') c.innerHTML = viewDressSizes();
@@ -1184,6 +1380,7 @@ function render(){
   else if(hash==='payments') c.innerHTML = viewPayments();
   else if(hash==='ratecard') c.innerHTML = viewRateCard();
   else c.innerHTML = viewDashboard();
+  translateDom(c);
   syncRulerTab();
 }
 
@@ -1211,17 +1408,17 @@ function viewSearch(){
   ));
   state.assignments.forEach(a => {
     const employee = state.employees.find(e => e.id===a.employeeId);
-    add('Work order', `${a.id} — ${itemName(a.item)}`, `${a.batchId} · ${employee ? employee.name : deptName(a.dept)} · ${a.status}`, `dept-${a.dept}`,
+    add('Work order', `${a.id} — ${itemName(a.item)}`, `${a.batchId} · ${employee ? employee.name : deptName(a.dept)} · ${tr(a.status)}`, `dept-${a.dept}`,
       `${a.id} ${a.batchId} ${itemName(a.item)} ${deptName(a.dept)} ${employee ? employee.name : ''} ${a.status}`);
   });
   NAV.flatMap(group => group.items).forEach(item => add(
-    'Page', item.dept ? deptName(item.dept) : item.label, 'Open this section', item.id,
+    'Page', item.dept ? deptName(item.dept) : tr(item.label), tr('Open this section'), item.id,
     `${item.label} ${item.dept ? deptName(item.dept) : ''} ${item.group || ''}`
   ));
 
   const results = matches.slice(0, 30).map(result => `
     <button class="search-result" onclick="selectSearchResult('${result.destination}')">
-      <div class="search-result-type">${result.type}</div>
+      <div class="search-result-type">${tr(result.type)}</div>
       <div class="search-result-title">${result.title}</div>
       <div class="search-result-detail">${result.detail}</div>
     </button>`).join('');
@@ -1233,12 +1430,13 @@ function viewSearch(){
    MODAL + TOAST HELPERS
 ============================================================ */
 function openModal(html){
-  document.getElementById('modalRoot').innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="modal">${html}</div></div>`;
+  document.getElementById('modalRoot').innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
+  translateDom(document.getElementById('modalRoot'));
 }
 function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
 function toast(msg){
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
+  t.textContent = trText(String(msg)); t.classList.add('show');
   clearTimeout(window._toastT);
   window._toastT = setTimeout(()=>t.classList.remove('show'), 2400);
 }
@@ -1407,7 +1605,7 @@ function viewDressSizes(){
       <td>${formatMeasurements(s.measurements)}</td>
       <td class="dress-card-actions" style="white-space:nowrap;">
         <button class="btn btn-ghost" style="padding:4px 8px;font-size:12px;" onclick="openEditDressSizeModal(${t.id},${s.id})">${tr('Edit Size')}</button>
-        <button class="btn btn-ghost" style="padding:4px 8px;font-size:12px;color:#c0392b;" onclick="deleteDressSizeEntry(${s.id})">✕</button>
+        <button class="btn btn-ghost" style="padding:4px 8px;font-size:12px;color:var(--red);" onclick="deleteDressSizeEntry(${s.id})">✕</button>
       </td>
     </tr>`).join('');
     return `<div class="dress-card">
@@ -1425,7 +1623,7 @@ function viewDressSizes(){
       <div class="dress-card-actions">
         <button class="btn btn-primary" onclick="openAddDressSizeModal(${t.id})">${tr('＋ Add Size')}</button>
         <button class="btn btn-ghost" onclick="openEditDressTypeModal(${t.id})">${tr('Edit Dress Type')}</button>
-        <button class="btn btn-ghost" style="color:#c0392b;" onclick="deleteDressTypeEntry(${t.id})">✕</button>
+        <button class="btn btn-ghost" style="color:var(--red);" onclick="deleteDressTypeEntry(${t.id})">✕</button>
       </div>
     </div>`;
   }).join('');
@@ -1802,7 +2000,7 @@ async function submitAddBatch(){
     if(!isNaN(num) && num>state.seq.batch) state.seq.batch=num;
     pendingBatchImage = null;
     closeModal();
-    toast('Batch '+b.id+' saved to database — '+meters+' M added');
+    toast(L('Batch '+b.id+' saved to database — '+meters+' M added', 'बॅच '+b.id+' जतन झाली — '+meters+' M जोडले'));
     render();
   }catch(err){
     if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = tr('Save Purchase'); }
@@ -1922,7 +2120,7 @@ function submitAddEmployee(){
   const id = type==='vendor' ? `VEN-${String(count).padStart(3,'0')}` : `${prefix}-${String(count).padStart(3,'0')}`;
   state.employees.push({id, name: document.getElementById('f_name').value || 'New Employee', dept, type, active:true});
   closeModal();
-  toast(`Account ${id} created`);
+  toast(L(`Account ${id} created`, `खाते ${id} तयार झाले`));
   route('employees');
 }
 
@@ -1955,8 +2153,8 @@ function viewEmployeeDetail(id, isSelf){
   }).join('');
 
   const timeline = list.slice(0,8).map(a=>{
-    let text = `Received ${a.qtyIn} ${a.unitIn==='meters'?'M':'pcs'} of ${itemName(a.item)} for ${deptName(a.dept)}`;
-    if(a.status!=='in-progress') text = `Completed ${a.piecesProduced} ${itemName(a.item)} · earned ${inr(a.earnings)}`;
+    let text = L(`Received ${a.qtyIn} ${a.unitIn==='meters'?'M':'pcs'} of ${itemName(a.item)} for ${deptName(a.dept)}`, `${deptName(a.dept)} साठी ${itemName(a.item)} चे ${a.qtyIn} ${a.unitIn==='meters'?'M':'नग'} मिळाले`);
+    if(a.status!=='in-progress') text = L(`Completed ${a.piecesProduced} ${itemName(a.item)} · earned ${inr(a.earnings)}`, `${a.piecesProduced} ${itemName(a.item)} पूर्ण · कमाई ${inr(a.earnings)}`);
     return `<div class="tl-item"><div class="tl-date">${fmtDate(a.dateCompleted||a.dateAssigned)}</div><div class="tl-text">${text}</div></div>`;
   }).join('');
 
@@ -1969,7 +2167,7 @@ function viewEmployeeDetail(id, isSelf){
     ${isSelf? '' : `<div><h1 class="page-title">${tr('Employee Profile')}</h1><p class="page-sub">${tr('Bank-style account of work, material and earnings')}</p></div>`}
     ${isSelf? '' : `<button class="btn btn-ghost" onclick="route('employees')">${tr('← Back to Employees')}</button>`}
   </div>
-  ${isSelf? `<p class="page-sub" style="margin-bottom:16px;">${e.name.split(' ')[0]} — here's your account.</p>`:''}
+  ${isSelf? `<p class="page-sub" style="margin-bottom:16px;">${e.name.split(' ')[0]} — ${L("here's your account.",'हे तुमचे खाते आहे.')}</p>`:''}
 
   <div class="passbook-head">
     <div class="passbook-id">
@@ -2039,7 +2237,7 @@ function openSubmitProductionModal(assignId){
     <div class="modal-head"><h3>${tr('Submit Completed Work')}</h3><span class="modal-close" onclick="closeModal()">✕</span></div>
     <div class="modal-body">
       <p class="hint" style="margin-bottom:14px;">${tr('Assignment:')} ${a.qtyIn} ${a.unitIn==='meters'?'M':'pcs'} ${tr('of')} ${itemName(a.item)} · ${deptName(a.dept)} · ${tr('Batch')} ${a.batchId}</p>
-      ${isCuttingOrVendor ? `<div class="field"><label>${tr('Material Used (Meters)')}</label><input type="number" id="f_used" value="${suggestedUse}"><div class="hint">${tr('Suggested from')} ${item.clothPerPc} M/piece average — edit to actual.</div></div>` : ''}
+      ${isCuttingOrVendor ? `<div class="field"><label>${tr('Material Used (Meters)')}</label><input type="number" id="f_used" value="${suggestedUse}"><div class="hint">${L(`Suggested from ${item.clothPerPc} M/piece average — edit to actual.`, `सरासरी ${item.clothPerPc} M/नग वरून सुचवलेले — प्रत्यक्ष आकडा लिहा.`)}</div></div>` : ''}
       <div class="field"><label>${tr('Pieces Completed')}</label><input type="number" id="f_pieces" value="${isCuttingOrVendor? Math.round(a.qtyIn/item.clothPerPc*0.9) : a.qtyIn}"></div>
       <div class="hint">${tr('Earnings = pieces × rate. Current rate for')} ${itemName(a.item)} ${tr('in')} ${deptName(a.dept)}: ₹${a.dept==='vendor'?item.vendorRate:item.rates[a.dept]}/pc.</div>
     </div>
@@ -2053,7 +2251,7 @@ function confirmSubmitProduction(assignId, hasMaterial){
   submitProduction(assignId, used, pieces);
   const a = state.assignments.find(x=>x.id===assignId);
   closeModal();
-  toast(`Saved — ${pieces} pcs logged, ${inr(a.earnings)} earned`);
+  toast(L(`Saved — ${pieces} pcs logged, ${inr(a.earnings)} earned`, `जतन झाले — ${pieces} नग नोंदवले, ${inr(a.earnings)} कमाई`));
   render();
 }
 function openForwardModal(assignId){
@@ -2077,7 +2275,7 @@ function confirmForward(assignId){
   const qty = parseInt(document.getElementById('f_qty').value)||0;
   const next = forwardAssignment(assignId, toEmp, qty);
   closeModal();
-  toast(`Forwarded ${qty} pcs to ${state.employees.find(e=>e.id===toEmp).name}`);
+  toast(L(`Forwarded ${qty} pcs to ${state.employees.find(e=>e.id===toEmp).name}`, `${qty} नग ${state.employees.find(e=>e.id===toEmp).name} यांच्याकडे पाठवले`));
   render();
 }
 
@@ -2126,10 +2324,10 @@ function submitAssign(){
   const batchId = document.getElementById('f_batch').value;
   const b = state.batches.find(x=>x.id===batchId);
   const qty = parseFloat(document.getElementById('f_qty').value)||0;
-  if(qty > batchRemaining(b)){ toast(`Only ${batchRemaining(b)} M available in ${batchId}`); return; }
+  if(qty > batchRemaining(b)){ toast(L(`Only ${batchRemaining(b)} M available in ${batchId}`, `${batchId} मध्ये फक्त ${batchRemaining(b)} M उपलब्ध`)); return; }
   createAssignment({batchId, item:document.getElementById('f_item').value, dept: emp.type==='vendor'?'vendor':'cutting', employeeId:empId, qtyIn:qty, unitIn:'meters'});
   closeModal();
-  toast(`Assigned ${qty} M to ${emp.name}`);
+  toast(L(`Assigned ${qty} M to ${emp.name}`, `${emp.name} यांना ${qty} M दिले`));
   render();
 }
 
@@ -2187,7 +2385,7 @@ function viewDepartment(deptId){
     let action = '';
     if(a.status==='in-progress') action = `<button class="btn btn-ghost btn-sm" onclick="openSubmitProductionModal('${a.id}')">${et('Submit')}</button>`;
     else if(a.status==='completed' && dept.next) action = `<button class="btn btn-ghost btn-sm" onclick="openForwardModal('${a.id}')">${et('Forward')}</button>`;
-    else if(a.status==='completed' && !dept.next) action = `<button class="btn btn-ghost btn-sm" onclick="markReady('${a.id}');render();toast('Marked ready for delivery')">${et('Mark Ready')}</button>`;
+    else if(a.status==='completed' && !dept.next) action = `<button class="btn btn-ghost btn-sm" onclick="markReady('${a.id}');render();toast(tr('Marked ready for delivery'))">${et('Mark Ready')}</button>`;
 
     if(isClothIntake){
       const used = a.materialUsed;
@@ -2256,7 +2454,7 @@ function viewDepartment(deptId){
   </div></div>`;
 }
 function openAssignToDeptModal(deptId){
-  if(deptId!=='cutting'){ toast('Jobs enter this department automatically when forwarded from the previous stage.'); return; }
+  if(deptId!=='cutting'){ toast(tr('Jobs enter this department automatically when forwarded from the previous stage.')); return; }
   openAssignModal();
 }
 
@@ -2312,7 +2510,7 @@ function confirmPay(empId){
   if(!state.payments[empId]) state.payments[empId] = {paid:0};
   state.payments[empId].paid += amt;
   closeModal();
-  toast(`${inr(amt)} paid to ${state.employees.find(e=>e.id===empId).name}`);
+  toast(L(`${inr(amt)} paid to ${state.employees.find(e=>e.id===empId).name}`, `${state.employees.find(e=>e.id===empId).name} यांना ${inr(amt)} दिले`));
   render();
 }
 
@@ -2371,7 +2569,7 @@ function syncDarkFromStorage(){
   document.documentElement.classList.toggle('dark-mode', dark);
   localStorage.setItem('threadline_dark', dark?'1':'0');
   localStorage.setItem('threadline_erp_dark', dark?'1':'0');
-  const b=document.getElementById('darkToggle'); if(b) b.textContent=dark?'☀ Light':'☾ Dark';
+  const b=document.getElementById('darkToggle'); if(b) b.textContent=dark?'☀ '+tr('Light'):'☾ '+tr('Dark');
   try{ window.parent && window.parent.postMessage({type:'threadline-theme', dark}, '*'); }catch(e){}
 }
 function toggleDarkMode(){
@@ -2380,28 +2578,121 @@ function toggleDarkMode(){
   localStorage.setItem('threadline_erp_dark', next?'1':'0');
   syncDarkFromStorage();
 }
-// Header bell mirrors unread public quote requests; the list itself lives in the parent shell's bell panel.
-function openQuoteRequests(){
-  try{ if(window.parent && window.parent!==window) window.parent.postMessage({type:'threadline-open-quotes'}, '*'); }catch(e){}
+/* ============================================================
+   NOTIFICATIONS — public-website quote requests.
+   A request is NEW until the owner opens this page; opening it
+   marks those requests seen in the database (seen_at), so the bell
+   count drops and next time they are listed under "Earlier / Seen".
+============================================================ */
+let QUOTE_NEW_COUNT = 0;
+let NOTIF = {loaded:false, loading:false, quotes:[], total:0, error:'', sessionNewIds:[]};
+function setQuoteCount(n){
+  QUOTE_NEW_COUNT = Number(n)||0;
+  const c=document.getElementById('quoteBellCount');
+  if(c){ c.hidden = !QUOTE_NEW_COUNT; c.textContent = QUOTE_NEW_COUNT>99 ? '99+' : String(QUOTE_NEW_COUNT); }
+  const b=document.getElementById('quoteBell');
+  if(b){ const l = QUOTE_NEW_COUNT ? `${tr('Notifications')}: ${QUOTE_NEW_COUNT} ${tr('new')}` : tr('Notifications'); b.setAttribute('aria-label', l); b.title = l; }
+  document.querySelectorAll('.nav-badge[data-badge="notifications"]').forEach(el=>{ el.hidden = !QUOTE_NEW_COUNT; el.textContent = QUOTE_NEW_COUNT; });
 }
-window.addEventListener('message', (ev)=>{
-  if(ev && ev.data && ev.data.type==='threadline-quotes'){
-    const n = Number(ev.data.unread)||0;
-    const dot = document.getElementById('quoteBellDot');
-    const bell = document.getElementById('quoteBell');
-    if(dot) dot.style.display = n>0 ? '' : 'none';
-    if(bell) bell.title = n>0 ? (n+' unread quote request'+(n===1?'':'s')) : 'Quote requests';
+async function pollQuoteSummary(){
+  if(!readAuthToken()) return;
+  try{ const d = await api('/api/quotes/summary'); setQuoteCount(d.newCount||0); }catch(e){}
+}
+setInterval(()=>{ if(!document.hidden) pollQuoteSummary(); }, 30000);
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) pollQuoteSummary(); });
+async function loadNotifications(){
+  if(NOTIF.loading) return;
+  NOTIF.loading = true;
+  if((location.hash||'').slice(1)==='notifications' && !NOTIF.loaded) render();
+  try{
+    for(let i=0;i<20 && !readAuthToken();i++){ await new Promise(r=>setTimeout(r,50)); }
+    const d = await api('/api/quotes');
+    const fresh = (d.quotes||[]).filter(q=>q.isNew).map(q=>q.id);
+    NOTIF.quotes = d.quotes||[]; NOTIF.total = d.total||0; NOTIF.error = '';
+    NOTIF.sessionNewIds = [...new Set([...NOTIF.sessionNewIds, ...fresh])];
+    NOTIF.loaded = true;
+    if(fresh.length){
+      const r = await api('/api/quotes/seen', {method:'POST', body:JSON.stringify({ids:fresh})});
+      setQuoteCount(r.newCount||0);
+    } else setQuoteCount(d.newCount||0);
+  }catch(err){ NOTIF.error = err.message || 'Error'; }
+  NOTIF.loading = false;
+  if((location.hash||'').slice(1)==='notifications') render();
+}
+function refreshNotifications(){ loadNotifications(); }
+function fmtDateTime(iso){
+  if(!iso) return '';
+  try{ return new Date(iso).toLocaleString(LANG==='mr'?'mr-IN':'en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }catch(e){ return iso; }
+}
+function timeAgo(iso){
+  if(!iso) return '';
+  const s = Math.round((Date.now() - new Date(iso).getTime())/1000);
+  if(s < 60) return tr('just now');
+  if(s < 3600) return L(`${Math.floor(s/60)} min ago`, `${Math.floor(s/60)} मिनिटांपूर्वी`);
+  if(s < 86400) return L(`${Math.floor(s/3600)} h ago`, `${Math.floor(s/3600)} तासांपूर्वी`);
+  return L(`${Math.floor(s/86400)} d ago`, `${Math.floor(s/86400)} दिवसांपूर्वी`);
+}
+function telHref(m){ return 'tel:' + String(m||'').replace(/[^\d+]/g,''); }
+function notifCard(q){
+  return `<article class="notif-card">
+    <div><span class="who">${escHtml(q.firstName)} ${escHtml(q.surname)}</span><span class="new-pill">${tr('New')}</span></div>
+    <time datetime="${escHtml(q.createdAt)}" title="${escHtml(fmtDateTime(q.createdAt))}">${timeAgo(q.createdAt)} · ${fmtDateTime(q.createdAt)}</time>
+    <div class="notif-meta">
+      <span>👕 <b>${tr('Product')}:</b> ${escHtml(q.productName)}</span>
+      <span>📞 <a href="${telHref(q.mobile)}" title="${tr('Call')}">${escHtml(q.mobile)}</a></span>
+      <span>✉ <a href="mailto:${escHtml(q.email)}" title="${tr('Reply by email')}">${escHtml(q.email)}</a></span>
+    </div>
+    ${q.message ? `<div class="notif-msg"><b>${tr('Message')}:</b> ${escHtml(q.message)}</div>` : ''}
+  </article>`;
+}
+function viewNotifications(){
+  const head = `<div class="page-head">
+    <div><h1 class="page-title">${tr('Notifications')}</h1><p class="page-sub">${tr('Quote requests from your website')}</p></div>
+    <div class="notif-head-actions"><button class="btn btn-ghost" onclick="refreshNotifications()" ${NOTIF.loading?'disabled':''}>↻ ${tr('Refresh')}</button></div>
+  </div>`;
+  if(!NOTIF.loaded){
+    return head + `<div class="panel notif-empty">${NOTIF.error ? tr('Could not load notifications')+': '+escHtml(NOTIF.error) : tr('Loading…')}</div>`;
   }
-});
+  const newOnes = NOTIF.quotes.filter(q=>NOTIF.sessionNewIds.includes(q.id));
+  const earlier = NOTIF.quotes.filter(q=>!NOTIF.sessionNewIds.includes(q.id));
+  const rows = earlier.map(q=>`<tr>
+      <td><span class="tbl-name">${escHtml(q.firstName)} ${escHtml(q.surname)}</span></td>
+      <td><a href="${telHref(q.mobile)}">${escHtml(q.mobile)}</a></td>
+      <td><a href="mailto:${escHtml(q.email)}">${escHtml(q.email)}</a></td>
+      <td>${escHtml(q.productName)}</td>
+      <td style="max-width:280px;white-space:pre-wrap;word-break:break-word;">${q.message ? escHtml(q.message) : '—'}</td>
+      <td class="tbl-sub">${fmtDateTime(q.createdAt)}</td>
+      <td class="tbl-sub">${fmtDateTime(q.seenAt)}</td>
+    </tr>`).join('');
+  return head + `
+  ${NOTIF.error ? `<div class="panel panel-pad" style="color:var(--red);margin-bottom:12px;">${tr('Could not load notifications')}: ${escHtml(NOTIF.error)}</div>` : ''}
+  <h2 class="section-title" style="margin-top:0;">${tr('New')} <span class="notif-count">${newOnes.length} ${tr('new request(s)')}</span></h2>
+  ${newOnes.length ? `<p class="notif-note">${tr('These are now marked as seen and will move to “Earlier / Seen” next time.')}</p><div class="notif-list">${newOnes.map(notifCard).join('')}</div>`
+    : `<div class="panel notif-empty">${NOTIF.total ? tr('No new requests') : tr('No quote requests yet. Requests from the public website will appear here.')}</div>`}
+  <details class="notif-earlier" id="notifEarlier">
+    <summary>${tr('Earlier / Seen')} <span class="badge badge-grey">${earlier.length}</span></summary>
+    <div class="panel"><div class="table-scroll"><table>
+      <tr><th>${tr('Name')}</th><th>${tr('Mobile')}</th><th>${tr('Email')}</th><th>${tr('Product')}</th><th>${tr('Message')}</th><th>${tr('Received at')}</th><th>${tr('Seen')}</th></tr>
+      ${rows || `<tr><td colspan="7" class="empty">${tr('No earlier requests.')}</td></tr>`}
+    </table></div></div>
+  </details>`;
+}
+function signOut(){
+  try{ sessionStorage.removeItem('threadline_token'); localStorage.removeItem('threadline_token'); }catch(e){}
+  __authToken = null;
+  try{ if(window.parent && window.parent!==window) window.parent.postMessage({type:'threadline-signout'}, '*'); else location.href='/admin'; }catch(e){}
+}
+window.addEventListener('message', (ev)=>{ if(ev && ev.data && ev.data.type==='threadline-auth') setTimeout(pollQuoteSummary, 50); });
 window.addEventListener('message', (ev)=>{
   if(ev && ev.data && ev.data.type==='threadline-theme'){
     localStorage.setItem('threadline_dark', ev.data.dark?'1':'0');
     localStorage.setItem('threadline_erp_dark', ev.data.dark?'1':'0');
     document.documentElement.classList.toggle('dark-mode', !!ev.data.dark);
-    const b=document.getElementById('darkToggle'); if(b) b.textContent=ev.data.dark?'☀ Light':'☾ Dark';
+    const b=document.getElementById('darkToggle'); if(b) b.textContent=ev.data.dark?'☀ '+tr('Light'):'☾ '+tr('Dark');
   }
 });
 window.addEventListener('storage', (ev)=>{
+  if(ev.key==='threadline_lang' && (ev.newValue==='en'||ev.newValue==='mr') && ev.newValue!==LANG){ LANG=ev.newValue; render(); }
   if(ev.key==='threadline_dark' || ev.key==='threadline_erp_dark') syncDarkFromStorage();
 });
 
@@ -2439,9 +2730,8 @@ function syncRulerTab(){
   if(!tab) return;
   const show = RULER_ON_DASHBOARD;
   tab.hidden = !show;
-  document.getElementById('rulerTabLabel').textContent = tr('Measurement Ruler');
-  tab.setAttribute('aria-label', tr('Show measurement ruler'));
-  tab.title = tr('Show measurement ruler');
+  tab.setAttribute('aria-label', tr('Measurement ruler'));
+  tab.title = tr('Measurement ruler');
   if(!show && rulerIsOpen()) closeRuler(true);
   if(rulerIsOpen()) updateRulerLabels();
 }
@@ -2549,7 +2839,6 @@ async function init(){
   const savedLang = localStorage.getItem('threadline_lang');
   if(savedLang==='en' || savedLang==='mr') LANG = savedLang;
   syncDarkFromStorage();
-  document.querySelector('.brand-sub').textContent = tr('Owner Workspace');
   currentWorkspace = 'internal';
 
   try{
@@ -2563,9 +2852,10 @@ async function init(){
     console.warn('Bootstrap API unavailable, keeping local demo seed:', err.message);
   }
 
-  route('dashboard');
-  render();
+  const startHash = (window.location.hash||'').slice(1);
+  if(startHash) render(); else route('dashboard');
   syncDarkFromStorage();
+  pollQuoteSummary();
 }
 init();
 </script>

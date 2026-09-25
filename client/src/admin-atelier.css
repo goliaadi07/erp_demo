@@ -1,0 +1,34 @@
+/* CRB atelier look for the dashboard shell (login + iframe host) */
+:root{--a-ink:#1f1d1a;--a-slate:#6b645a;--a-line:#e7dfd1;--a-paper:#fffdf9;--a-canvas:#f6f1e8;--a-indigo:#26345f;--a-brass:#a07a34;font-family:'DM Sans',system-ui,sans-serif;color:var(--a-ink);background:var(--a-canvas)}
+html[data-theme="dark"]{--a-ink:#e9e3d8;--a-slate:#b3aa9c;--a-line:#312e37;--a-paper:#1c1b21;--a-canvas:#131217;--a-indigo:#8ea0d8;--a-brass:#d9b56b;background:var(--a-canvas)}
+body{background:var(--a-canvas)}
+.login-page{background:var(--a-canvas) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M0 6L6 0' stroke='%23a07a34' stroke-opacity='.07'/%3E%3C/svg%3E")!important;flex-direction:column;gap:18px}
+html[data-theme="dark"] .login-page{background:var(--a-canvas)!important}
+.login-page::before{opacity:.12!important;filter:sepia(.35)}
+html[data-theme="dark"] .login-page::before{opacity:.05!important}
+.login-card{background:var(--a-paper)!important;border:1px solid var(--a-line)!important;border-radius:20px!important;box-shadow:0 24px 60px rgba(31,29,26,.12)!important;color:var(--a-ink);backdrop-filter:none!important}
+.login-logo{width:48px;height:48px;border-radius:13px;display:block}
+.brand-row{gap:14px!important}
+.login-card .brand-name{font-family:'Cormorant Garamond',Georgia,serif;font-size:30px;font-weight:700;letter-spacing:.1em;color:var(--a-ink);line-height:1}
+.login-card .brand-sub{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--a-brass)!important;margin-top:5px}
+.login-card h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:36px!important;letter-spacing:0!important;font-weight:700;color:var(--a-ink)}
+.login-sub{color:var(--a-slate)!important}
+.login-card label{color:var(--a-ink)!important}
+.login-card input{background:var(--a-paper)!important;border:1px solid var(--a-line)!important;color:var(--a-ink)!important;border-radius:12px!important}
+.login-card input:focus{border-color:var(--a-indigo)!important;box-shadow:0 0 0 3px rgba(38,52,95,.14)}
+.login-card form .login-submit{background:#26345f!important;box-shadow:0 8px 18px rgba(38,52,95,.22)!important;border-radius:999px!important;color:#faf6ef!important}
+html[data-theme="dark"] .login-card form .login-submit{background:#3a4a80!important}
+.login-card form .password-toggle{color:var(--a-indigo)!important;background:transparent!important}
+.login-back{display:inline-block;margin-top:16px;font-size:13px;color:var(--a-slate);text-decoration:none}
+.login-back:hover{color:var(--a-indigo)}
+.login-tools{position:relative;z-index:2;display:flex;gap:8px;align-items:center;justify-content:flex-end;width:440px;max-width:100%}
+.login-lang{display:flex;padding:3px;border:1px solid var(--a-line);border-radius:999px;background:var(--a-paper)}
+.login-lang button,.login-theme{border:0;background:transparent;color:var(--a-slate);font:700 12px 'DM Sans',sans-serif;padding:6px 12px;border-radius:999px;cursor:pointer}
+.login-lang button.active{background:#26345f;color:#faf6ef}
+html[data-theme="dark"] .login-lang button.active{background:#3a4a80}
+.login-theme{border:1px solid var(--a-line);background:var(--a-paper);color:var(--a-ink)}
+.error{background:#f8e7e4!important;color:#9c3a32!important}
+html[data-theme="dark"] .error{background:#3a1d1c!important;color:#f3b3ab!important}
+.erp-wrap{height:100vh;background:var(--a-canvas)!important}
+.erp-wrap iframe{background:var(--a-canvas)!important}
+html[lang="mr"] body :not(.brand-name){letter-spacing:normal!important}

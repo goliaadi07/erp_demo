@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLang } from './i18n.js';
 
 const INTERVAL_MS = 6000;
 
 // Full-width editorial hero: cross-fade slides, arrows, numbered progress dots,
 // autoplay that pauses on hover/focus (and when the tab is hidden), swipe on touch.
 export default function Carousel({ slides, onAction }) {
+  const { t } = useLang();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const touchX = useRef(null);
@@ -28,7 +30,7 @@ export default function Carousel({ slides, onAction }) {
     <section
       className={`hero${paused ? ' is-paused' : ''}${reduced ? ' no-motion' : ''}`}
       aria-roledescription="carousel"
-      aria-label="Featured collections"
+      aria-label={t('Featured collections')}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
@@ -50,7 +52,7 @@ export default function Carousel({ slides, onAction }) {
             className={`hero-slide${active ? ' active' : ''}`}
             role="group"
             aria-roledescription="slide"
-            aria-label={`${i + 1} of ${count}: ${s.title}`}
+            aria-label={t('{n} of {count}: {title}', { n: i + 1, count, title: s.title })}
             aria-hidden={!active}
           >
             <img
@@ -85,7 +87,7 @@ export default function Carousel({ slides, onAction }) {
       })}
 
       <div className="hero-controls container">
-        <div className="hero-dots" role="tablist" aria-label="Choose slide">
+        <div className="hero-dots" role="tablist" aria-label={t('Choose slide')}>
           {slides.map((s, i) => (
             <button
               key={s.key}
@@ -93,7 +95,7 @@ export default function Carousel({ slides, onAction }) {
               role="tab"
               className={`hero-dot${i === index ? ' active' : ''}`}
               aria-selected={i === index}
-              aria-label={`Slide ${i + 1}: ${s.title}`}
+              aria-label={t('Slide {n}: {title}', { n: i + 1, title: s.title })}
               onClick={() => go(i)}
             >
               <span className="hero-dot-num">{pad(i + 1)}</span>
@@ -102,10 +104,10 @@ export default function Carousel({ slides, onAction }) {
           ))}
         </div>
         <div className="hero-arrows">
-          <button type="button" className="hero-arrow" onClick={prev} aria-label="Previous slide">
+          <button type="button" className="hero-arrow" onClick={prev} aria-label={t('Previous slide')}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
           </button>
-          <button type="button" className="hero-arrow" onClick={next} aria-label="Next slide">
+          <button type="button" className="hero-arrow" onClick={next} aria-label={t('Next slide')}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
           </button>
         </div>
